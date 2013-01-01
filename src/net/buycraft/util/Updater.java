@@ -11,13 +11,13 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import net.buycraft.BukkitInterface;
+import net.buycraft.Plugin;
 
 public class Updater 
 {	
 	public static void performUpdate(String latestDownloadUrl)
 	{
-		BukkitInterface.getInstance().getLogger().info("Please wait, downloading latest version...");
+		Plugin.getInstance().getLogger().info("Please wait, downloading latest version...");
 		
 		loadAllClasses();
 		
@@ -43,11 +43,11 @@ public class Updater
 	        outputStream.close();
 	        inputStream.close();
 	        
-	        BukkitInterface.getInstance().getLogger().info("Installed latest version, please restart to apply changes.");
+	        Plugin.getInstance().getLogger().info("Installed latest version, please restart to apply changes.");
 		} 
 		catch (IOException e) 
 		{
-			BukkitInterface.getInstance().getLogger().info("Failed to download new version. " + e.getLocalizedMessage());
+			Plugin.getInstance().getLogger().info("Failed to download new version. " + e.getLocalizedMessage());
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class Updater
     {
         try
         {
-            JarFile jar = new JarFile(BukkitInterface.getInstance().getJarFile());
+            JarFile jar = new JarFile(Plugin.getInstance().getJarFile());
             
             Enumeration<JarEntry> enumeration = jar.entries();
 
@@ -69,9 +69,11 @@ public class Updater
                     String path = name.replaceAll("/", ".");
                     path = path.substring(0, path.length() - ".class".length());
 
-                    BukkitInterface.getInstance().getClass().getClassLoader().loadClass(path);
+                    Plugin.getInstance().getClass().getClassLoader().loadClass(path);
                 }
             }
+            
+            jar.close();
         } 
         catch (Exception e) 
         {

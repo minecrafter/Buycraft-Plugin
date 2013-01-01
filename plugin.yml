@@ -1,6 +1,6 @@
 name: Buycraft
-main: net.buycraft.BukkitInterface
-version: 4.4
+main: net.buycraft.Plugin
+version: 4.8
 author: Buycraft Development Team
 website: https://buycraft.net
 commands:

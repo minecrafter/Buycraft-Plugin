@@ -19,10 +19,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
-public class BukkitInterface extends JavaPlugin
+public class Plugin extends JavaPlugin
 {
-	private static BukkitInterface instance;
+	private static Plugin instance;
 	
 	private String version;
 	
@@ -39,20 +40,24 @@ public class BukkitInterface extends JavaPlugin
 	
 	private ChatManager chatManager;
 	
-	private int packagesCheckerThreadId;
+	private BukkitTask packagesCheckerThreadId;
 	
 	private Boolean started;
 	
-	public BukkitInterface()
+	private String folderPath;
+	
+	public Plugin()
 	{
-		this.instance = this;
+		instance = this;
 	}
 	
 	public void onEnable()
 	{
+		folderPath = getDataFolder().getAbsolutePath();
+		
 		checkDirectory();
 		
-		moveFileFromJar("README.txt", "plugins/Buycraft/README.txt", true);
+		moveFileFromJar("README.md", getFolderPath() + "/README.txt", true);
 		
 		version = getDescription().getVersion();
 		
@@ -65,14 +70,14 @@ public class BukkitInterface extends JavaPlugin
 		packageChecker = new PackageChecker();
 		
 		chatManager = new ChatManager();
-		
+
 		if(api.infoAction())
 		{
 			getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 			
 			packageManager.loadPackages();
 			
-			packagesCheckerThreadId = getServer().getScheduler().scheduleAsyncRepeatingTask(this, packageChecker, 6000L, 6000L);
+			packagesCheckerThreadId = getServer().getScheduler().runTaskTimerAsynchronously(this, packageChecker, 6000L, 6000L);
 			
 			started = true;
 			
@@ -86,7 +91,11 @@ public class BukkitInterface extends JavaPlugin
 	
 	public void onDisable()
 	{
-		getServer().getScheduler().cancelTask(packagesCheckerThreadId);
+		if(packagesCheckerThreadId != null)
+		{
+			packagesCheckerThreadId.cancel();
+		}
+		
 		
 		getLogger().info("Plugin has been disabled.");
 	}
@@ -130,7 +139,7 @@ public class BukkitInterface extends JavaPlugin
 	
 	private void checkDirectory()
 	{
-		File directory = new File("plugins/Buycraft");
+		File directory = new File(getFolderPath());
 		
 		if(!directory.exists())
 		{
@@ -176,7 +185,7 @@ public class BukkitInterface extends JavaPlugin
 		{
 			commandSender.sendMessage(Chat.header());
 			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + BukkitInterface.getInstance().getLanguage().getString("notStarted"));
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("notStarted"));
 			commandSender.sendMessage(Chat.seperator());
 			commandSender.sendMessage(Chat.footer());
 			
@@ -193,7 +202,7 @@ public class BukkitInterface extends JavaPlugin
 		getServer().getPluginManager().disablePlugin(this);
 	}
 	
-	public static BukkitInterface getInstance()
+	public static Plugin getInstance()
 	{
 		return instance;
 	}
@@ -256,5 +265,10 @@ public class BukkitInterface extends JavaPlugin
 	public ChatManager getChatManager()
 	{
 		return chatManager;
+	}
+	
+	public String getFolderPath()
+	{
+		return folderPath;
 	}
 }

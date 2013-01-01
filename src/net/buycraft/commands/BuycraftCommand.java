@@ -1,6 +1,6 @@
 package net.buycraft.commands;
 
-import net.buycraft.BukkitInterface;
+import net.buycraft.Plugin;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
@@ -19,15 +19,15 @@ public class BuycraftCommand
 				{
 					if(args.length == 2)
 					{
-						BukkitInterface.getInstance().getSettings().setString("secret", args[1]);
+						Plugin.getInstance().getSettings().setString("secret", args[1]);
 						
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + BukkitInterface.getInstance().getLanguage().getString("secretKeySet"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("secretKeySet"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 						
-						BukkitInterface.getInstance().getServer().reload();
+						Plugin.getInstance().getServer().reload();
 						
 						return true;
 					}
@@ -35,7 +35,7 @@ public class BuycraftCommand
 					{
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + BukkitInterface.getInstance().getLanguage().getString("enterValidSecret"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("enterValidSecret"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 						
@@ -43,15 +43,15 @@ public class BuycraftCommand
 					}
 				}
 				
-				if(BukkitInterface.getInstance().requireStarted(commandSender))
+				if(Plugin.getInstance().requireStarted(commandSender))
 				{
 					if(args[0].equalsIgnoreCase("reload"))
 					{
-						BukkitInterface.getInstance().getPackageManager().loadPackages();
+						Plugin.getInstance().getPackageManager().loadPackages();
 						
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + BukkitInterface.getInstance().getLanguage().getString("packageCacheReloaded"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("packageCacheReloaded"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 				
@@ -60,11 +60,11 @@ public class BuycraftCommand
 					
 					if(args[0].equalsIgnoreCase("forcecheck"))
 					{
-						BukkitInterface.getInstance().getPackageChecker().process();
+						Plugin.getInstance().getPackageChecker().process();
 						
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + BukkitInterface.getInstance().getLanguage().getString("forceCheckPerformed"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("forceCheckPerformed"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 				
@@ -85,17 +85,17 @@ public class BuycraftCommand
 		}
 		else
 		{
-			if(BukkitInterface.getInstance().requireStarted(commandSender))
+			if(Plugin.getInstance().requireStarted(commandSender))
 			{
 				commandSender.sendMessage(Chat.header());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + BukkitInterface.getInstance().getLanguage().getString("mainCommand") + ChatColor.GREEN + " " + BukkitInterface.getInstance().getLanguage().getString("viewAvailablePackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + BukkitInterface.getInstance().getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " " + BukkitInterface.getInstance().getLanguage().getString("navigateThroughPackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + BukkitInterface.getInstance().getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " " + BukkitInterface.getInstance().getLanguage().getString("purchaseSpecificPackageHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("viewAvailablePackagesHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("navigateThroughPackagesHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("purchaseSpecificPackageHelp"));
 				commandSender.sendMessage(Chat.seperator());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server ID: " + ChatColor.GREEN + String.valueOf(BukkitInterface.getInstance().getServerID()));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Plugin version: " + ChatColor.GREEN + String.valueOf(BukkitInterface.getInstance().getVersion()));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server ID: " + ChatColor.GREEN + String.valueOf(Plugin.getInstance().getServerID()));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Plugin version: " + ChatColor.GREEN + String.valueOf(Plugin.getInstance().getVersion()));
 				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Website: " + ChatColor.GREEN + "https://buycraft.net");
 				commandSender.sendMessage(Chat.footer());
 			}

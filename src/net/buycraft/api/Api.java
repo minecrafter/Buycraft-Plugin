@@ -14,7 +14,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import net.buycraft.BukkitInterface;
+import net.buycraft.Plugin;
 import net.buycraft.util.Updater;
 
 public class Api 
@@ -24,9 +24,9 @@ public class Api
 	
 	public Api()
 	{
-		this.apiKey = BukkitInterface.getInstance().getSettings().getString("secret");
+		this.apiKey = Plugin.getInstance().getSettings().getString("secret");
 		
-		if(BukkitInterface.getInstance().getSettings().getBoolean("https"))
+		if(Plugin.getInstance().getSettings().getBoolean("https"))
 		{
 			this.apiUrl = "https://api.buycraft.net/v3";
 		}
@@ -52,20 +52,20 @@ public class Api
 				{
 					JSONObject payload = apiResponse.getJSONObject("payload");
 					
-					BukkitInterface.getInstance().setServerID(payload.getInt("serverId"));
-					BukkitInterface.getInstance().setServerCurrency(payload.getString("serverCurrency"));
+					Plugin.getInstance().setServerID(payload.getInt("serverId"));
+					Plugin.getInstance().setServerCurrency(payload.getString("serverCurrency"));
 					
-					if(payload.getDouble("latestVersion") > Double.valueOf(BukkitInterface.getInstance().getVersion()))
+					if(payload.getDouble("latestVersion") > Double.valueOf(Plugin.getInstance().getVersion()))
 					{
 						String downloadUrl = payload.getString("latestDownload");
 
-						if(BukkitInterface.getInstance().getSettings().getBoolean("autoUpdate"))
+						if(Plugin.getInstance().getSettings().getBoolean("autoUpdate"))
 						{
 							Updater.performUpdate(downloadUrl);
 						}
 						else
 						{
-							BukkitInterface.getInstance().getLogger().info("Egnoring update due to auto update disabled.");
+							Plugin.getInstance().getLogger().info("Egnoring update due to auto update disabled.");
 						}
 					}
 					
@@ -73,7 +73,7 @@ public class Api
 				}
 				else if(apiResponse.getInt("code") == 101)
 				{
-					BukkitInterface.getInstance().getLogger().severe("Could not find an account with the specified API secret!");
+					Plugin.getInstance().getLogger().severe("Could not find an account with the specified API secret!");
 					
 					return false;
 				}
@@ -81,14 +81,14 @@ public class Api
 		} 
 		catch(JSONException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("JSON parsing error.");
+			Plugin.getInstance().getLogger().severe("JSON parsing error.");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 		
-		BukkitInterface.getInstance().getLogger().severe("Unexpected error occured in the authentication process.");
+		Plugin.getInstance().getLogger().severe("Unexpected error occured in the authentication process.");
 		
 		return false;
 	}
@@ -133,7 +133,7 @@ public class Api
 		}
 		
 		apiCallParams.put("secret", apiKey);
-		apiCallParams.put("version", String.valueOf(BukkitInterface.getInstance().getVersion()));
+		apiCallParams.put("version", String.valueOf(Plugin.getInstance().getVersion()));
 		
 		String url = apiUrl + generateUrlQueryString(apiCallParams);
 		
@@ -154,7 +154,7 @@ public class Api
 			} 
 			catch (JSONException e) 
 			{
-				BukkitInterface.getInstance().getLogger().severe("JSON parsing error.");
+				Plugin.getInstance().getLogger().severe("JSON parsing error.");
 			}
 		}
 		
@@ -170,8 +170,8 @@ public class Api
 			URL conn = new URL(url);
 	        URLConnection yc = conn.openConnection();
 	        
-	        yc.setConnectTimeout(5000);
-	        yc.setReadTimeout(5000);
+	        yc.setConnectTimeout(10000);
+	        yc.setReadTimeout(10000);
 	        
 	        BufferedReader in;
 			
@@ -185,24 +185,24 @@ public class Api
 			}
 			
 			in.close();
-			
+
 			return content;
 		}
 		catch(ConnectException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("HTTP request failed due to connection error.");
+			Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
 		}
 		catch(SocketTimeoutException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("HTTP request failed due to timeout error.");
+			Plugin.getInstance().getLogger().severe("HTTP request failed due to timeout error.");
 		}
 		catch(FileNotFoundException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("HTTP request failed due to file not found.");
+			Plugin.getInstance().getLogger().severe("HTTP request failed due to file not found.");
 		}
 		catch(UnknownHostException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
+			Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
 		}
 		catch (Exception e) 
 		{

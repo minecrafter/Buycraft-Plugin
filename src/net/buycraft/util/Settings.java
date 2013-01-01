@@ -116,7 +116,7 @@ public class Settings
 	
 	public void setString(String key, String value)
 	{
-		properties.setProperty("secret", value);
+		properties.setProperty(key, value);
 		
 		saveSettings();
 	}

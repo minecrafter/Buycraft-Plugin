@@ -3,7 +3,7 @@ package net.buycraft.packages;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.buycraft.BukkitInterface;
+import net.buycraft.Plugin;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class PackageManager
 		
 		try
 		{
-			JSONObject apiResponse = BukkitInterface.getInstance().getApi().packagesAction();
+			JSONObject apiResponse = Plugin.getInstance().getApi().packagesAction();
 			
 			if(apiResponse != null && apiResponse.isNull("payload") == false)
 			{
@@ -41,31 +41,32 @@ public class PackageManager
 				   			
 						addPackage(row.getInt("id"), 
 								row.get("name").toString(),
-								row.get("price").toString());
+								row.get("price").toString(),
+								row.getInt("order"));
 					}
 				}
 				
-				BukkitInterface.getInstance().getLogger().info("Loaded " + packages.length() + " package(s) into the cache.");
+				Plugin.getInstance().getLogger().info("Loaded " + packages.length() + " package(s) into the cache.");
 			}
 			else
 			{
-				BukkitInterface.getInstance().getLogger().severe("Failed to load packages due to null payload.");
+				Plugin.getInstance().getLogger().severe("Failed to load packages due to null payload.");
 			}
 		}
 		catch(JSONException e)
 		{
 			e.printStackTrace();
 			
-			BukkitInterface.getInstance().getLogger().severe("Failed to load packages due to JSON parse error.");
+			Plugin.getInstance().getLogger().severe("Failed to load packages due to JSON parse error.");
 		}
 	}
 	
 	/**
 	 * Add a package to the package list
 	 */
-	private void addPackage(int id, String name, String price)
+	private void addPackage(int id, String name, String price, Integer order)
 	{
-		packagesForSale.add(new PackageModel(id, name, price));
+		packagesForSale.add(new PackageModel(id, name, price, order));
 	}
 	
 	/**
@@ -74,6 +75,22 @@ public class PackageManager
 	public List<PackageModel> getPackagesForSale()
 	{
 		return packagesForSale;
+	}
+	
+	/**
+	 * Return a package from its order ID
+	 */
+	public PackageModel getPackageByOrderId(int packageOrderId)
+	{
+		for(PackageModel packageModel : packagesForSale)
+		{
+			if(packageModel.getOrder() == packageOrderId)
+			{
+				return packageModel;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**

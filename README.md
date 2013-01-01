@@ -48,6 +48,11 @@ allowed and you will be banned from accessing the Buycraft API.
 
 ---- CHANGE LOG ------------------------------------------------------------
 
+	Version 4.8
+	
+		- Updated to Bukkit 1.4.5.
+		- Changed all deprecated methods to new API.
+
 	Version 4.4
 	
 		- Added the "/buycraft secret" command to set your secret key when in game/console

@@ -3,7 +3,7 @@ package net.buycraft.packages;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import net.buycraft.BukkitInterface;
+import net.buycraft.Plugin;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ public class PackageChecker extends Thread
 {
 	public void run()
 	{
-		if(BukkitInterface.getInstance().getServer().getOnlinePlayers().length > 0)
+		if(Plugin.getInstance().getServer().getOnlinePlayers().length > 0)
 		{
 			process();
 		}
@@ -51,7 +51,7 @@ public class PackageChecker extends Thread
 		}
 		else
 		{
-			BukkitInterface.getInstance().getServer().dispatchCommand(BukkitInterface.getInstance().getServer().getConsoleSender(), command);
+			Plugin.getInstance().getServer().dispatchCommand(Plugin.getInstance().getServer().getConsoleSender(), command);
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class PackageChecker extends Thread
 	{
 		try
 		{
-			JSONObject apiResponse = BukkitInterface.getInstance().getApi().checkerGetAction();
+			JSONObject apiResponse = Plugin.getInstance().getApi().checkerGetAction();
             
 			if(apiResponse != null)
 			{
@@ -86,11 +86,11 @@ public class PackageChecker extends Thread
 						Boolean requireOnline = row.getBoolean("requireOnline");
 						JSONArray commands = row.getJSONArray("commands");
 						
-						Player currentPlayer = BukkitInterface.getInstance().getServer().getPlayer(username);
+						Player currentPlayer = Plugin.getInstance().getServer().getPlayer(username);
 					
 						if(currentPlayer != null || requireOnline == false)
 						{
-							BukkitInterface.getInstance().getLogger().info("Executing expiry command(s) on behalf of user '" + username + "'.");
+							Plugin.getInstance().getLogger().info("Executing expiry command(s) on behalf of user '" + username + "'.");
 							
 							for (int e = 0; e < commands.length(); ++e) 
 							{
@@ -106,7 +106,7 @@ public class PackageChecker extends Thread
 							{
 								currentPlayer.sendMessage(Chat.header());
 								currentPlayer.sendMessage(Chat.seperator());
-								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + BukkitInterface.getInstance().getLanguage().getString("purchasedPackageExpired"));
+								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("purchasedPackageExpired"));
 								currentPlayer.sendMessage(Chat.seperator());
 								currentPlayer.sendMessage(Chat.footer());
 							}
@@ -127,11 +127,11 @@ public class PackageChecker extends Thread
 						Boolean requireOnline = row.getBoolean("requireOnline");
 						JSONArray commands = row.getJSONArray("commands");
 						
-						Player currentPlayer = BukkitInterface.getInstance().getServer().getPlayer(username);
+						Player currentPlayer = Plugin.getInstance().getServer().getPlayer(username);
 
 						if(currentPlayer != null || requireOnline == false)
 						{
-							BukkitInterface.getInstance().getLogger().info("Executing claimable command(s) on behalf of user '" + username + "'.");
+							Plugin.getInstance().getLogger().info("Executing claimable command(s) on behalf of user '" + username + "'.");
 							
 							for (int c = 0; c < commands.length(); ++c) 
 							{
@@ -147,7 +147,7 @@ public class PackageChecker extends Thread
 							{
 								currentPlayer.sendMessage(Chat.header());
 								currentPlayer.sendMessage(Chat.seperator());
-								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + BukkitInterface.getInstance().getLanguage().getString("purchasedPackageClaimed"));
+								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("purchasedPackageClaimed"));
 								currentPlayer.sendMessage(Chat.seperator());
 								currentPlayer.sendMessage(Chat.footer());
 							}
@@ -157,7 +157,7 @@ public class PackageChecker extends Thread
 			    
 			    if(executedExpirys.size() > 0 || executedClaimables.size() > 0)
 			    {
-			    	BukkitInterface.getInstance().getApi().checkerDeleteAction(
+			    	Plugin.getInstance().getApi().checkerDeleteAction(
 			    			new JSONArray(executedClaimables.toArray()).toString(), 
 			    			new JSONArray(executedExpirys.toArray()).toString());
 			    }
@@ -165,7 +165,7 @@ public class PackageChecker extends Thread
 		}
 		catch(JSONException e)
 		{
-			BukkitInterface.getInstance().getLogger().severe("JSON Parsing error.");
+			Plugin.getInstance().getLogger().severe("JSON Parsing error.");
 		}
 		catch(Exception e)
 		{
