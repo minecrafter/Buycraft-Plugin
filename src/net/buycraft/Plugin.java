@@ -34,6 +34,7 @@ public class Plugin extends JavaPlugin
 	
 	private Integer serverID;
 	private String serverCurrency;
+	private String serverStore;
 	
 	private PackageManager packageManager;
 	private PackageChecker packageChecker;
@@ -185,7 +186,17 @@ public class Plugin extends JavaPlugin
 		{
 			commandSender.sendMessage(Chat.header());
 			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("notStarted"));
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft has failed to startup.");
+			commandSender.sendMessage(Chat.seperator());
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is normally to do with an invalid server secret,");
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the server secret into the settings.conf");
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
+			commandSender.sendMessage(Chat.seperator());
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
+			commandSender.sendMessage(Chat.seperator());
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If the previous advice failed, please contact");
+			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "customer support via support@buycraft.net.");
 			commandSender.sendMessage(Chat.seperator());
 			commandSender.sendMessage(Chat.footer());
 			
@@ -222,9 +233,19 @@ public class Plugin extends JavaPlugin
 		serverCurrency = value;
 	}
 	
+	public void setServerStore(String value)
+	{
+		serverStore = value;
+	}
+	
 	public Integer getServerID()
 	{
 		return serverID;
+	}
+	
+	public String getServerStore()
+	{
+		return serverStore;
 	}
 	
 	public PackageChecker getPackageChecker()

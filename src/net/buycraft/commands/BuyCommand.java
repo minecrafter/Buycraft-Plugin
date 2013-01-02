@@ -60,7 +60,15 @@ public class BuyCommand
 				
 					if(packageExists == true)
 					{
-						String shortUrlLink = "http://is.gd/create.php?format=simple&url=http://buycraft.net/redirect/addcart/" + Plugin.getInstance().getServerID() + "/" + packageModel.getId() + "/" + commandSender.getName();
+						String shortUrlLink = "http://is.gd/create.php?format=simple&url=" + Plugin.getInstance().getServerStore() + "/checkout/packages?action=add%26package=" + packageModel.getId() + "%26ign=" + commandSender.getName();
+						
+						if(Plugin.getInstance().getSettings().getBoolean("directPay"))
+						{
+							String directGateway = Plugin.getInstance().getSettings().getString("directPayGateway");
+							
+							shortUrlLink = "http://is.gd/create.php?format=simple&url=" + Plugin.getInstance().getServerStore() + "/checkout/pay?direct=true%26package=" + packageModel.getId() + "%26agreement=true%26gateway=" + directGateway + "%26ign=" + commandSender.getName();
+						}
+
 						String shortenedUrl =  Plugin.getInstance().getApi().HttpRequest(shortUrlLink);
 						
 						if(shortenedUrl != null)

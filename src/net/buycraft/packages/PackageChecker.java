@@ -62,66 +62,20 @@ public class PackageChecker extends Thread
 	{
 		try
 		{
-			JSONObject apiResponse = Plugin.getInstance().getApi().checkerGetAction();
+			JSONObject apiResponse = Plugin.getInstance().getApi().commandsGetAction();
             
 			if(apiResponse != null)
 			{
 				JSONObject apiPayload = apiResponse.getJSONObject("payload");
-				JSONArray expirysPayload = apiPayload.getJSONArray("expirys");
-				JSONArray claimablesPayload = apiPayload.getJSONArray("claimables");
+				JSONArray commandsPayload = apiPayload.getJSONArray("commands");
 				
-				ArrayList<String> executedExpirys = new ArrayList<String>();
-				ArrayList<String> executedClaimables = new ArrayList<String>();
-				
-				/**
-				 * Process expirys
-				 */
-			    if(expirysPayload.length() > 0)
+				ArrayList<String> executedCommands = new ArrayList<String>();
+				    
+			    if(commandsPayload.length() > 0)
 				{
-					for (int i = 0; i < expirysPayload.length(); i++) 
+					for (int i = 0; i < commandsPayload.length(); i++) 
 					{
-						JSONObject row = expirysPayload.getJSONObject(i);
-						
-						String username = row.getString("ign");
-						Boolean requireOnline = row.getBoolean("requireOnline");
-						JSONArray commands = row.getJSONArray("commands");
-						
-						Player currentPlayer = Plugin.getInstance().getServer().getPlayer(username);
-					
-						if(currentPlayer != null || requireOnline == false)
-						{
-							Plugin.getInstance().getLogger().info("Executing expiry command(s) on behalf of user '" + username + "'.");
-							
-							for (int e = 0; e < commands.length(); ++e) 
-							{
-							    executeCommand(commands.getString(e), username);
-							}
-							
-							if(executedExpirys.contains(username) == false) 
-							{
-								executedExpirys.add(username);
-							}
-							
-							if(currentPlayer != null)
-							{
-								currentPlayer.sendMessage(Chat.header());
-								currentPlayer.sendMessage(Chat.seperator());
-								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("purchasedPackageExpired"));
-								currentPlayer.sendMessage(Chat.seperator());
-								currentPlayer.sendMessage(Chat.footer());
-							}
-						}
-					}
-				}
-			    
-			    /**
-			     * Process claimables
-			     */
-			    if(claimablesPayload.length() > 0)
-				{
-					for (int i = 0; i < claimablesPayload.length(); i++) 
-					{
-						JSONObject row = claimablesPayload.getJSONObject(i);
+						JSONObject row = commandsPayload.getJSONObject(i);
 						
 						String username = row.getString("ign");
 						Boolean requireOnline = row.getBoolean("requireOnline");
@@ -131,23 +85,23 @@ public class PackageChecker extends Thread
 
 						if(currentPlayer != null || requireOnline == false)
 						{
-							Plugin.getInstance().getLogger().info("Executing claimable command(s) on behalf of user '" + username + "'.");
+							Plugin.getInstance().getLogger().info("Executing command(s) on behalf of user '" + username + "'.");
 							
 							for (int c = 0; c < commands.length(); ++c) 
 							{
 							    executeCommand(commands.getString(c), username);
 							}
 							
-							if(executedClaimables.contains(username) == false)
+							if(executedCommands.contains(username) == false)
 							{
-								executedClaimables.add(username);
+								executedCommands.add(username);
 							}
 							
 							if(currentPlayer != null)
 							{
 								currentPlayer.sendMessage(Chat.header());
 								currentPlayer.sendMessage(Chat.seperator());
-								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("purchasedPackageClaimed"));
+								currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("commandsExecuted"));
 								currentPlayer.sendMessage(Chat.seperator());
 								currentPlayer.sendMessage(Chat.footer());
 							}
@@ -155,11 +109,9 @@ public class PackageChecker extends Thread
 					}
 				}
 			    
-			    if(executedExpirys.size() > 0 || executedClaimables.size() > 0)
+			    if(executedCommands.size() > 0)
 			    {
-			    	Plugin.getInstance().getApi().checkerDeleteAction(
-			    			new JSONArray(executedClaimables.toArray()).toString(), 
-			    			new JSONArray(executedExpirys.toArray()).toString());
+			    	Plugin.getInstance().getApi().commandsDeleteAction(new JSONArray(executedCommands.toArray()).toString());
 			    }
 			}
 		}

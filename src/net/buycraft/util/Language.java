@@ -55,8 +55,7 @@ public class Language
 		defaultProperties.put("viewAvailablePackagesHelp", "View available packages for sale");
 		defaultProperties.put("navigateThroughPackagesHelp", "Navigate through package pages");
 		defaultProperties.put("purchaseSpecificPackageHelp", "Purchase a specific package");
-		defaultProperties.put("purchasedPackageExpired", "Your purchased package has now expired");
-		defaultProperties.put("purchasedPackageClaimed", "Your purchased package has been credited to your account");
+		defaultProperties.put("commandsExecuted", "Your purchased packages have been credited");
 		defaultProperties.put("pleaseVisit", "Please click the link below to continue with the purchase");
 		defaultProperties.put("turnChatBackOn", "Type /ec to turn your chat back on");
 		defaultProperties.put("packageNotFound", "Package not found");
@@ -69,7 +68,6 @@ public class Language
 		defaultProperties.put("pageNotFound", "Page not found");
 		defaultProperties.put("packageCacheReloaded", "Package cache successfully reloaded");
 		defaultProperties.put("forceCheckPerformed", "Force check successfully performed");
-		defaultProperties.put("notStarted", "Buycraft incorrectly setup, please read the README.txt file");
 		defaultProperties.put("secretKeySet", "Secret key successfully updated. Reloading server...");
 		defaultProperties.put("enterValidSecret", "Please enter a valid API secret");
 		

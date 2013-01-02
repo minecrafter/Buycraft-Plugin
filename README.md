@@ -42,11 +42,16 @@ Listed below are the permission nodes for the plugin:
 
 ---- A FURTHER NOTE --------------------------------------------------------
 
-You are welcome to modify or improve the supplied source code inside of the jar file, however releasing it is not
-allowed and you will be banned from accessing the Buycraft API.
-
+Modifying the source code is allowed. You are not allowed to use the source code in another Bukkit plugin without prior permission.
+Use of api.buycraft.net is only for this plugin and integrating Buycraft on to your own website. Any other use is not allowed.
 
 ---- CHANGE LOG ------------------------------------------------------------
+
+	Version 4.9
+	
+		- Addition of the DirectPay feature. Setting "directPay" to "true" in the settings.conf
+		  file will send customers straight to the payment gateway instead of to the webstore after typing /buy <ID>.
+		- Move to the new commands system
 
 	Version 4.8
 	

@@ -1,8 +1,8 @@
 name: Buycraft
 main: net.buycraft.Plugin
-version: 4.8
-author: Buycraft Development Team
-website: https://buycraft.net
+version: 4.9
+author: Tebex Technologies Ltd
+website: http://buycraft.net
 commands:
    buy:
       usage: Type /buycraft for assistance

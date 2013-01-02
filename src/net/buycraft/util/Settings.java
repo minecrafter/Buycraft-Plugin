@@ -53,6 +53,8 @@ public class Settings
 		defaultProperties.put("autoUpdate", "true");
 		defaultProperties.put("https", "false");
 		defaultProperties.put("disableBuyCommand", "false");
+		defaultProperties.put("directPay", "false");
+		defaultProperties.put("directPayGateway", "paypal");
 		
 		for (Entry<String, String> entry : defaultProperties.entrySet()) 
 		{

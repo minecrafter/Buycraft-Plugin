@@ -54,6 +54,7 @@ public class Api
 					
 					Plugin.getInstance().setServerID(payload.getInt("serverId"));
 					Plugin.getInstance().setServerCurrency(payload.getString("serverCurrency"));
+					Plugin.getInstance().setServerStore(payload.getString("serverStore"));
 					
 					if(payload.getDouble("latestVersion") > Double.valueOf(Plugin.getInstance().getVersion()))
 					{
@@ -65,7 +66,7 @@ public class Api
 						}
 						else
 						{
-							Plugin.getInstance().getLogger().info("Egnoring update due to auto update disabled.");
+							Plugin.getInstance().getLogger().info("Ignoring update due to auto update disabled.");
 						}
 					}
 					
@@ -73,7 +74,7 @@ public class Api
 				}
 				else if(apiResponse.getInt("code") == 101)
 				{
-					Plugin.getInstance().getLogger().severe("Could not find an account with the specified API secret!");
+					Plugin.getInstance().getLogger().severe("Could not find an account with the specified secret key! Please follow the installation tutorial or read the README.txt file for more information.");
 					
 					return false;
 				}
@@ -102,25 +103,24 @@ public class Api
 		return call(apiCallParams);
 	}
 
-	public JSONObject checkerGetAction()
+	public JSONObject commandsGetAction()
 	{
 		HashMap<String, String> apiCallParams = new HashMap<String, String>();
 		
-		apiCallParams.put("action", "checker");
+		apiCallParams.put("action", "commands");
 		apiCallParams.put("do", "lookup");
 		
 		return call(apiCallParams);
 	}
 
-	public void checkerDeleteAction(String claimablesToDelete, String expirysToDelete)
+	public void commandsDeleteAction(String commandsToDelete)
 	{
 		HashMap<String, String> apiCallParams = new HashMap<String, String>();
 		
-		apiCallParams.put("action", "checker");
+		apiCallParams.put("action", "commands");
 		apiCallParams.put("do", "remove");
 		
-		apiCallParams.put("expirys", expirysToDelete);
-		apiCallParams.put("claimables", claimablesToDelete);
+		apiCallParams.put("commands", commandsToDelete);
 		
 		call(apiCallParams);
 	}
