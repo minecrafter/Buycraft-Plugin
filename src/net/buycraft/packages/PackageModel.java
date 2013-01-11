@@ -8,7 +8,7 @@ public class PackageModel
 	private int id;
 	private String name;
 	private String price;
-	private Integer order;
+	private int order;
 	
 	public PackageModel(int id, String name, String price, int order)
 	{

@@ -42,7 +42,7 @@ public class BuyCommand
 			{
 				if(args.length == 1 && isNumber(args[0]))
 				{
-					Integer packageID = Integer.valueOf(args[0]);
+					int packageID = Integer.valueOf(args[0]);
 					
 					boolean packageExists = false;
 					PackageModel packageModel = null;

@@ -64,7 +64,7 @@ public class PackageManager
 	/**
 	 * Add a package to the package list
 	 */
-	private void addPackage(int id, String name, String price, Integer order)
+	private void addPackage(int id, String name, String price, int order)
 	{
 		packagesForSale.add(new PackageModel(id, name, price, order));
 	}
@@ -75,22 +75,6 @@ public class PackageManager
 	public List<PackageModel> getPackagesForSale()
 	{
 		return packagesForSale;
-	}
-	
-	/**
-	 * Return a package from its order ID
-	 */
-	public PackageModel getPackageByOrderId(int packageOrderId)
-	{
-		for(PackageModel packageModel : packagesForSale)
-		{
-			if(packageModel.getOrder() == packageOrderId)
-			{
-				return packageModel;
-			}
-		}
-		
-		return null;
 	}
 	
 	/**
