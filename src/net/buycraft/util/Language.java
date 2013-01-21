@@ -50,26 +50,26 @@ public class Language
 		Boolean toSave = false;
 		
 		defaultProperties.put("mainCommand", "/buy");
-		defaultProperties.put("chatEnabled", "Your chat is now enabled");
-		defaultProperties.put("chatAlreadyEnabled", "Your chat is already enabled");
+		defaultProperties.put("chatEnabled", "Your chat is now enabled.");
+		defaultProperties.put("chatAlreadyEnabled", "Your chat is already enabled.");
 		defaultProperties.put("viewAvailablePackagesHelp", "View available packages for sale");
 		defaultProperties.put("navigateThroughPackagesHelp", "Navigate through package pages");
 		defaultProperties.put("purchaseSpecificPackageHelp", "Purchase a specific package");
-		defaultProperties.put("commandsExecuted", "Your purchased packages have been credited");
-		defaultProperties.put("pleaseVisit", "Please click the link below to continue with the purchase");
-		defaultProperties.put("turnChatBackOn", "Type /ec to turn your chat back on");
-		defaultProperties.put("packageNotFound", "Package not found");
-		defaultProperties.put("noPackagesForSale", "We currently do not have any packages for sale");
+		defaultProperties.put("commandsExecuted", "Your purchased packages have been credited.");
+		defaultProperties.put("pleaseVisit", "Please click the link below to continue with the purchase:");
+		defaultProperties.put("turnChatBackOn", "Type /ec to turn your chat back on.");
+		defaultProperties.put("packageNotFound", "Package not found.");
+		defaultProperties.put("noPackagesForSale", "We currently do not have any packages for sale.");
 		defaultProperties.put("toPurchase", "To purchase a package, please type");
 		defaultProperties.put("howToNavigate", "Browse through our packages by using");
 		defaultProperties.put("packageId", "ID");
 		defaultProperties.put("packageName", "Name");
 		defaultProperties.put("packagePrice", "Price");
-		defaultProperties.put("pageNotFound", "Page not found");
-		defaultProperties.put("packageCacheReloaded", "Package cache successfully reloaded");
-		defaultProperties.put("forceCheckPerformed", "Force check successfully performed");
+		defaultProperties.put("pageNotFound", "Page not found.");
+		defaultProperties.put("packageCacheReloaded", "Package cache successfully reloaded.");
+		defaultProperties.put("forceCheckPerformed", "Force check successfully performed.");
 		defaultProperties.put("secretKeySet", "Secret key successfully updated. Reloading server...");
-		defaultProperties.put("enterValidSecret", "Please enter a valid API secret");
+		defaultProperties.put("enterValidSecret", "Please enter a valid API secret.");
 		
 		for (Entry<String, String> entry : defaultProperties.entrySet()) 
 		{

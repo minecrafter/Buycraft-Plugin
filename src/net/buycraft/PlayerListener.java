@@ -11,24 +11,31 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class PlayerListener implements Listener 
 {
+	private Plugin plugin;
+	
+	public PlayerListener()
+	{
+		this.plugin = Plugin.getInstance();
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		Plugin.getInstance().getChatManager().enableChat(event.getPlayer());
+		plugin.getChatManager().enableChat(event.getPlayer());
 	}	
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event)
 	{
-		if(Plugin.getInstance().getChatManager().isDisabled(event.getPlayer()))
+		if(plugin.getChatManager().isDisabled(event.getPlayer()))
 		{
 			event.setCancelled(true);
 		}
 		else
 		{
-			for(String playerName: Plugin.getInstance().getChatManager().getDisabledChatList())
+			for(String playerName: plugin.getChatManager().getDisabledChatList())
 			{
-				Player player = Plugin.getInstance().getServer().getPlayer(playerName);
+				Player player = plugin.getServer().getPlayer(playerName);
 				
 				event.getRecipients().remove(player);
 			}

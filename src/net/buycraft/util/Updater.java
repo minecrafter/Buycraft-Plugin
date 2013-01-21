@@ -15,9 +15,16 @@ import net.buycraft.Plugin;
 
 public class Updater 
 {	
-	public static void performUpdate(String latestDownloadUrl)
+	private Plugin plugin;
+	
+	public Updater()
 	{
-		Plugin.getInstance().getLogger().info("Please wait, downloading latest version...");
+		this.plugin = Plugin.getInstance();
+	}
+	
+	public void download(String latestDownloadUrl)
+	{
+		plugin.getLogger().info("Please wait, downloading latest version...");
 		
 		loadAllClasses();
 		
@@ -43,19 +50,19 @@ public class Updater
 	        outputStream.close();
 	        inputStream.close();
 	        
-	        Plugin.getInstance().getLogger().info("Installed latest version, please restart to apply changes.");
+	        plugin.getLogger().info("Installed latest version, please restart to apply changes.");
 		} 
 		catch (IOException e) 
 		{
-			Plugin.getInstance().getLogger().info("Failed to download new version. " + e.getLocalizedMessage());
+			plugin.getLogger().info("Failed to download new version. " + e.getLocalizedMessage());
 		}
 	}
 	
-    private static void loadAllClasses() 
+    private void loadAllClasses() 
     {
         try
         {
-            JarFile jar = new JarFile(Plugin.getInstance().getJarFile());
+            JarFile jar = new JarFile(plugin.getJarFile());
             
             Enumeration<JarEntry> enumeration = jar.entries();
 
@@ -69,7 +76,7 @@ public class Updater
                     String path = name.replaceAll("/", ".");
                     path = path.substring(0, path.length() - ".class".length());
 
-                    Plugin.getInstance().getClass().getClassLoader().loadClass(path);
+                    plugin.getClass().getClassLoader().loadClass(path);
                 }
             }
             

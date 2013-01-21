@@ -1,16 +1,16 @@
 package net.buycraft.packages;
 
 /**
- * Represents a package data structure
+ * Package modal
  */
-public class PackageModel 
+public class PackageModal 
 {
 	private int id;
 	private String name;
 	private String price;
 	private int order;
 	
-	public PackageModel(int id, String name, String price, int order)
+	public PackageModal(int id, String name, String price, int order)
 	{
 		this.id = id;
 		this.name = name;
@@ -33,7 +33,7 @@ public class PackageModel
 		return price;
 	}
 	
-	public Integer getOrder()
+	public int getOrder()
 	{
 		return order;
 	}

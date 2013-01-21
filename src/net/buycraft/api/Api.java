@@ -19,14 +19,17 @@ import net.buycraft.util.Updater;
 
 public class Api 
 {
+	private Plugin plugin;
+	
 	private String apiUrl;
 	private String apiKey;
 	
 	public Api()
 	{
-		this.apiKey = Plugin.getInstance().getSettings().getString("secret");
+		this.plugin = Plugin.getInstance();
+		this.apiKey = plugin.getSettings().getString("secret");
 		
-		if(Plugin.getInstance().getSettings().getBoolean("https"))
+		if(plugin.getSettings().getBoolean("https"))
 		{
 			this.apiUrl = "https://api.buycraft.net/v3";
 		}
@@ -52,21 +55,22 @@ public class Api
 				{
 					JSONObject payload = apiResponse.getJSONObject("payload");
 					
-					Plugin.getInstance().setServerID(payload.getInt("serverId"));
-					Plugin.getInstance().setServerCurrency(payload.getString("serverCurrency"));
-					Plugin.getInstance().setServerStore(payload.getString("serverStore"));
+					plugin.setServerID(payload.getInt("serverId"));
+					plugin.setServerCurrency(payload.getString("serverCurrency"));
+					plugin.setServerStore(payload.getString("serverStore"));
 					
-					if(payload.getDouble("latestVersion") > Double.valueOf(Plugin.getInstance().getVersion()))
+					if(payload.getDouble("latestVersion") > Double.valueOf(plugin.getVersion()))
 					{
 						String downloadUrl = payload.getString("latestDownload");
 
-						if(Plugin.getInstance().getSettings().getBoolean("autoUpdate"))
+						if(plugin.getSettings().getBoolean("autoUpdate"))
 						{
-							Updater.performUpdate(downloadUrl);
+							Updater updater = new Updater();
+							updater.download(downloadUrl);
 						}
 						else
 						{
-							Plugin.getInstance().getLogger().info("Ignoring update due to auto update disabled.");
+							plugin.getLogger().info("Ignoring update due to auto update disabled.");
 						}
 					}
 					
@@ -74,7 +78,7 @@ public class Api
 				}
 				else if(apiResponse.getInt("code") == 101)
 				{
-					Plugin.getInstance().getLogger().severe("Could not find an account with the specified secret key! Please follow the installation tutorial or read the README.txt file for more information.");
+					plugin.getLogger().severe("Could not find an account with the specified secret key! Please follow the installation tutorial or read the README.txt file for more information.");
 					
 					return false;
 				}
@@ -82,14 +86,14 @@ public class Api
 		} 
 		catch(JSONException e)
 		{
-			Plugin.getInstance().getLogger().severe("JSON parsing error.");
+			plugin.getLogger().severe("JSON parsing error.");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 		
-		Plugin.getInstance().getLogger().severe("Unexpected error occured in the authentication process.");
+		plugin.getLogger().severe("Unexpected error occured in the authentication process.");
 		
 		return false;
 	}
@@ -133,7 +137,7 @@ public class Api
 		}
 		
 		apiCallParams.put("secret", apiKey);
-		apiCallParams.put("version", String.valueOf(Plugin.getInstance().getVersion()));
+		apiCallParams.put("version", String.valueOf(plugin.getVersion()));
 		
 		String url = apiUrl + generateUrlQueryString(apiCallParams);
 		
@@ -154,7 +158,7 @@ public class Api
 			} 
 			catch (JSONException e) 
 			{
-				Plugin.getInstance().getLogger().severe("JSON parsing error.");
+				plugin.getLogger().severe("JSON parsing error.");
 			}
 		}
 		
@@ -190,19 +194,19 @@ public class Api
 		}
 		catch(ConnectException e)
 		{
-			Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
+			plugin.getLogger().severe("HTTP request failed due to connection error.");
 		}
 		catch(SocketTimeoutException e)
 		{
-			Plugin.getInstance().getLogger().severe("HTTP request failed due to timeout error.");
+			plugin.getLogger().severe("HTTP request failed due to timeout error.");
 		}
 		catch(FileNotFoundException e)
 		{
-			Plugin.getInstance().getLogger().severe("HTTP request failed due to file not found.");
+			plugin.getLogger().severe("HTTP request failed due to file not found.");
 		}
 		catch(UnknownHostException e)
 		{
-			Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
+			plugin.getLogger().severe("HTTP request failed due to unknown host.");
 		}
 		catch (Exception e) 
 		{

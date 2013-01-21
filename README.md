@@ -46,6 +46,14 @@ Modifying the source code is allowed. You are not allowed to use the source code
 Use of api.buycraft.net is only for this plugin and integrating Buycraft on to your own website. Any other use is not allowed.
 
 ---- CHANGE LOG ------------------------------------------------------------
+	
+	Version 5.1
+	
+		- Threading improvements
+	
+	Version 5.0
+	
+		- Fix for the "Package not found" bug.
 
 	Version 4.9
 	

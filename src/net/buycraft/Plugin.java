@@ -9,8 +9,9 @@ import net.buycraft.api.Api;
 import net.buycraft.commands.BuyCommand;
 import net.buycraft.commands.BuycraftCommand;
 import net.buycraft.commands.EnableChatCommand;
-import net.buycraft.packages.PackageChecker;
 import net.buycraft.packages.PackageManager;
+import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.ReloadPackagesTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
@@ -19,7 +20,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 public class Plugin extends JavaPlugin
 {
@@ -37,11 +37,7 @@ public class Plugin extends JavaPlugin
 	private String serverStore;
 	
 	private PackageManager packageManager;
-	private PackageChecker packageChecker;
-	
 	private ChatManager chatManager;
-	
-	private BukkitTask packagesCheckerThreadId;
 	
 	private Boolean started;
 	
@@ -68,17 +64,14 @@ public class Plugin extends JavaPlugin
 		api = new Api();
 		
 		packageManager = new PackageManager();
-		packageChecker = new PackageChecker();
-		
 		chatManager = new ChatManager();
 
 		if(api.infoAction())
 		{
 			getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 			
-			packageManager.loadPackages();
-			
-			packagesCheckerThreadId = getServer().getScheduler().runTaskTimerAsynchronously(this, packageChecker, 6000L, 6000L);
+			getServer().getScheduler().runTaskAsynchronously(this, new ReloadPackagesTask());
+			getServer().getScheduler().runTaskTimerAsynchronously(this, new PackageCheckerTask(), 6000L, 6000L);
 			
 			started = true;
 			
@@ -92,12 +85,6 @@ public class Plugin extends JavaPlugin
 	
 	public void onDisable()
 	{
-		if(packagesCheckerThreadId != null)
-		{
-			packagesCheckerThreadId.cancel();
-		}
-		
-		
 		getLogger().info("Plugin has been disabled.");
 	}
 	
@@ -123,15 +110,15 @@ public class Plugin extends JavaPlugin
 			case 2:
 			case 3:
 			case 4:
-				status = BuyCommand.process(commandSender, args);
+				status = new BuyCommand().process(commandSender, args);
 			break;
 			
 			case 5:
-				status = EnableChatCommand.process(commandSender, args);
+				status = new EnableChatCommand().process(commandSender, args);
 			break;
 			
 			case 6:
-				status = BuycraftCommand.process(commandSender, args);
+				status = new BuycraftCommand().process(commandSender, args);
 			break;
 		}
 		
@@ -246,11 +233,6 @@ public class Plugin extends JavaPlugin
 	public String getServerStore()
 	{
 		return serverStore;
-	}
-	
-	public PackageChecker getPackageChecker()
-	{
-		return packageChecker;
 	}
 	
 	public PackageManager getPackageManager()

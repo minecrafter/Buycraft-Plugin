@@ -3,7 +3,8 @@ package net.buycraft.commands;
 import java.util.List;
 
 import net.buycraft.Plugin;
-import net.buycraft.packages.PackageModel;
+import net.buycraft.packages.PackageModal;
+import net.buycraft.tasks.VisitLinkTask;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
@@ -12,23 +13,30 @@ import org.bukkit.entity.Player;
 
 public class BuyCommand
 {
-	public static Boolean process(CommandSender commandSender, String[] args)
+	private Plugin plugin;
+	
+	public BuyCommand()
+	{
+		this.plugin = Plugin.getInstance();
+	}
+	
+	public Boolean process(CommandSender commandSender, String[] args)
 	{
 		if(commandSender instanceof Player == false)
 		{
-			Plugin.getInstance().getLogger().info("You cannot execute this command from inside the console.");
+			plugin.getLogger().info("You cannot execute this command from inside the console.");
 			
 			return true;
 		}
 		
-		if(Plugin.getInstance().getSettings().getBoolean("disableBuyCommand"))
+		if(plugin.getSettings().getBoolean("disableBuyCommand"))
 		{
 			commandSender.sendMessage(ChatColor.RED + "Command has been disabled, please use our webstore instead.");
 			
 			return true;
 		}
 		
-		if(!Plugin.getInstance().requireStarted(commandSender)) return true;
+		if(!plugin.requireStarted(commandSender)) return true;
 		
 		String pageToView = "1";
 		
@@ -45,9 +53,9 @@ public class BuyCommand
 					int packageID = Integer.valueOf(args[0]);
 					
 					boolean packageExists = false;
-					PackageModel packageModel = null;
+					PackageModal packageModel = null;
 					
-					for(PackageModel row : Plugin.getInstance().getPackageManager().getPackagesForSale())
+					for(PackageModal row : plugin.getPackageManager().getPackagesForSale())
 					{
 						if(row.getOrder() == packageID)
 						{
@@ -60,41 +68,22 @@ public class BuyCommand
 				
 					if(packageExists == true)
 					{
-						String shortUrlLink = "http://is.gd/create.php?format=simple&url=" + Plugin.getInstance().getServerStore() + "/checkout/packages?action=add%26package=" + packageModel.getId() + "%26ign=" + commandSender.getName();
+						String buyNowLink = plugin.getServerStore() + "/checkout/packages?action=add%26package=" + packageModel.getId() + "%26ign=" + commandSender.getName();
 						
-						if(Plugin.getInstance().getSettings().getBoolean("directPay"))
+						if(plugin.getSettings().getBoolean("directPay"))
 						{
-							String directGateway = Plugin.getInstance().getSettings().getString("directPayGateway");
+							String directGateway = plugin.getSettings().getString("directPayGateway");
 							
-							shortUrlLink = "http://is.gd/create.php?format=simple&url=" + Plugin.getInstance().getServerStore() + "/checkout/pay?direct=true%26package=" + packageModel.getId() + "%26agreement=true%26gateway=" + directGateway + "%26ign=" + commandSender.getName();
+							buyNowLink = plugin.getServerStore() + "/checkout/pay?direct=true%26package=" + packageModel.getId() + "%26agreement=true%26gateway=" + directGateway + "%26ign=" + commandSender.getName();
 						}
-
-						String shortenedUrl =  Plugin.getInstance().getApi().HttpRequest(shortUrlLink);
 						
-						if(shortenedUrl != null)
-						{
-							commandSender.sendMessage(Chat.header());
-							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("pleaseVisit") + ":");
-							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + shortenedUrl);
-							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("turnChatBackOn"));
-							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.footer());
-							
-							Plugin.getInstance().getChatManager().disableChat((Player) commandSender);
-						}
-						else
-						{
-							 Plugin.getInstance().getLogger().severe("Could not generate a shortened URL.");
-						}
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, buyNowLink));
 					}
 					else
 					{
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("packageNotFound"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("packageNotFound"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 					}	
@@ -112,13 +101,13 @@ public class BuyCommand
 		{
 			Integer pageNumber = Integer.parseInt(pageToView);
 			
-			List<PackageModel> packages = Plugin.getInstance().getPackageManager().getPackagesForSale();
+			List<PackageModal> packages = plugin.getPackageManager().getPackagesForSale();
 			
 			if(packages.size() == 0)
 			{
 				commandSender.sendMessage(Chat.header());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("noPackagesForSale"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("noPackagesForSale"));
 				commandSender.sendMessage(Chat.seperator());
 				commandSender.sendMessage(Chat.footer());
 			}
@@ -132,32 +121,32 @@ public class BuyCommand
 				if(finishPoint > packages.size() || finishPoint < 3) finishPoint = packages.size();
 				if(startingPoint > packages.size() || startingPoint < 0) startingPoint = packages.size();
 				
-				List<PackageModel> packagesToDisplay = packages.subList(startingPoint, finishPoint);
+				List<PackageModal> packagesToDisplay = packages.subList(startingPoint, finishPoint);
 				
 				if(packagesToDisplay.size() > 0)
 				{
-					Plugin.getInstance().getChatManager().disableChat((Player) commandSender);
+					plugin.getChatManager().disableChat((Player) commandSender);
 					
 					commandSender.sendMessage(Chat.header());
 					commandSender.sendMessage(Chat.seperator());
-					commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("toPurchase") + " " + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " <ID>");
+					commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("toPurchase") + " " + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " <ID>");
 					
 					if(pageCount > 1) 
 					{
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("howToNavigate") + " " + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " page <1-" + pageCount  + ">");
+						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("howToNavigate") + " " + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " page <1-" + pageCount  + ">");
 					}
 					
 					commandSender.sendMessage(Chat.seperator());
 					
-					for(PackageModel row : packagesToDisplay)
+					for(PackageModal row : packagesToDisplay)
 					{
-						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + Plugin.getInstance().getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + row.getOrder());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + Plugin.getInstance().getLanguage().getString("packageName") + ": " + ChatColor.LIGHT_PURPLE + row.getName());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + Plugin.getInstance().getLanguage().getString("packagePrice") + ": " + ChatColor.LIGHT_PURPLE + row.getPrice() + ' ' + Plugin.getInstance().getServerCurrency());
+						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + row.getOrder());
+						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageName") + ": " + ChatColor.LIGHT_PURPLE + row.getName());
+						commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packagePrice") + ": " + ChatColor.LIGHT_PURPLE + row.getPrice() + ' ' + plugin.getServerCurrency());
 						commandSender.sendMessage(Chat.seperator());
 					}
 					
-					commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("turnChatBackOn"));
+					commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("turnChatBackOn"));
 					commandSender.sendMessage(Chat.seperator());
 					commandSender.sendMessage(Chat.footer());
 				}
@@ -165,7 +154,7 @@ public class BuyCommand
 				{
 					commandSender.sendMessage(Chat.header());
 					commandSender.sendMessage(Chat.seperator());
-					commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("pageNotFound"));
+					commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("pageNotFound"));
 					commandSender.sendMessage(Chat.seperator());
 					commandSender.sendMessage(Chat.footer());
 				}

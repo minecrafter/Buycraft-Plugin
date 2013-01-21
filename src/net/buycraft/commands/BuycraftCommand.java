@@ -1,6 +1,8 @@
 package net.buycraft.commands;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.ReloadPackagesTask;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
@@ -9,7 +11,14 @@ import org.bukkit.entity.Player;
 
 public class BuycraftCommand
 {
-	public static Boolean process(CommandSender commandSender, String[] args)
+	private Plugin plugin;
+	
+	public BuycraftCommand()
+	{
+		this.plugin = Plugin.getInstance();
+	}
+	
+	public Boolean process(CommandSender commandSender, String[] args)
 	{
 		if(args.length > 0)
 		{
@@ -19,15 +28,15 @@ public class BuycraftCommand
 				{
 					if(args.length == 2)
 					{
-						Plugin.getInstance().getSettings().setString("secret", args[1]);
+						plugin.getSettings().setString("secret", args[1]);
 						
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("secretKeySet"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("secretKeySet"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 						
-						Plugin.getInstance().getServer().reload();
+						plugin.getServer().reload();
 						
 						return true;
 					}
@@ -35,7 +44,7 @@ public class BuycraftCommand
 					{
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("enterValidSecret"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("enterValidSecret"));
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 						
@@ -43,30 +52,36 @@ public class BuycraftCommand
 					}
 				}
 				
-				if(Plugin.getInstance().requireStarted(commandSender))
+				if(plugin.requireStarted(commandSender))
 				{
 					if(args[0].equalsIgnoreCase("reload"))
 					{
-						Plugin.getInstance().getPackageManager().loadPackages();
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new ReloadPackagesTask());
 						
-						commandSender.sendMessage(Chat.header());
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("packageCacheReloaded"));
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.footer());
+						if(commandSender instanceof Player)
+						{
+							commandSender.sendMessage(Chat.header());
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("packageCacheReloaded"));
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.footer());
+						}
 				
 						return true;
 					}
 					
 					if(args[0].equalsIgnoreCase("forcecheck"))
 					{
-						Plugin.getInstance().getPackageChecker().process();
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new PackageCheckerTask());
 						
-						commandSender.sendMessage(Chat.header());
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("forceCheckPerformed"));
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.footer());
+						if(commandSender instanceof Player)
+						{
+							commandSender.sendMessage(Chat.header());
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("forceCheckPerformed"));
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.footer());
+						}
 				
 						return true;
 					}
@@ -85,18 +100,19 @@ public class BuycraftCommand
 		}
 		else
 		{
-			if(Plugin.getInstance().requireStarted(commandSender))
+			if(plugin.requireStarted(commandSender))
 			{
 				commandSender.sendMessage(Chat.header());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("viewAvailablePackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("navigateThroughPackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + Plugin.getInstance().getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " " + Plugin.getInstance().getLanguage().getString("purchaseSpecificPackageHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + ChatColor.GREEN + " " + plugin.getLanguage().getString("viewAvailablePackagesHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " " + plugin.getLanguage().getString("navigateThroughPackagesHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " " + plugin.getLanguage().getString("purchaseSpecificPackageHelp"));
 				commandSender.sendMessage(Chat.seperator());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server ID: " + ChatColor.GREEN + String.valueOf(Plugin.getInstance().getServerID()));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Plugin version: " + ChatColor.GREEN + String.valueOf(Plugin.getInstance().getVersion()));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Website: " + ChatColor.GREEN + "https://buycraft.net");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server ID: " + ChatColor.GREEN + String.valueOf(plugin.getServerID()));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server URL: " + ChatColor.GREEN + String.valueOf(plugin.getServerStore()));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Version: " + ChatColor.GREEN + String.valueOf(plugin.getVersion()));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Website: " + ChatColor.GREEN + "http://buycraft.net");
 				commandSender.sendMessage(Chat.footer());
 			}
 			
