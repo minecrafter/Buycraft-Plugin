@@ -24,7 +24,7 @@ public class ReloadPackagesTask extends Thread
 		{
 			JSONObject apiResponse = plugin.getApi().packagesAction();
 			
-			if(apiResponse != null && apiResponse.isNull("payload") == false)
+			if(apiResponse != null && apiResponse.getInt("code") == 0)
 			{
 				JSONArray packages = apiResponse.getJSONArray("payload");
 				
@@ -42,7 +42,7 @@ public class ReloadPackagesTask extends Thread
 			}
 			else
 			{
-				plugin.getLogger().severe("Failed to load packages due to null payload.");
+				plugin.getLogger().severe("No response/invalid key during package reload.");
 			}
 		}
 		catch(JSONException e)

@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.buycraft.Plugin;
-import net.buycraft.util.Updater;
 
 public class Api 
 {
@@ -38,64 +37,14 @@ public class Api
 			this.apiUrl = "http://api.buycraft.net/v3";
 		}
 	}
-
-	public Boolean infoAction()
+	
+	public JSONObject authenticateAction()
 	{
-		try 
-		{
-			HashMap<String, String> apiCall = new HashMap<String, String>();
-			
-			apiCall.put("action", "info");
-						
-			JSONObject apiResponse = call(apiCall);
+		HashMap<String, String> apiCallParams = new HashMap<String, String>();
 		
-			if(apiResponse != null)
-			{
-				if(apiResponse.getInt("code") == 0)
-				{
-					JSONObject payload = apiResponse.getJSONObject("payload");
-					
-					plugin.setServerID(payload.getInt("serverId"));
-					plugin.setServerCurrency(payload.getString("serverCurrency"));
-					plugin.setServerStore(payload.getString("serverStore"));
-					
-					if(payload.getDouble("latestVersion") > Double.valueOf(plugin.getVersion()))
-					{
-						String downloadUrl = payload.getString("latestDownload");
-
-						if(plugin.getSettings().getBoolean("autoUpdate"))
-						{
-							Updater updater = new Updater();
-							updater.download(downloadUrl);
-						}
-						else
-						{
-							plugin.getLogger().info("Ignoring update due to auto update disabled.");
-						}
-					}
-					
-					return true;
-				}
-				else if(apiResponse.getInt("code") == 101)
-				{
-					plugin.getLogger().severe("Could not find an account with the specified secret key! Please follow the installation tutorial or read the README.txt file for more information.");
-					
-					return false;
-				}
-			}
-		} 
-		catch(JSONException e)
-		{
-			plugin.getLogger().severe("JSON parsing error.");
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
+		apiCallParams.put("action", "info");
 		
-		plugin.getLogger().severe("Unexpected error occured in the authentication process.");
-		
-		return false;
+		return call(apiCallParams);
 	}
 	
 	public JSONObject packagesAction()
@@ -189,7 +138,7 @@ public class Api
 			}
 			
 			in.close();
-
+			
 			return content;
 		}
 		catch(ConnectException e)
@@ -236,5 +185,10 @@ public class Api
         }
 
         return sb.toString();  
+	}
+	
+	public void setApiKey(String value)
+	{
+		apiKey = value;
 	}
 }

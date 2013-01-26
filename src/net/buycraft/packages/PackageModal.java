@@ -1,8 +1,5 @@
 package net.buycraft.packages;
 
-/**
- * Package modal
- */
 public class PackageModal 
 {
 	private int id;

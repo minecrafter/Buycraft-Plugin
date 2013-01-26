@@ -10,8 +10,8 @@ import net.buycraft.commands.BuyCommand;
 import net.buycraft.commands.BuycraftCommand;
 import net.buycraft.commands.EnableChatCommand;
 import net.buycraft.packages.PackageManager;
+import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.PackageCheckerTask;
-import net.buycraft.tasks.ReloadPackagesTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
@@ -38,8 +38,9 @@ public class Plugin extends JavaPlugin
 	
 	private PackageManager packageManager;
 	private ChatManager chatManager;
-	
-	private Boolean started;
+
+	private Boolean authenticated = false;
+	private Integer authenticatedCode = 1;
 	
 	private String folderPath;
 	
@@ -66,21 +67,10 @@ public class Plugin extends JavaPlugin
 		packageManager = new PackageManager();
 		chatManager = new ChatManager();
 
-		if(api.infoAction())
-		{
-			getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-			
-			getServer().getScheduler().runTaskAsynchronously(this, new ReloadPackagesTask());
-			getServer().getScheduler().runTaskTimerAsynchronously(this, new PackageCheckerTask(), 6000L, 6000L);
-			
-			started = true;
-			
-			getLogger().info("Plugin has been successfully enabled.");
-		}
-		else
-		{
-			started = false;
-		}
+		getServer().getScheduler().runTaskAsynchronously(this, new AuthenticateTask());
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new PackageCheckerTask(false), 6000L, 6000L);
+		
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 	
 	public void onDisable()
@@ -167,25 +157,29 @@ public class Plugin extends JavaPlugin
 		}
 	}
 	
-	public Boolean requireStarted(CommandSender commandSender)
+	public Boolean isAuthenticated(CommandSender commandSender)
 	{
-		if(!started)
+		if(!authenticated)
 		{
-			commandSender.sendMessage(Chat.header());
-			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft has failed to startup.");
-			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is normally to do with an invalid server secret,");
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the server secret into the settings.conf");
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
-			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
-			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If the previous advice failed, please contact");
-			commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "customer support via support@buycraft.net.");
-			commandSender.sendMessage(Chat.seperator());
-			commandSender.sendMessage(Chat.footer());
+			if(commandSender != null)
+			{
+				commandSender.sendMessage(Chat.header());
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft has failed to startup.");
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is normally to do with an invalid Secret key,");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the Secret key into the settings.conf");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If the previous advice failed, please contact");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "customer support via support@buycraft.net and");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "reference the code " + authenticatedCode + ".");
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.footer());
+			}
 			
 			return false;
 		}
@@ -195,9 +189,19 @@ public class Plugin extends JavaPlugin
 		}
 	}
 	
-	public void disablePlugin()
+	public void setAuthenticated(Boolean value)
 	{
-		getServer().getPluginManager().disablePlugin(this);
+		authenticated = value;
+	}
+	
+	public void setAuthenticatedCode(Integer value)
+	{
+		authenticatedCode = value;
+	}
+	
+	public Integer getAuthenticatedCode()
+	{
+		return authenticatedCode;
 	}
 	
 	public static Plugin getInstance()

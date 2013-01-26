@@ -16,76 +16,86 @@ public class PackageCheckerTask extends Thread
 {
 	private Plugin plugin;
 	
-	public PackageCheckerTask()
+	private Boolean manualExecution;
+	
+	public PackageCheckerTask(Boolean manualExecution)
 	{
 		this.plugin = Plugin.getInstance();
+		this.manualExecution = manualExecution;
 	}
 	
 	public void run()
 	{
 		try
 		{
-			if(plugin.getServer().getOnlinePlayers().length > 0)
+			if(plugin.isAuthenticated(null))
 			{
-				JSONObject apiResponse = plugin.getApi().commandsGetAction();
-	            
-				if(apiResponse != null)
+				if(plugin.getServer().getOnlinePlayers().length > 0 || manualExecution)
 				{
-					JSONObject apiPayload = apiResponse.getJSONObject("payload");
-					JSONArray commandsPayload = apiPayload.getJSONArray("commands");
-					
-					ArrayList<String> executedCommands = new ArrayList<String>();
-					    
-				    if(commandsPayload.length() > 0)
+					JSONObject apiResponse = plugin.getApi().commandsGetAction();
+		            
+					if(apiResponse != null && apiResponse.getInt("code") == 0)
 					{
-						for (int i = 0; i < commandsPayload.length(); i++) 
+						JSONObject apiPayload = apiResponse.getJSONObject("payload");
+						JSONArray commandsPayload = apiPayload.getJSONArray("commands");
+						
+						ArrayList<String> executedCommands = new ArrayList<String>();
+						    
+					    if(commandsPayload.length() > 0)
 						{
-							JSONObject row = commandsPayload.getJSONObject(i);
-							
-							String username = row.getString("ign");
-							Boolean requireOnline = row.getBoolean("requireOnline");
-							JSONArray commands = row.getJSONArray("commands");
-							
-							Player currentPlayer = plugin.getServer().getPlayer(username);
-	
-							if(currentPlayer != null || requireOnline == false)
+							for (int i = 0; i < commandsPayload.length(); i++) 
 							{
-								plugin.getLogger().info("Executing command(s) on behalf of user '" + username + "'.");
+								JSONObject row = commandsPayload.getJSONObject(i);
 								
-								for (int c = 0; c < commands.length(); ++c) 
-								{
-								    executeCommand(commands.getString(c), username);
-								}
+								String username = row.getString("ign");
+								Boolean requireOnline = row.getBoolean("requireOnline");
+								JSONArray commands = row.getJSONArray("commands");
 								
-								if(executedCommands.contains(username) == false)
+								Player currentPlayer = plugin.getServer().getPlayer(username);
+		
+								if(currentPlayer != null || requireOnline == false)
 								{
-									executedCommands.add(username);
-								}
-								
-								if(currentPlayer != null)
-								{
-									currentPlayer.sendMessage(Chat.header());
-									currentPlayer.sendMessage(Chat.seperator());
-									currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"));
-									currentPlayer.sendMessage(Chat.seperator());
-									currentPlayer.sendMessage(Chat.footer());
+									plugin.getLogger().info("Executing command(s) on behalf of user '" + username + "'.");
+									
+									if(executedCommands.contains(username) == false)
+									{
+										executedCommands.add(username);
+									}
+									
+									for (int c = 0; c < commands.length(); ++c) 
+									{
+									    executeCommand(commands.getString(c), username);
+									}
+
+									if(currentPlayer != null)
+									{
+										currentPlayer.sendMessage(Chat.header());
+										currentPlayer.sendMessage(Chat.seperator());
+										currentPlayer.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"));
+										currentPlayer.sendMessage(Chat.seperator());
+										currentPlayer.sendMessage(Chat.footer());
+									}
 								}
 							}
 						}
+					    
+					    if(executedCommands.size() > 0)
+					    {
+					    	plugin.getApi().commandsDeleteAction(new JSONArray(executedCommands.toArray()).toString());
+					    }
+					    
+					    plugin.getLogger().info("Package checker successfully executed.");
 					}
-				    
-				    if(executedCommands.size() > 0)
-				    {
-				    	plugin.getApi().commandsDeleteAction(new JSONArray(executedCommands.toArray()).toString());
-				    }
+					else
+					{
+						plugin.getLogger().severe("No response/invalid key during package check.");
+					}
 				}
-				
-				plugin.getLogger().info("Package checker successfully executed.");
 			}
 		}
 		catch(JSONException e)
 		{
-			plugin.getLogger().severe("JSON Parsing error in package checker.");
+			plugin.getLogger().severe("JSON parsing error in package checker.");
 		}
 		catch(Exception e)
 		{

@@ -1,6 +1,7 @@
 package net.buycraft.commands;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.PackageCheckerTask;
 import net.buycraft.tasks.ReloadPackagesTask;
 import net.buycraft.util.Chat;
@@ -28,15 +29,21 @@ public class BuycraftCommand
 				{
 					if(args.length == 2)
 					{
-						plugin.getSettings().setString("secret", args[1]);
+						String secretKey = args[1];
 						
-						commandSender.sendMessage(Chat.header());
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("secretKeySet"));
-						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.footer());
+						if(commandSender instanceof Player)
+						{
+							commandSender.sendMessage(Chat.header());
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Server authenticated. Type /buycraft for confirmation.");
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.footer());
+						}
 						
-						plugin.getServer().reload();
+						plugin.getSettings().setString("secret", secretKey);
+						plugin.getApi().setApiKey(secretKey);
+						
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new AuthenticateTask());
 						
 						return true;
 					}
@@ -44,7 +51,7 @@ public class BuycraftCommand
 					{
 						commandSender.sendMessage(Chat.header());
 						commandSender.sendMessage(Chat.seperator());
-						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("enterValidSecret"));
+						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please enter a valid secret key.");
 						commandSender.sendMessage(Chat.seperator());
 						commandSender.sendMessage(Chat.footer());
 						
@@ -52,7 +59,7 @@ public class BuycraftCommand
 					}
 				}
 				
-				if(plugin.requireStarted(commandSender))
+				if(plugin.isAuthenticated(commandSender))
 				{
 					if(args[0].equalsIgnoreCase("reload"))
 					{
@@ -62,7 +69,7 @@ public class BuycraftCommand
 						{
 							commandSender.sendMessage(Chat.header());
 							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("packageCacheReloaded"));
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Package cache successfully reloaded.");
 							commandSender.sendMessage(Chat.seperator());
 							commandSender.sendMessage(Chat.footer());
 						}
@@ -72,13 +79,13 @@ public class BuycraftCommand
 					
 					if(args[0].equalsIgnoreCase("forcecheck"))
 					{
-						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new PackageCheckerTask());
+						plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new PackageCheckerTask(true));
 						
 						if(commandSender instanceof Player)
 						{
 							commandSender.sendMessage(Chat.header());
 							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("forceCheckPerformed"));
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Force check successfully executed.");
 							commandSender.sendMessage(Chat.seperator());
 							commandSender.sendMessage(Chat.footer());
 						}
@@ -100,14 +107,22 @@ public class BuycraftCommand
 		}
 		else
 		{
-			if(plugin.requireStarted(commandSender))
+			if(plugin.isAuthenticated(commandSender))
 			{
 				commandSender.sendMessage(Chat.header());
 				commandSender.sendMessage(Chat.seperator());
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + ChatColor.GREEN + " " + plugin.getLanguage().getString("viewAvailablePackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " " + plugin.getLanguage().getString("navigateThroughPackagesHelp"));
-				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " " + plugin.getLanguage().getString("purchaseSpecificPackageHelp"));
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + ":" + ChatColor.GREEN + " View available packages for sale");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " page <ID>:" + ChatColor.GREEN + " Navigate through package pages");
+				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " <ID>: " + ChatColor.GREEN + " Purchase a specific package");
 				commandSender.sendMessage(Chat.seperator());
+				
+				if(commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp())
+				{
+					commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft reload:" + ChatColor.GREEN + " Reload the package cache");
+					commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft forcecheck:" + ChatColor.GREEN + " Check for pending commands");
+					commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft secret <key>:" + ChatColor.GREEN + " Set the Secret key");
+				}
+				
 				commandSender.sendMessage(Chat.seperator());
 				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server ID: " + ChatColor.GREEN + String.valueOf(plugin.getServerID()));
 				commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "Server URL: " + ChatColor.GREEN + String.valueOf(plugin.getServerStore()));
