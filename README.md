@@ -50,6 +50,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.3
+	
+		- Improved how commands are executed.
+	
 	Version 5.2
 	
 		- Improved the "/buycraft secret" command in which it no longer restarts the server upon execution.
