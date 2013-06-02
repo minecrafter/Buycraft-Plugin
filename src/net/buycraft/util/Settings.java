@@ -56,6 +56,7 @@ public class Settings
 		defaultProperties.put("disableBuyCommand", "false");
 		defaultProperties.put("directPay", "false");
 		defaultProperties.put("directPayGateway", "paypal");
+		defaultProperties.put("buyCommand", "buy");
 		
 		for (Entry<String, String> entry : defaultProperties.entrySet()) 
 		{

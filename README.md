@@ -25,15 +25,7 @@ been disabled from logging in to your server to prevent administrator access in 
 
 ---- CHANGING THE /BUY COMMAND ---------------------------------------------
 
-If you are using a plugin which already uses the /buy command, follow the instructions below to fix this problem:
-	
-	1. Download a program such as WinRar which is capable of opening .jar files.
-	2. Open the Buycraft.jar file with the archive program you previously downloaded.
-	3. Inside Buycraft.jar, you will find a file called plugin.yml, open this file with a text editor.
-	4. Scroll down to line 7 of the plugin.yml file, and change "buy" to either "donate", "store", "shop", or "purchase".
-	5. Open language.conf  which is located in the Buycraft directory, and change the "mainCommand" variable to the command which you chose above.
-	6. Save all modified files and restart your server - job done!
-
+To change the /buy command please edit the setting in the configuration file.
 
 ---- PERMISSION NODES -----------------------------------------------------
 
@@ -49,6 +41,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 
 ---- CHANGE LOG ------------------------------------------------------------
+	
+	Version 5.4
+	
+		- Changing the /buy command is now a simple option in the settings file.
+		- Improved how commands are executed (Thread-safe, should stop some bugs with certain plugins).
 	
 	Version 5.3
 	

@@ -1,11 +1,9 @@
 name: Buycraft
 main: net.buycraft.Plugin
-version: 5.3
+version: 5.4
 author: Tebex Technologies Ltd
 website: http://buycraft.net
 commands:
-   buy:
-      usage: Type /buycraft for assistance
    ec:
       usage: /<command>
    buycraft:

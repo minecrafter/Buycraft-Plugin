@@ -1,11 +1,11 @@
 package net.buycraft.tasks;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import net.buycraft.Plugin;
 import net.buycraft.util.Chat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -57,14 +57,12 @@ public class PackageCheckerTask extends Thread
 			
 									if(currentPlayer != null || requireOnline == false)
 									{
-										plugin.getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");
-										
 										if(executedCommands.contains(username) == false)
 										{
 											executedCommands.add(username);
 										}
 										
-										executeCommand(command, username);
+										Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new CommandExecuteTask(command, username), 60L);
 									}
 								}
 							}
@@ -105,39 +103,6 @@ public class PackageCheckerTask extends Thread
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-	}
-	
-	private void executeCommand(String command, String username)
-	{
-		command = command.replace("{name}", username);
-		command = command.replace("(name)", username);
-		command = command.replace("{player}", username);
-		command = command.replace("(player)", username);
-		command = command.replace("{username}", username);
-		command = command.replace("(username)", username);
-		command = command.replace("<name>", username);
-		command = command.replace("<name>", username);
-		command = command.replace("<player>", username);
-		command = command.replace("<player>", username);
-		command = command.replace("<username>", username);
-		command = command.replace("<username>", username);
-		command = command.replace("[name]", username);
-		command = command.replace("[name]", username);
-		command = command.replace("[player]", username);
-		command = command.replace("[player]", username);
-		command = command.replace("[username]", username);
-		command = command.replace("[username]", username);
-		
-		if(command.startsWith("{mcmyadmin}"))
-		{
-			String newCommand = command.replace("{mcmyadmin}", "");
-			
-			Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
-		}
-		else
-		{
-			plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
 		}
 	}
 }

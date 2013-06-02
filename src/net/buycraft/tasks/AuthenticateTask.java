@@ -37,6 +37,11 @@ public class AuthenticateTask extends Thread
 					plugin.setServerStore(payload.getString("serverStore"));
 					plugin.setAuthenticated(true);
 					
+					if(payload.has("buyCommand"))
+					{
+						plugin.setBuyCommand(payload.getString("buyCommand"));
+					}
+					
 					if(payload.getDouble("latestVersion") > Double.valueOf(plugin.getVersion()))
 					{
 						String downloadUrl = payload.getString("latestDownload");

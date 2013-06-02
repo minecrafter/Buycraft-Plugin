@@ -8,7 +8,6 @@ import net.buycraft.tasks.VisitLinkTask;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BuyCommand
@@ -20,150 +19,151 @@ public class BuyCommand
 		this.plugin = Plugin.getInstance();
 	}
 	
-	public Boolean process(CommandSender commandSender, String[] args)
+	public Boolean process(Player commandSender, String[] args)
 	{
-		if(commandSender instanceof Player)
+		if(!plugin.getSettings().getBoolean("disableBuyCommand"))
 		{
-			if(!plugin.getSettings().getBoolean("disableBuyCommand"))
+			if(plugin.isAuthenticated(commandSender))
 			{
-				if(plugin.isAuthenticated(commandSender))
+				String pageToView = "1";
+				
+				if(args.length > 1)
 				{
-					String pageToView = "1";
-					
-					if(args.length > 0)
+					if(args[1].equalsIgnoreCase("page") && args.length == 3)
 					{
-						if(args[0].equalsIgnoreCase("page") && args.length == 2)
+						pageToView = args[2];
+					}
+					else
+					{
+						if(args.length == 2 && isNumber(args[1]))
 						{
-							pageToView = args[1];
-						}
-						else
-						{
-							if(args.length == 1 && isNumber(args[0]))
-							{
-								int packageID = Integer.valueOf(args[0]);
-								
-								boolean packageExists = false;
-								PackageModal packageModel = null;
-								
-								for(PackageModal row : plugin.getPackageManager().getPackagesForSale())
-								{
-									if(row.getOrder() == packageID)
-									{
-										packageExists = true;
-										packageModel = row;
-										
-										break;
-									}
-								}
+							int packageID = Integer.valueOf(args[1]);
 							
-								if(packageExists == true)
+							boolean packageExists = false;
+							PackageModal packageModel = null;
+							
+							for(PackageModal row : plugin.getPackageManager().getPackagesForSale())
+							{
+								if(row.getOrder() == packageID)
 								{
-									String buyNowLink = plugin.getServerStore() + "/checkout/packages?action=add&package=" + packageModel.getId() + "&ign=" + commandSender.getName();
+									packageExists = true;
+									packageModel = row;
 									
-									if(plugin.getSettings().getBoolean("directPay"))
-									{
-										String directGateway = plugin.getSettings().getString("directPayGateway");
-										
-										buyNowLink = plugin.getServerStore() + "/checkout/pay?direct=true&package=" + packageModel.getId() + "&agreement=true&gateway=" + directGateway + "&ign=" + commandSender.getName();
-									}
-									
-									plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, buyNowLink));
+									break;
 								}
-								else
-								{
-									commandSender.sendMessage(Chat.header());
-									commandSender.sendMessage(Chat.seperator());
-									commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("packageNotFound"));
-									commandSender.sendMessage(Chat.seperator());
-									commandSender.sendMessage(Chat.footer());
-								}	
+							}
+						
+							if(packageExists == true)
+							{
+								String buyNowLink = plugin.getServerStore() + "/checkout/packages?action=add&package=" + packageModel.getId() + "&ign=" + commandSender.getName();
 								
-								return true;
+								if(plugin.getSettings().getBoolean("directPay"))
+								{
+									String directGateway = plugin.getSettings().getString("directPayGateway");
+									
+									buyNowLink = plugin.getServerStore() + "/checkout/pay?direct=true&package=" + packageModel.getId() + "&agreement=true&gateway=" + directGateway + "&ign=" + commandSender.getName();
+								}
+								
+								plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, buyNowLink));
 							}
 							else
 							{
-								return false;
-							}
+								commandSender.sendMessage(Chat.header());
+								commandSender.sendMessage(Chat.seperator());
+								commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("packageNotFound"));
+								commandSender.sendMessage(Chat.seperator());
+								commandSender.sendMessage(Chat.footer());
+							}	
+							
+							return true;
 						}
-					}
-					
-					if(isNumber(pageToView) && pageToView.length() < 5)
-					{
-						Integer pageNumber = Integer.parseInt(pageToView);
-						
-						List<PackageModal> packages = plugin.getPackageManager().getPackagesForSale();
-						
-						if(packages.size() == 0)
+						else
 						{
 							commandSender.sendMessage(Chat.header());
 							commandSender.sendMessage(Chat.seperator());
-							commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("noPackagesForSale"));
+							commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("invalidBuyCommand"));
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.footer());
+						}
+					}
+				}
+				
+				if(isNumber(pageToView) && pageToView.length() < 5)
+				{
+					Integer pageNumber = Integer.parseInt(pageToView);
+					
+					List<PackageModal> packages = plugin.getPackageManager().getPackagesForSale();
+					
+					if(packages.size() == 0)
+					{
+						commandSender.sendMessage(Chat.header());
+						commandSender.sendMessage(Chat.seperator());
+						commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("noPackagesForSale"));
+						commandSender.sendMessage(Chat.seperator());
+						commandSender.sendMessage(Chat.footer());
+					}
+					else
+					{
+						int pageCount = (int) Math.ceil(packages.size() / 3.0);
+						
+						int startingPoint = -3 + (3 * pageNumber);
+						int finishPoint = 0 + (3 * pageNumber);
+						
+						if(finishPoint > packages.size() || finishPoint < 3) finishPoint = packages.size();
+						if(startingPoint > packages.size() || startingPoint < 0) startingPoint = packages.size();
+						
+						List<PackageModal> packagesToDisplay = packages.subList(startingPoint, finishPoint);
+						
+						if(packagesToDisplay.size() > 0)
+						{
+							plugin.getChatManager().disableChat((Player) commandSender);
+							
+							commandSender.sendMessage(Chat.header());
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("toPurchase") + " " + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " <ID>");
+							
+							if(pageCount > 1) 
+							{
+								commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("howToNavigate") + " " + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " page <1-" + pageCount  + ">");
+							}
+							
+							commandSender.sendMessage(Chat.seperator());
+							
+							for(PackageModal row : packagesToDisplay)
+							{
+								commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + row.getOrder());
+								commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageName") + ": " + ChatColor.LIGHT_PURPLE + row.getName());
+								commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packagePrice") + ": " + ChatColor.LIGHT_PURPLE + row.getPrice() + ' ' + plugin.getServerCurrency());
+								commandSender.sendMessage(Chat.seperator());
+							}
+							
+							commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("turnChatBackOn"));
 							commandSender.sendMessage(Chat.seperator());
 							commandSender.sendMessage(Chat.footer());
 						}
 						else
 						{
-							int pageCount = (int) Math.ceil(packages.size() / 3.0);
-							
-							int startingPoint = -3 + (3 * pageNumber);
-							int finishPoint = 0 + (3 * pageNumber);
-							
-							if(finishPoint > packages.size() || finishPoint < 3) finishPoint = packages.size();
-							if(startingPoint > packages.size() || startingPoint < 0) startingPoint = packages.size();
-							
-							List<PackageModal> packagesToDisplay = packages.subList(startingPoint, finishPoint);
-							
-							if(packagesToDisplay.size() > 0)
-							{
-								plugin.getChatManager().disableChat((Player) commandSender);
-								
-								commandSender.sendMessage(Chat.header());
-								commandSender.sendMessage(Chat.seperator());
-								commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("toPurchase") + " " + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " <ID>");
-								
-								if(pageCount > 1) 
-								{
-									commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("howToNavigate") + " " + ChatColor.LIGHT_PURPLE + plugin.getLanguage().getString("mainCommand") + " page <1-" + pageCount  + ">");
-								}
-								
-								commandSender.sendMessage(Chat.seperator());
-								
-								for(PackageModal row : packagesToDisplay)
-								{
-									commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + row.getOrder());
-									commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packageName") + ": " + ChatColor.LIGHT_PURPLE + row.getName());
-									commandSender.sendMessage(Chat.seperator() + ChatColor.YELLOW + plugin.getLanguage().getString("packagePrice") + ": " + ChatColor.LIGHT_PURPLE + row.getPrice() + ' ' + plugin.getServerCurrency());
-									commandSender.sendMessage(Chat.seperator());
-								}
-								
-								commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("turnChatBackOn"));
-								commandSender.sendMessage(Chat.seperator());
-								commandSender.sendMessage(Chat.footer());
-							}
-							else
-							{
-								commandSender.sendMessage(Chat.header());
-								commandSender.sendMessage(Chat.seperator());
-								commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("pageNotFound"));
-								commandSender.sendMessage(Chat.seperator());
-								commandSender.sendMessage(Chat.footer());
-							}
+							commandSender.sendMessage(Chat.header());
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("pageNotFound"));
+							commandSender.sendMessage(Chat.seperator());
+							commandSender.sendMessage(Chat.footer());
 						}
-						
-						return true;
 					}
 					
-					return false;
+					return true;
 				}
-			}
-			else
-			{
-				plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, plugin.getServerStore()));
+				
+				commandSender.sendMessage(Chat.header());
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("invalidBuyCommand"));
+				commandSender.sendMessage(Chat.seperator());
+				commandSender.sendMessage(Chat.footer());
 			}
 		}
 		else
 		{
-			plugin.getLogger().info("You cannot execute this command from inside the console.");
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, plugin.getServerStore()));
 		}
 		
 		return true;

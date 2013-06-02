@@ -49,8 +49,8 @@ public class Language
 	{
 		Boolean toSave = false;
 		
+		defaultProperties.put("invalidBuyCommand", "Please enter the correct command parameters.");
 		defaultProperties.put("urlError", "Failed to generate the shortened URL.");
-		defaultProperties.put("mainCommand", "/buy");
 		defaultProperties.put("chatEnabled", "Your chat is now enabled.");
 		defaultProperties.put("chatAlreadyEnabled", "Your chat is already enabled.");
 		defaultProperties.put("commandsExecuted", "Your purchased packages have been credited.");

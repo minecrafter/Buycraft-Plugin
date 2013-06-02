@@ -19,9 +19,13 @@ import net.buycraft.util.Settings;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Plugin extends JavaPlugin
+public class Plugin extends JavaPlugin implements Listener
 {
 	private static Plugin instance;
 	
@@ -44,11 +48,13 @@ public class Plugin extends JavaPlugin
 	
 	private String folderPath;
 	
+	private String buyCommand = "buy";
+	
 	public Plugin()
 	{
 		instance = this;
 	}
-	
+
 	public void onEnable()
 	{
 		folderPath = getDataFolder().getAbsolutePath();
@@ -66,10 +72,13 @@ public class Plugin extends JavaPlugin
 		
 		packageManager = new PackageManager();
 		chatManager = new ChatManager();
-
+		
+		buyCommand = getSettings().getString("buyCommand");
+		
 		getServer().getScheduler().runTaskAsynchronously(this, new AuthenticateTask());
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new PackageCheckerTask(false), 6000L, 6000L);
 		
+		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 	
@@ -81,39 +90,38 @@ public class Plugin extends JavaPlugin
 	public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args)
 	{	
 		HashMap<String, Integer> commandList = new HashMap<String, Integer>();
-		
-		commandList.put("buy", 0);
-		commandList.put("donate", 1);
-		commandList.put("purchase", 2);
-		commandList.put("store", 3);
-		commandList.put("shop", 4);
-		
-		commandList.put("ec", 5);
-		commandList.put("buycraft", 6);
+
+		commandList.put("ec", 0);
+		commandList.put("buycraft", 1);
 		
 		Boolean status = false;
 		
 		switch(commandList.get(command.getLabel().toLowerCase()))
-		{
+		{			
 			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-				status = new BuyCommand().process(commandSender, args);
-			break;
-			
-			case 5:
 				status = new EnableChatCommand().process(commandSender, args);
 			break;
 			
-			case 6:
+			case 1:
 				status = new BuycraftCommand().process(commandSender, args);
 			break;
 		}
 		
 		return status;
 	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+    public void preCommandListener(PlayerCommandPreprocessEvent event) 
+	{
+        String[] message = event.getMessage().split(" ");
+        
+        if(message[0].equalsIgnoreCase("/" + buyCommand))
+        {
+        	new BuyCommand().process(event.getPlayer(), message);
+        	
+        	event.setCancelled(true);
+        }
+    }
 	
 	private void checkDirectory()
 	{
@@ -224,6 +232,11 @@ public class Plugin extends JavaPlugin
 		serverCurrency = value;
 	}
 	
+	public void setBuyCommand(String value)
+	{
+		buyCommand = value;
+	}
+	
 	public void setServerStore(String value)
 	{
 		serverStore = value;
@@ -277,5 +290,10 @@ public class Plugin extends JavaPlugin
 	public String getFolderPath()
 	{
 		return folderPath;
+	}
+	
+	public String getBuyCommand()
+	{
+		return buyCommand;
 	}
 }
