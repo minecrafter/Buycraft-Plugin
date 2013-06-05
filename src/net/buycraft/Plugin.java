@@ -110,7 +110,7 @@ public class Plugin extends JavaPlugin implements Listener
 		return status;
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preCommandListener(PlayerCommandPreprocessEvent event) 
 	{
         String[] message = event.getMessage().split(" ");

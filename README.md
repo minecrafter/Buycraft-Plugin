@@ -42,6 +42,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.5
+
+		- Fixes an exception with the /buycraft command.
+
 	Version 5.4
 	
 		- Changing the /buy command is now a simple option in the settings file.
