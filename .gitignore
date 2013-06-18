@@ -3,3 +3,6 @@ bin/*
 .DS_STORE
 .classpath
 .project
+.idea/*
+out/*
+*.iml
