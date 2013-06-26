@@ -129,7 +129,7 @@ public class Api {
         return null;
     }
 
-    private String generateUrlQueryString(HashMap<String, String> map) {
+    private static String generateUrlQueryString(HashMap<String, String> map) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("?");
