@@ -112,7 +112,9 @@ public class Plugin extends JavaPlugin implements Listener {
         commandList.put("buycraft", 1);
 
         Boolean status = false;
-
+        if(!commandList.containsKey(command.getLabel().toLowerCase())) {
+            return false;
+        }
         switch (commandList.get(command.getLabel().toLowerCase())) {
             case 0:
                 status = new EnableChatCommand().process(commandSender, args);
