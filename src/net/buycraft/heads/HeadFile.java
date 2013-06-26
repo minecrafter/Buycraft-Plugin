@@ -1,0 +1,118 @@
+package net.buycraft.heads;
+
+import net.buycraft.Plugin;
+import net.buycraft.util.Settings;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.json.JSONException;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+public class HeadFile {
+
+    // config values
+    boolean enabled = false;
+    boolean currency = false;
+    int update = 5;
+
+    Plugin plugin;
+    private YamlConfiguration config = null;
+    private File file = null;
+
+    private List<HeadSign> signs = new ArrayList<HeadSign>();
+    HeadThread thread = null;
+    HeadListener listener = null;
+
+    public HeadFile(Plugin plugin) {
+        this.plugin = plugin;
+        this.file = new File(plugin.getDataFolder(), "heads.yml");
+        this.config = new YamlConfiguration();
+        // check main plugin config
+        checkConfig();
+        try {
+            // only load signs if enabled
+            if(enabled) {
+                onEnable();
+                loadSigns();
+                registerEvents();
+                plugin.getCommand("buysign").setExecutor(listener);
+                thread = new HeadThread(plugin.getSettings().getString("secret"), this);
+                // run async in the scheduler, don't need to thread pool for this one
+                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, thread, 20*60*update, 20*60*update);
+            } else {
+                plugin.getLogger().log(Level.INFO, "HeadSigns not enabled");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void registerEvents() {
+        listener = new HeadListener(this);
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+    }
+
+    private void checkConfig() {
+        Settings settings = plugin.getSettings();
+        enabled = settings.getString("headsEnabled").equals("true");
+        currency = settings.getString("headsCurrency").equals("true");
+        update = Integer.parseInt(settings.getString("headsUpdate"));
+        //Configuration config = plugin.getConfig();
+        //config.set("heads.enabled", enabled = config.getBoolean("heads.enabled", enabled));
+        //config.set("heads.currency", currency = config.getBoolean("heads.currency", currency));
+        //config.set("heads.update", update = config.getInt("heads.update", update));
+        //plugin.saveConfig();
+    }
+
+    private void onEnable() throws Exception {
+        if(file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        if(!file.exists()) {
+            file.createNewFile();
+        }
+        config = new YamlConfiguration();
+        config.load(file);
+    }
+
+    public List<HeadSign> getSigns() {
+        return signs;
+    }
+
+    public void addSign(HeadSign h) {
+        List<String> signs = config.getStringList("signs");
+        if(signs == null) {
+            signs = new ArrayList<String>();
+        }
+        signs.add(h.serialize());
+        config.set("signs", signs);
+        try {
+            config.save(file);
+            // and cleanly load the signs again
+            loadSigns();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadSigns() throws JSONException {
+        // clear current signs if not empty, so we can re-use this method safely
+        if(!this.signs.isEmpty()) {
+            this.signs.clear();
+        }
+        List<String> signs = config.getStringList("signs");
+        if(signs != null && signs.size() > 0) {
+            for(String sign : signs) {
+                // deserialize and add to the list
+                HeadSign h = HeadSign.deserialize(sign);
+                this.signs.add(h);
+            }
+        }
+    }
+
+}
