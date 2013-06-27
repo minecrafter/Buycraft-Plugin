@@ -50,7 +50,6 @@ public class BuyCommand {
                                 }
 
                                 VisitLinkTask.call((Player) commandSender, buyNowLink);
-                                //plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, buyNowLink));
                             } else {
                                 commandSender.sendMessage(Chat.header());
                                 commandSender.sendMessage(Chat.seperator());
@@ -135,7 +134,6 @@ public class BuyCommand {
             }
         } else {
             VisitLinkTask.call((Player) commandSender, plugin.getServerStore());
-            //plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new VisitLinkTask((Player) commandSender, plugin.getServerStore()));
         }
 
         return true;
