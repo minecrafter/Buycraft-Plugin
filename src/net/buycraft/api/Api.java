@@ -24,7 +24,7 @@ public class Api {
         if (plugin.getSettings().getBoolean("https")) {
             this.apiUrl = "https://api.buycraft.net/v3";
         } else {
-            this.apiUrl = "http://api.buycraft.net/v3";
+            this.apiUrl = "http://api.buycraft.localhost/v3";
         }
     }
 
@@ -40,6 +40,19 @@ public class Api {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "packages");
+
+        return call(apiCallParams);
+    }
+    
+    public JSONObject paymentsAction(int limit, boolean usernameSpecific, String username) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "payments");
+        apiCallParams.put("limit", String.valueOf(limit));
+        
+        if(usernameSpecific) {
+        	apiCallParams.put("ign", username);
+        }
 
         return call(apiCallParams);
     }

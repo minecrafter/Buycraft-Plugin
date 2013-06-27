@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
 
 public class HeadSign {
 

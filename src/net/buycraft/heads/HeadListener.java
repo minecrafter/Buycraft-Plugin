@@ -2,7 +2,6 @@ package net.buycraft.heads;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -16,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.*;
@@ -70,11 +68,10 @@ public class HeadListener implements Listener, CommandExecutor {
         return protections.contains(HeadSign.getLocation(block.getLocation()));
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // do nothing where nothing happens
         if(!(sender.hasPermission("buycraft.admin") || sender.hasPermission("buycraft.signs"))) {
-            sender.sendMessage("You don't have permission to do that.");
+            sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
             return true;
         }
         if(!(sender instanceof Player)) {
@@ -96,7 +93,7 @@ public class HeadListener implements Listener, CommandExecutor {
         // the rest of the commands
         if(args[0].equalsIgnoreCase("begin")) {
             cache.put(player.getName(), new ArrayList<Location>());
-            player.sendMessage("Sign detection begun, punch the signs to add them to the list");
+            player.sendMessage("Sign detection begun, punch the signs to add them to the list.");
             return true;
         } else if(args[0].equalsIgnoreCase("end")) {
             if(cache.containsKey(player.getName())) {

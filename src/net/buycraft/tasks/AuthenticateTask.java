@@ -16,7 +16,6 @@ public class AuthenticateTask extends ApiTask {
         this.plugin = Plugin.getInstance();
     }
 
-    @Override
     public void run() {
         try {
             final JSONObject apiResponse = plugin.getApi().authenticateAction();

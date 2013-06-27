@@ -8,12 +8,26 @@ To purchase Premium, go to http://server.buycraft.net/premium.
 Are you in need of help? Please contact customer support via email (support@buycraft.net) or via the helpdesk at http://support.buycraft.net.
 
 
---- INSTALLATION --- ------------------------------------------------------
+--- INSTALLATION -----------------------------------------------------------
 
 Please run the command "/buycraft secret <Secret key>" in the console. To find your 
 secret key, go to http://server.buycraft.net and visit the servers page under the webstore 
 section. Refer to installation videos and tutorials available on http://buycraft.net for more help/info.
 
+---- RECENT PAYMENT SIGNS --------------------------------------------------
+
+If you would like to display recent payments in game, this feature allows you to
+setup a row of signs with head blocks placed above/below/next to them. Every 30 minutes
+the signs will update and show the most recent users who have purchased a package.
+To enable this feature you need to set "headsEnabled" to "true" in the settings.conf file.
+
+Place a row of signs in any order you wish, with one head per sign at least one block away. 
+After you have placed the signs and heads, type "buysign begin" in game. Then click on the signs
+in the order you wish the payments to be displayed. Once you have finished, type "buysign end" - 
+the signs will update accordingly.
+
+You can also filter the signs to only include payments that include a certain package. 
+Use "buysign filter <Package ID>" after typing "buysign begin" to do this. 
 
 ---- MCMYADMIN INTERGRATION ------------------------------------------------
 
@@ -32,6 +46,7 @@ To change the /buy command please edit the setting in the configuration file.
 Listed below are the permission nodes for the plugin:
 
 	buycraft.admin - Enables use of the "/buycraft <reload/forcecheck/secret>" commands
+	buycraft.signs - Enables the player to setup Buycraft recent payment signs
 
 
 ---- A FURTHER NOTE --------------------------------------------------------
@@ -42,6 +57,12 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.6
+
+		- Implemented a thread pool to improve performance on larger servers
+		- You can now display recent payments in game! Read above to find out how to do this.
+		- New "/buycraft payments <ign>"" command, will list the payments over all users or a specific user.
+
 	Version 5.5
 
 		- Fixes an exception with the /buycraft command.

@@ -28,7 +28,6 @@ public class VisitLinkTask extends ApiTask {
         }
     }
 
-    @Override
     public void run() {
         try {
             String httpResponse = getApi().HttpRequest(URL);

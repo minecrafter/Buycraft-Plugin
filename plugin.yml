@@ -7,6 +7,6 @@ commands:
    ec:
       usage: /<command>
    buycraft:
-      usage: /<command> <reload/forcecheck/secret>
+      usage: /<command> <reload/forcecheck/secret/payments <ign>>
    buysign:
-      usage: /<command> <begin/end/filter [name]>
+      usage: /<command> <begin/end/filter [Package ID]>

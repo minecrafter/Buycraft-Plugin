@@ -1,7 +1,6 @@
 package net.buycraft.heads;
 
 import net.buycraft.Plugin;
-import net.buycraft.api.Api;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -11,17 +10,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-// should be updated every 5 minutes (config changeable value)
+
 public class HeadThread implements Runnable {
 
     private List<Head> headList = new ArrayList<Head>();
-    private String secret = "<SECRET>";
 
-    private String url = "http://api.buycraft.net/v3?secret=<SECRET>&action=payments";
     private HeadFile headFile = null;
 
-    public HeadThread(String secret, HeadFile headFile) {
-        this.secret = secret;
+    public HeadThread(HeadFile headFile) {
         this.headFile = headFile;
         Bukkit.getScheduler().runTaskAsynchronously(headFile.plugin, this);
     }
@@ -34,11 +30,10 @@ public class HeadThread implements Runnable {
         List<Head> headList = new ArrayList<Head>();
         try {
             // repopulate headList
-            String url = getURL();
-            String HTTPResponse = Api.HttpRequest(url);
-            if(HTTPResponse != null) {
-                JSONObject json = new JSONObject(HTTPResponse);
-                JSONArray entries = json.getJSONArray("payload");
+        	JSONObject apiResponse = Plugin.getInstance().getApi().paymentsAction(100, false, "");
+
+            if (apiResponse != null && apiResponse.getInt("code") == 0) {
+                JSONArray entries = apiResponse.getJSONArray("payload");
                 // now iterate through the payload, if there is any
                 if(entries != null && entries.length() > 0) {
                     for(int i=0; i<entries.length(); i++) {
@@ -69,10 +64,6 @@ public class HeadThread implements Runnable {
                 updateHeads();
             }
         });
-    }
-
-    private String getURL() {
-        return url.replace("<SECRET>", secret);
     }
 
     public void updateHeads() {

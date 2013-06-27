@@ -46,8 +46,7 @@ public class Settings {
         defaultProperties.put("directPayGateway", "paypal");
         defaultProperties.put("buyCommand", "buy");
         defaultProperties.put("headsEnabled", "false");
-        defaultProperties.put("headsCurrency", "false");
-        defaultProperties.put("headsUpdate", "5");
+        defaultProperties.put("headsCurrency", "true");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();

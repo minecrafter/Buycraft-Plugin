@@ -17,7 +17,6 @@ public class ReloadPackagesTask extends ApiTask {
         this.plugin = Plugin.getInstance();
     }
 
-    @Override
     public void run() {
         plugin.getPackageManager().getPackagesForSale().clear();
 

@@ -3,9 +3,7 @@ package net.buycraft.heads;
 import net.buycraft.Plugin;
 import net.buycraft.util.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONException;
 
 import java.io.File;
@@ -41,11 +39,11 @@ public class HeadFile {
                 loadSigns();
                 registerEvents();
                 plugin.getCommand("buysign").setExecutor(listener);
-                thread = new HeadThread(plugin.getSettings().getString("secret"), this);
+                thread = new HeadThread(this);
                 // run async in the scheduler, don't need to thread pool for this one
                 Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, thread, 20*60*update, 20*60*update);
             } else {
-                plugin.getLogger().log(Level.INFO, "HeadSigns not enabled");
+                plugin.getLogger().log(Level.INFO, "Buycraft signs not enabled.");
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -61,12 +59,7 @@ public class HeadFile {
         Settings settings = plugin.getSettings();
         enabled = settings.getString("headsEnabled").equals("true");
         currency = settings.getString("headsCurrency").equals("true");
-        update = Integer.parseInt(settings.getString("headsUpdate"));
-        //Configuration config = plugin.getConfig();
-        //config.set("heads.enabled", enabled = config.getBoolean("heads.enabled", enabled));
-        //config.set("heads.currency", currency = config.getBoolean("heads.currency", currency));
-        //config.set("heads.update", update = config.getInt("heads.update", update));
-        //plugin.saveConfig();
+        update = 30;
     }
 
     private void onEnable() throws Exception {

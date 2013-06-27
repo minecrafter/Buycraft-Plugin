@@ -19,7 +19,6 @@ public class CommandExecuteTask extends ApiTask {
         this.username = username;
     }
 
-    @Override
     public void run() {
         try {
             command = command.replace("{name}", username);
