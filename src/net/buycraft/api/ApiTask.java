@@ -36,23 +36,20 @@ public abstract class ApiTask implements Runnable {
     public void disableChat(final String name) {
         final Player player = Bukkit.getPlayerExact(name);
         if (player != null) {
-            Bukkit.getScheduler().runTask(Plugin.getInstance(), new Runnable() {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Plugin.getInstance(), new Runnable() {
                 public void run() {
                     Plugin.getInstance().getChatManager().disableChat(player);
                 }
-            });
+            }, 1);
         }
     }
 
-    public void sendMessage(final String name, final String message) {
-        final Player player = Bukkit.getPlayerExact(name);
-        if (player != null) {
-            Bukkit.getScheduler().runTask(Plugin.getInstance(), new Runnable() {
-                public void run() {
-                    player.sendMessage(message);
-                }
-            });
-        }
+    public void sendMessage(String player, String message) {
+        getPlugin().messages.sendMessage(player, message);
+    }
+
+    public void sendMessage(String player, String[] messages) {
+        getPlugin().messages.sendMessage(player, messages);
     }
 
 }

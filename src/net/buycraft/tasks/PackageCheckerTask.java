@@ -70,7 +70,7 @@ public class PackageCheckerTask extends ApiTask {
                                                 Player player = plugin.getServer().getPlayer(username);
 
                                                 if (player != null) {
-                                                    player.sendMessage(Chat.header());
+                                                    sendMessage(player.getName(), Chat.header());
                                                     player.sendMessage(Chat.seperator());
                                                     player.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"));
                                                     player.sendMessage(Chat.seperator());

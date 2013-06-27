@@ -36,15 +36,11 @@ public class VisitLinkTask extends ApiTask {
                 JSONObject jsonResponse = new JSONObject(httpResponse);
 
                 if (jsonResponse.has("shorturl")) {
-                    sendMessage(player, Chat.header());
-                    sendMessage(player, Chat.seperator());
-                    sendMessage(player, Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":");
-                    sendMessage(player, Chat.seperator());
-                    sendMessage(player, Chat.seperator() + jsonResponse.getString("shorturl"));
-                    sendMessage(player, Chat.seperator());
-                    sendMessage(player, Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"));
-                    sendMessage(player, Chat.seperator());
-                    sendMessage(player, Chat.footer());
+
+                    sendMessage(player, new String[] {Chat.header(), Chat.seperator(),
+                            Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":",
+                            Chat.seperator(), Chat.seperator() + jsonResponse.getString("shorturl"),
+                            Chat.seperator(), Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"), Chat.seperator(), Chat.footer()});
 
                     disableChat(player);
 
@@ -61,10 +57,8 @@ public class VisitLinkTask extends ApiTask {
             getLogger().severe("JSON parsing error.");
         }
 
-        sendMessage(player, Chat.header());
-        sendMessage(player, Chat.seperator());
-        sendMessage(player, Chat.seperator() + ChatColor.RED + getLanguage().getString("urlError"));
-        sendMessage(player, Chat.seperator());
-        sendMessage(player, Chat.footer());
+        sendMessage(player, new String[] {Chat.header(), Chat.seperator(),
+        Chat.seperator() + ChatColor.RED + getLanguage().getString("urlError"),
+        Chat.seperator(), Chat.footer()});
     }
 }
