@@ -91,7 +91,7 @@ public class Api {
         return null;
     }
 
-    public String HttpRequest(String url) {
+    public static String HttpRequest(String url) {
         try {
             String content = "";
 
@@ -115,13 +115,13 @@ public class Api {
 
             return content;
         } catch (ConnectException e) {
-            plugin.getLogger().severe("HTTP request failed due to connection error.");
+            Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
         } catch (SocketTimeoutException e) {
-            plugin.getLogger().severe("HTTP request failed due to timeout error.");
+            Plugin.getInstance().getLogger().severe("HTTP request failed due to timeout error.");
         } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("HTTP request failed due to file not found.");
+            Plugin.getInstance().getLogger().severe("HTTP request failed due to file not found.");
         } catch (UnknownHostException e) {
-            plugin.getLogger().severe("HTTP request failed due to unknown host.");
+            Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,7 +129,7 @@ public class Api {
         return null;
     }
 
-    private String generateUrlQueryString(HashMap<String, String> map) {
+    private static String generateUrlQueryString(HashMap<String, String> map) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("?");
