@@ -21,7 +21,6 @@ public class EnableChatCommand {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("chatEnabled"));
                 commandSender.sendMessage(Chat.seperator());
                 commandSender.sendMessage(Chat.footer());
-
                 plugin.getChatManager().enableChat((Player) commandSender);
             } else {
                 commandSender.sendMessage(Chat.header());
