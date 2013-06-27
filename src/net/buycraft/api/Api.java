@@ -24,7 +24,7 @@ public class Api {
         if (plugin.getSettings().getBoolean("https")) {
             this.apiUrl = "https://api.buycraft.net/v3";
         } else {
-            this.apiUrl = "http://api.buycraft.localhost/v3";
+            this.apiUrl = "http://api.buycraft.net/v3";
         }
     }
 
