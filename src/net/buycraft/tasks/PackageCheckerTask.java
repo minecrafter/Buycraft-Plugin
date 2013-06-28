@@ -70,16 +70,18 @@ public class PackageCheckerTask extends ApiTask {
                                                 Player player = plugin.getServer().getPlayer(username);
 
                                                 if (player != null) {
-                                                    sendMessage(player.getName(), Chat.header());
-                                                    player.sendMessage(Chat.seperator());
-                                                    player.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"));
-                                                    player.sendMessage(Chat.seperator());
-                                                    player.sendMessage(Chat.footer());
+                                                	
+                                                	sendMessage(player.getName(), new String[] {
+                                                		Chat.header(), 
+                                                		Chat.seperator(),
+                                                        Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"),
+                                                        Chat.seperator(), 
+                                                        Chat.footer()
+                                                    });
                                                 }
                                             }
 
                                             CommandDeleteTask.call(new JSONArray(executedCommands.toArray()).toString());
-                                            // plugin.getApi().commandsDeleteAction(new JSONArray(executedCommands.toArray()).toString());
                                         }
 
                                         plugin.getLogger().info("Package checker successfully executed.");
