@@ -2,7 +2,6 @@ package net.buycraft;
 
 import net.buycraft.api.Api;
 import net.buycraft.api.ApiTask;
-import net.buycraft.api.MessagesTask;
 import net.buycraft.commands.BuyCommand;
 import net.buycraft.commands.BuycraftCommand;
 import net.buycraft.commands.EnableChatCommand;
@@ -56,7 +55,6 @@ public class Plugin extends JavaPlugin implements Listener {
     private ExecutorService executors = null;
 
     private HeadFile headFile = null;
-    public MessagesTask messages = new MessagesTask();
 
     public Plugin() {
         instance = this;
@@ -90,7 +88,6 @@ public class Plugin extends JavaPlugin implements Listener {
         headFile = new HeadFile(this);
 
         AuthenticateTask.call();
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, messages, 5, 5);
         getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
             public void run() {
                 PackageCheckerTask.call(false);

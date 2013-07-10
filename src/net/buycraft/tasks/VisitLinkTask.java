@@ -3,6 +3,8 @@ package net.buycraft.tasks;
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 import net.buycraft.util.Chat;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
@@ -12,16 +14,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class VisitLinkTask extends ApiTask {
-    private String player;
+    private String playerName;
     private String URL;
 
     public static void call(Player player, String URL) {
         Plugin.getInstance().addTask(new VisitLinkTask(player.getName(), URL));
     }
 
-    private VisitLinkTask(String player, String URL) {
+    private VisitLinkTask(String playerName, String URL) {
         try {
-            this.player = player;
+            this.playerName = playerName;
             this.URL = "http://is.gd/create.php?format=json&url=" + URLEncoder.encode(URL, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -29,20 +31,23 @@ public class VisitLinkTask extends ApiTask {
     }
 
     public void run() {
+        Player player = Bukkit.getPlayerExact(playerName);
         try {
             String httpResponse = getApi().HttpRequest(URL);
-
+            
             if (httpResponse != null) {
                 JSONObject jsonResponse = new JSONObject(httpResponse);
 
                 if (jsonResponse.has("shorturl")) {
 
-                    sendMessage(player, new String[] {Chat.header(), Chat.seperator(),
-                            Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":",
-                            Chat.seperator(), Chat.seperator() + jsonResponse.getString("shorturl"),
-                            Chat.seperator(), Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"), Chat.seperator(), Chat.footer()});
+                    if (player != null) {
+                        player.sendMessage(new String[] {Chat.header(), Chat.seperator(),
+                                Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":",
+                                Chat.seperator(), Chat.seperator() + jsonResponse.getString("shorturl"),
+                                Chat.seperator(), Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"), Chat.seperator(), Chat.footer()});
+                    }
 
-                    disableChat(player);
+                    disableChat(playerName);
 
                     getLogger().info("Generated short URL " + jsonResponse.getString("shorturl") + ".");
 
@@ -57,8 +62,10 @@ public class VisitLinkTask extends ApiTask {
             getLogger().severe("JSON parsing error.");
         }
 
-        sendMessage(player, new String[] {Chat.header(), Chat.seperator(),
-        Chat.seperator() + ChatColor.RED + getLanguage().getString("urlError"),
-        Chat.seperator(), Chat.footer()});
+        if (player != null) {
+            player.sendMessage(new String[] {Chat.header(), Chat.seperator(),
+                    Chat.seperator() + ChatColor.RED + getLanguage().getString("urlError"),
+                    Chat.seperator(), Chat.footer()});
+        }
     }
 }

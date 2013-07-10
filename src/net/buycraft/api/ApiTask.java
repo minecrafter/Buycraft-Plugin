@@ -44,12 +44,4 @@ public abstract class ApiTask implements Runnable {
         }
     }
 
-    public void sendMessage(String player, String message) {
-        getPlugin().messages.sendMessage(player, message);
-    }
-
-    public void sendMessage(String player, String[] messages) {
-        getPlugin().messages.sendMessage(player, messages);
-    }
-
 }
