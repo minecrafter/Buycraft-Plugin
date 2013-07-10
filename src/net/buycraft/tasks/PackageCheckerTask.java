@@ -40,29 +40,27 @@ public class PackageCheckerTask extends ApiTask {
 
                                         ArrayList<String> executedCommands = new ArrayList<String>();
 
-                                        if (commandsPayload.length() > 0) {
-                                            for (int i = 0; i < commandsPayload.length(); i++) {
-                                                JSONObject row = commandsPayload.getJSONObject(i);
+                                        for (int i = 0; i < commandsPayload.length(); i++) {
+                                        	JSONObject row = commandsPayload.getJSONObject(i);
 
-                                                String username = row.getString("ign");
-                                                Boolean requireOnline = row.getBoolean("requireOnline");
-                                                String command = row.getJSONArray("commands").getString(0);
+                                        	String username = row.getString("ign");
+                                        	Boolean requireOnline = row.getBoolean("requireOnline");
+                                        	String command = row.getJSONArray("commands").getString(0);
 
-                                                Player currentPlayer = plugin.getServer().getPlayer(username);
+                                        	Player currentPlayer = plugin.getServer().getPlayer(username);
 
-                                                if (currentPlayer != null || requireOnline == false) {
-                                                    if (executedCommands.contains(username) == false) {
-                                                        executedCommands.add(username);
-                                                    }
-                                                    final String c = command;
-                                                    final String u = username;
-                                                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                                        public void run() {
-                                                            CommandExecuteTask.call(c, u);
-                                                        }
-                                                    }, 60L);
-                                                }
-                                            }
+                                        	if (currentPlayer != null || requireOnline == false) {
+                                        		if (executedCommands.contains(username) == false) {
+                                        			executedCommands.add(username);
+                                        		}
+                                        		final String c = command;
+                                        		final String u = username;
+                                        		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                        			public void run() {
+                                        				CommandExecuteTask.call(c, u);
+                                        			}
+                                        		}, 60L);
+                                        	}
                                         }
 
                                         if (executedCommands.size() > 0) {
