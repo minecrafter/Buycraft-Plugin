@@ -2,11 +2,15 @@ package net.buycraft.tasks;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
+
 import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class CommandExecuteTask extends ApiTask {
+	private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
+	
     private String command;
     private String username;
 
@@ -21,24 +25,7 @@ public class CommandExecuteTask extends ApiTask {
 
     public void run() {
         try {
-            command = command.replace("{name}", username);
-            command = command.replace("(name)", username);
-            command = command.replace("{player}", username);
-            command = command.replace("(player)", username);
-            command = command.replace("{username}", username);
-            command = command.replace("(username)", username);
-            command = command.replace("<name>", username);
-            command = command.replace("<name>", username);
-            command = command.replace("<player>", username);
-            command = command.replace("<player>", username);
-            command = command.replace("<username>", username);
-            command = command.replace("<username>", username);
-            command = command.replace("[name]", username);
-            command = command.replace("[name]", username);
-            command = command.replace("[player]", username);
-            command = command.replace("[player]", username);
-            command = command.replace("[username]", username);
-            command = command.replace("[username]", username);
+        	command = REPLACE_NAME.matcher(command).replaceAll(username);
 
             Bukkit.getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");
 
