@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 
 public class PackageCheckerTask extends ApiTask {
     private Plugin plugin;
@@ -47,7 +47,7 @@ public class PackageCheckerTask extends ApiTask {
                         		JSONObject apiPayload = apiResponse.getJSONObject("payload");
                         		JSONArray commandsPayload = apiPayload.getJSONArray("commands");
 
-                        		ArrayList<String> executedCommands = new ArrayList<String>();
+                        		LinkedHashSet<String> executedCommands = new LinkedHashSet<String>();
 
                         		for (int i = 0; i < commandsPayload.length(); i++) {
                         			JSONObject row = commandsPayload.getJSONObject(i);
