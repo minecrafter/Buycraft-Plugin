@@ -62,7 +62,7 @@ public class PackageCheckerTask extends ApiTask {
                         				}
                         				final String c = command;
                         				final String u = username;
-                        				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                        				Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
                         					public void run() {
                         						CommandExecuteTask.call(c, u);
                         					}
