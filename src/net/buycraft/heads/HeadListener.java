@@ -75,8 +75,14 @@ public class HeadListener implements Listener, CommandExecutor {
             return true;
         }
         if(!(sender instanceof Player)) {
-            sender.sendMessage("You aren't a player, go away!");
+            sender.sendMessage(ChatColor.RED + "You aren't a player, go away!");
             return true;
+        }
+        if(!headFile.enabled)
+        {
+        	sender.sendMessage(ChatColor.RED + "You need to enable this feature in the settings.conf file.");
+        	
+        	return true;
         }
         Player player = (Player) sender;
         if(args.length < 1 || args.length > 2) {
@@ -117,6 +123,7 @@ public class HeadListener implements Listener, CommandExecutor {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+    	if(!headFile.enabled) return;
         // filter out non-clicked block events
         if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.PHYSICAL)) {
             return;
@@ -156,6 +163,7 @@ public class HeadListener implements Listener, CommandExecutor {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+    	if(!headFile.enabled) return;
         if(event.getPlayer().hasPermission("buycraft.admin") || event.getPlayer().hasPermission("buycraft.signs")) {
             // do nothing
         } else if(isProtected(event.getBlockPlaced())) {
@@ -166,6 +174,7 @@ public class HeadListener implements Listener, CommandExecutor {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+    	if(!headFile.enabled) return;
         if(event.getPlayer().hasPermission("buycraft.admin") || event.getPlayer().hasPermission("buycraft.signs")) {
             // do nothing
         } else if(isProtected(event.getBlock())) {

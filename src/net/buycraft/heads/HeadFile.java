@@ -30,24 +30,24 @@ public class HeadFile {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "heads.yml");
         this.config = new YamlConfiguration();
-        // check main plugin config
+
         checkConfig();
+        registerEvents();
+        
         try {
-            // only load signs if enabled
             if(enabled) {
                 onEnable();
                 loadSigns();
-                registerEvents();
-                plugin.getCommand("buysign").setExecutor(listener);
+                
                 thread = new HeadThread(this);
-                // run async in the scheduler, don't need to thread pool for this one
+                
                 Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, thread, 20*60*update, 20*60*update);
-            } else {
-                plugin.getLogger().log(Level.INFO, "Buycraft signs not enabled.");
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
+        
+        plugin.getCommand("buysign").setExecutor(listener);
     }
 
     private void registerEvents() {
