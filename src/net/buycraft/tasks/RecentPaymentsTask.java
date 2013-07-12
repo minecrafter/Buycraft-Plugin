@@ -27,16 +27,7 @@ public class RecentPaymentsTask extends ApiTask {
     public void run() {
         try {
         	
-        	JSONObject apiResponse;
-        	
-        	if(playerLookup == "")
-        	{
-        		apiResponse = getApi().paymentsAction(10, false, "");
-        	}
-        	else
-        	{
-        		apiResponse = getApi().paymentsAction(10, true, playerLookup);
-        	}
+        	JSONObject apiResponse = getApi().paymentsAction(10, playerLookup.length() > 0, playerLookup);
             
 			if (apiResponse != null) {
                 
@@ -46,7 +37,7 @@ public class RecentPaymentsTask extends ApiTask {
                 	receiver.sendMessage(Chat.header());
                     receiver.sendMessage(Chat.seperator());
                     
-                    if(playerLookup == "")
+                    if(playerLookup.isEmpty())
                     {
                     	receiver.sendMessage(Chat.seperator() + "Displaying recent payments over all users: ");
                     }
