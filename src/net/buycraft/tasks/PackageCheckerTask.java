@@ -42,7 +42,6 @@ public class PackageCheckerTask extends ApiTask {
                     	
                         JSONObject apiResponse = plugin.getApi().commandsGetAction();
                         
-                        try {
                         	if (apiResponse != null && apiResponse.getInt("code") == 0) {
                         		JSONObject apiPayload = apiResponse.getJSONObject("payload");
                         		JSONArray commandsPayload = apiPayload.getJSONArray("commands");
@@ -93,9 +92,6 @@ public class PackageCheckerTask extends ApiTask {
                         	} else {
                         		plugin.getLogger().severe("No response/invalid key during package check.");
                         	}
-                        } catch(Exception e) {
-                        	e.printStackTrace();
-                        }
                     }
                 }
             }
