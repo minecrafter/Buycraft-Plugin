@@ -60,15 +60,14 @@ public class PackageCheckerTask extends ApiTask {
                         				if (executedCommands.contains(username) == false) {
                         					executedCommands.add(username);
                         				}
-                        				final String c = command;
-                        				final String u = username;
-                        				Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {
-                        					public void run() {
-                        						CommandExecuteTask.call(c, u);
-                        					}
-                        				}, 60L);
+                        				String c = command;
+                        				String u = username;
+                        				
+                        				Plugin.getInstance().getCommandExecutor().queueCommand(c, u);;
                         			}
                         		}
+                        		
+                        		Plugin.getInstance().getCommandExecutor().scheduleExecutor();
 
                         		if (executedCommands.size() > 0) {
                         			for (String username : executedCommands) {
