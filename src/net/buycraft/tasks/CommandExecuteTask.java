@@ -69,7 +69,7 @@ public class CommandExecuteTask extends ApiTask {
 	public void run() {
 		long start = System.nanoTime();
 		// Cap execution time at 500us
-		while (System.nanoTime() - start < 5000000 && !commandQueue.isEmpty()) {
+		while (System.nanoTime() - start < 500000 && !commandQueue.isEmpty()) {
 
 			try {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandQueue.poll());
