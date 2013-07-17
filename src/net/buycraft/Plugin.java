@@ -111,26 +111,15 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        HashMap<String, Integer> commandList = new HashMap<String, Integer>();
-
-        commandList.put("ec", 0);
-        commandList.put("buycraft", 1);
-
-        Boolean status = false;
-        if(!commandList.containsKey(command.getLabel().toLowerCase())) {
-            return false;
-        }
-        switch (commandList.get(command.getLabel().toLowerCase())) {
-            case 0:
-                status = new EnableChatCommand().process(commandSender, args);
-                break;
-
-            case 1:
-                status = new BuycraftCommand().process(commandSender, args);
-                break;
+        if (label.equalsIgnoreCase("ec")) {
+            return EnableChatCommand.process(commandSender, args);
         }
 
-        return status;
+        if (label.equalsIgnoreCase("buycraft")) {
+            return BuycraftCommand.process(commandSender, args);
+        }
+
+        return false;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -138,7 +127,7 @@ public class Plugin extends JavaPlugin implements Listener {
         String message = event.getMessage().toLowerCase();
         int cmdLength = buyCommandSearchString.length();
         if (message.startsWith(buyCommandSearchString) && (message.length() == cmdLength || message.charAt(cmdLength) == ' ')) {
-            new BuyCommand().process(event.getPlayer(), message.split(" "));
+            BuyCommand.process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
         }
     }

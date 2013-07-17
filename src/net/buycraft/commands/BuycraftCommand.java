@@ -11,13 +11,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BuycraftCommand {
-    private Plugin plugin;
 
-    public BuycraftCommand() {
-        this.plugin = Plugin.getInstance();
-    }
+    private BuycraftCommand() {}
 
-    public Boolean process(CommandSender commandSender, String[] args) {
+    public static boolean process(CommandSender commandSender, String[] args) {
+        Plugin plugin = Plugin.getInstance();
         if (args.length > 0) {
             if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
             	
