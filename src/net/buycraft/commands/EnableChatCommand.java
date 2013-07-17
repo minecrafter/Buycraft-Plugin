@@ -7,13 +7,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EnableChatCommand {
-    private Plugin plugin;
 
-    public EnableChatCommand() {
-        this.plugin = Plugin.getInstance();
-    }
+    private EnableChatCommand() {}
 
-    public Boolean process(CommandSender commandSender, String[] args) {
+    public static boolean process(CommandSender commandSender, String[] args) {
+        Plugin plugin = Plugin.getInstance();
         if (plugin.isAuthenticated(commandSender)) {
             if (plugin.getChatManager().isDisabled((Player) commandSender)) {
                 commandSender.sendMessage(Chat.header());

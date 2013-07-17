@@ -10,13 +10,11 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class BuyCommand {
-    private Plugin plugin;
 
-    public BuyCommand() {
-        this.plugin = Plugin.getInstance();
-    }
+    private BuyCommand() {}
 
-    public Boolean process(Player commandSender, String[] args) {
+    public static boolean process(Player commandSender, String[] args) {
+        Plugin plugin = Plugin.getInstance();
         if (!plugin.getSettings().getBoolean("disableBuyCommand")) {
             if (plugin.isAuthenticated(commandSender)) {
                 String pageToView = "1";
