@@ -2,15 +2,27 @@ package net.buycraft.api;
 
 import net.buycraft.Plugin;
 import net.buycraft.util.Language;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.logging.Logger;
 
 public abstract class ApiTask implements Runnable {
 
-    public void sync(Runnable r) {
-        Bukkit.getScheduler().runTask(getPlugin(), r);
+    public BukkitTask sync(Runnable r) {
+        if (getPlugin().isEnabled()) {
+            return Bukkit.getScheduler().runTask(getPlugin(), r);
+        }
+        return null;
+    }
+
+    public BukkitTask syncTimer(Runnable r, long delay, long period) {
+        if (getPlugin().isEnabled()) {
+            return Bukkit.getScheduler().runTaskTimer(getPlugin(), r, delay, period);
+        }
+        return null;
     }
 
     public void addTask(ApiTask task) {
