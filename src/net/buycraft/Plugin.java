@@ -8,10 +8,12 @@ import net.buycraft.commands.EnableChatCommand;
 import net.buycraft.heads.HeadFile;
 import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
+import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,6 +46,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private PackageManager packageManager;
     private ChatManager chatManager;
+    private CommandExecuteTask commandExecutor;
 
     private Boolean authenticated = false;
     private Integer authenticatedCode = 1;
@@ -51,11 +54,12 @@ public class Plugin extends JavaPlugin implements Listener {
     private String folderPath;
 
     private String buyCommand = "buy";
+    private String buyCommandSearchString = "/buy";
 
     private ExecutorService executors = null;
 
     private HeadFile headFile = null;
-
+    
     public Plugin() {
         instance = this;
     }
@@ -82,8 +86,9 @@ public class Plugin extends JavaPlugin implements Listener {
 
         packageManager = new PackageManager();
         chatManager = new ChatManager();
+        commandExecutor = new CommandExecuteTask();
 
-        buyCommand = getSettings().getString("buyCommand");
+        setBuyCommand(getSettings().getString("buyCommand"));
 
         headFile = new HeadFile(this);
 
@@ -130,11 +135,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preCommandListener(PlayerCommandPreprocessEvent event) {
-        String[] message = event.getMessage().split(" ");
-
-        if (message[0].equalsIgnoreCase("/" + buyCommand)) {
-            new BuyCommand().process(event.getPlayer(), message);
-
+        String message = event.getMessage().toLowerCase();
+        int cmdLength = buyCommandSearchString.length();
+        if (message.startsWith(buyCommandSearchString) && (message.charAt(cmdLength) == ' ' || message.length() == cmdLength)) {
+            new BuyCommand().process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
         }
     }
@@ -228,6 +232,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public void setBuyCommand(String value) {
         buyCommand = value;
+        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).toString().toLowerCase();
     }
 
     public void setServerStore(String value) {
@@ -244,6 +249,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public PackageManager getPackageManager() {
         return packageManager;
+    }
+    
+    public CommandExecuteTask getCommandExecutor() {
+    	return commandExecutor;
     }
 
     public String getServerCurrency() {
