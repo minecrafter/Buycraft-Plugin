@@ -137,7 +137,7 @@ public class Plugin extends JavaPlugin implements Listener {
     public void preCommandListener(PlayerCommandPreprocessEvent event) {
         String message = event.getMessage().toLowerCase();
         int cmdLength = buyCommandSearchString.length();
-        if (message.startsWith(buyCommandSearchString) && (message.charAt(cmdLength) == ' ' || message.length() == cmdLength)) {
+        if (message.startsWith(buyCommandSearchString) && (message.length() == cmdLength || message.charAt(cmdLength) == ' ')) {
             new BuyCommand().process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
         }
@@ -285,5 +285,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public String getBuyCommand() {
         return buyCommand;
+    }
+    
+    public HeadFile getHeadFile()
+    {
+    	return headFile;
     }
 }
