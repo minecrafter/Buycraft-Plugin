@@ -14,9 +14,9 @@ import java.util.logging.Level;
 public class HeadFile {
 
     // config values
-    boolean enabled = false;
-    boolean currency = false;
-    int update = 5;
+    public boolean enabled = false;
+    public boolean currency = false;
+    public int update = 5;
 
     Plugin plugin;
     private YamlConfiguration config = null;
