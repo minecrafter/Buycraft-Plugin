@@ -26,7 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,7 +39,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private Api api;
 
-    private Integer serverID;
+    private int serverID;
     private String serverCurrency;
     private String serverStore;
 
@@ -48,8 +47,8 @@ public class Plugin extends JavaPlugin implements Listener {
     private ChatManager chatManager;
     private CommandExecuteTask commandExecutor;
 
-    private Boolean authenticated = false;
-    private Integer authenticatedCode = 1;
+    private boolean authenticated = false;
+    private int authenticatedCode = 1;
 
     private String folderPath;
 
