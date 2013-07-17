@@ -79,7 +79,9 @@ public class BuycraftCommand {
 
                     if (args[0].equalsIgnoreCase("forcecheck")) {
                         PackageCheckerTask.call(true);
-
+                        
+                        plugin.getHeadFile().getHeadThread().update();
+                        
                         if (commandSender instanceof Player) {
                             commandSender.sendMessage(Chat.header());
                             commandSender.sendMessage(Chat.seperator());

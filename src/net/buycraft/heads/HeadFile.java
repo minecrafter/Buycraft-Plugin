@@ -108,4 +108,8 @@ public class HeadFile {
         }
     }
 
+	public HeadThread getHeadThread()
+	{
+		return thread;
+	}   
 }

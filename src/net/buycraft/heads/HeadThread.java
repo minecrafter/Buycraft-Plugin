@@ -26,7 +26,7 @@ public class HeadThread implements Runnable {
         update();
     }
 
-    private void update() {
+    public void update() {
         List<Head> headList = new ArrayList<Head>();
         try {
             // repopulate headList
