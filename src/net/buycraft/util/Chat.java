@@ -3,15 +3,21 @@ package net.buycraft.util;
 import org.bukkit.ChatColor;
 
 public class Chat {
+    private static final String header = ChatColor.WHITE + "|----------------------" + ChatColor.LIGHT_PURPLE + " BUYCRAFT " + ChatColor.WHITE + "---------------------";
+    private static final String footer = ChatColor.WHITE + "|----------------------------------------------------";
+    private static final String seperator = ChatColor.WHITE + "| ";
+
+    private Chat() {}
+
     public static String header() {
-        return ChatColor.WHITE + "|----------------------" + ChatColor.LIGHT_PURPLE + " BUYCRAFT " + ChatColor.WHITE + "---------------------";
+        return header;
     }
 
     public static String footer() {
-        return ChatColor.WHITE + "|----------------------------------------------------";
+        return footer;
     }
 
     public static String seperator() {
-        return ChatColor.WHITE + "| ";
+        return seperator;
     }
 }
