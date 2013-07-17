@@ -57,9 +57,8 @@ public class PackageCheckerTask extends ApiTask {
                         			String command = row.getJSONArray("commands").getString(0);
 
                         			if (requireOnline == false || onlinePlayerSet.containsKey(username)) {
-                        				if (executedCommands.contains(username) == false) {
-                        					executedCommands.add(username);
-                        				}
+                        				executedCommands.add(username);
+                        					
                         				String c = command;
                         				String u = username;
                         				
