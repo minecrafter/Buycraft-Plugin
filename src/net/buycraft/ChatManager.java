@@ -1,37 +1,40 @@
 package net.buycraft;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-
 public class ChatManager extends Thread {
-    private ArrayList<String> disabledChatList;
+    private HashSet<String> disabledChatSet;
 
     public ChatManager() {
-        disabledChatList = new ArrayList<String>();
+        disabledChatSet = new HashSet<String>();
     }
 
-    public Boolean isDisabled(Player player) {
-        if (disabledChatList.contains(player.getName())) {
-            return true;
-        } else {
-            return false;
+    public synchronized Boolean isDisabled(Player player) {
+        return disabledChatSet.contains(player.getName());
+    }
+
+    public synchronized void enableChat(Player player) {
+        disabledChatSet.remove(player.getName());
+    }
+
+    public synchronized void disableChat(Player player) {
+        disabledChatSet.add(player.getName());
+    }
+
+    /**
+     * Clears all players from the provided set who have chat disabled
+     */
+    public synchronized void clearPlayerSet(Set<Player> players) {
+        Iterator<Player> it = players.iterator();
+
+        while (it.hasNext()) {
+            if (disabledChatSet.contains(it.next().getName())) {
+                it.remove();
+            }
         }
-    }
-
-    public void enableChat(Player player) {
-        if (disabledChatList.contains(player.getName())) {
-            disabledChatList.remove(player.getName());
-        }
-    }
-
-    public void disableChat(Player player) {
-        if (!disabledChatList.contains(player.getName())) {
-            disabledChatList.add(player.getName());
-        }
-    }
-
-    public ArrayList<String> getDisabledChatList() {
-        return disabledChatList;
     }
 }

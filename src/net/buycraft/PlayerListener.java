@@ -1,6 +1,5 @@
 package net.buycraft;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,16 +20,12 @@ public class PlayerListener implements Listener {
         plugin.getChatManager().enableChat(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (plugin.getChatManager().isDisabled(event.getPlayer())) {
             event.setCancelled(true);
         } else {
-            for (String playerName : plugin.getChatManager().getDisabledChatList()) {
-                Player player = plugin.getServer().getPlayer(playerName);
-
-                event.getRecipients().remove(player);
-            }
+            plugin.getChatManager().clearPlayerSet(event.getRecipients());
         }
     }
 
