@@ -1,15 +1,14 @@
 package net.buycraft.tasks;
 
-import net.buycraft.Plugin;
-import net.buycraft.api.ApiTask;
-
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import net.buycraft.api.ApiTask;
+
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 public class CommandExecuteTask extends ApiTask {
 	private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
@@ -48,7 +47,11 @@ public class CommandExecuteTask extends ApiTask {
             e.printStackTrace();
         }
     }
-    
+
+    public void clearCommands() {
+        commandQueue.clear();
+    }
+
     /**
      * Schedules the command executor to run
      * <p>
@@ -62,7 +65,11 @@ public class CommandExecuteTask extends ApiTask {
     	// Make sure the task is not already scheduled
     	// NOTE: This will only happen if commands take 6000 ticks to execute (Lets play it safe)
     	if (isScheduled.compareAndSet(false, true)) {
-    		task = Bukkit.getScheduler().runTaskTimer(Plugin.getInstance(), this, 1L, 1L);
+    	    task = syncTimer(this, 1L, 1L);
+            // Make sure the task was actually scheduled
+    	    if (task == null) {
+    	        isScheduled.set(false);
+    	    }
     	}
     }
 

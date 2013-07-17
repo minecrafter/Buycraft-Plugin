@@ -65,6 +65,12 @@ public class PackageCheckerTask extends ApiTask {
                         			}
                         		}
                         		
+                        		// If the plugin is disabled here our commands won't get executed so we return
+                        		if (!Plugin.getInstance().isEnabled()) {
+                        		    Plugin.getInstance().getCommandExecutor().clearCommands();
+                        		    return;
+                        		}
+                        		
                         		Plugin.getInstance().getCommandExecutor().scheduleExecutor();
 
                         		if (executedCommands.size() > 0) {
