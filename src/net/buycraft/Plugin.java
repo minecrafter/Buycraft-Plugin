@@ -54,7 +54,7 @@ public class Plugin extends JavaPlugin implements Listener {
     private String folderPath;
 
     private String buyCommand = "buy";
-    private String buyCommandSearchString = "/buy ";
+    private String buyCommandSearchString = "/buy";
 
     private ExecutorService executors = null;
 
@@ -88,8 +88,7 @@ public class Plugin extends JavaPlugin implements Listener {
         chatManager = new ChatManager();
         commandExecutor = new CommandExecuteTask();
 
-        buyCommand = getSettings().getString("buyCommand");
-        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).append(' ').toString().toLowerCase();
+        setBuyCommand(getSettings().getString("buyCommand"));
 
         headFile = new HeadFile(this);
 
@@ -137,7 +136,8 @@ public class Plugin extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preCommandListener(PlayerCommandPreprocessEvent event) {
         String message = event.getMessage().toLowerCase();
-        if (message.startsWith(buyCommandSearchString)) {
+        int cmdLength = buyCommandSearchString.length();
+        if (message.startsWith(buyCommandSearchString) && (message.charAt(cmdLength) == ' ' || message.length() == cmdLength)) {
             new BuyCommand().process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
         }
@@ -232,7 +232,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public void setBuyCommand(String value) {
         buyCommand = value;
-        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).append(' ').toString().toLowerCase();
+        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).toString().toLowerCase();
     }
 
     public void setServerStore(String value) {
