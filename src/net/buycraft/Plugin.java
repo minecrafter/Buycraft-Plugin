@@ -54,11 +54,12 @@ public class Plugin extends JavaPlugin implements Listener {
     private String folderPath;
 
     private String buyCommand = "buy";
+    private String buyCommandSearchString = "/buy ";
 
     private ExecutorService executors = null;
 
     private HeadFile headFile = null;
-
+    
     public Plugin() {
         instance = this;
     }
@@ -88,6 +89,7 @@ public class Plugin extends JavaPlugin implements Listener {
         commandExecutor = new CommandExecuteTask();
 
         buyCommand = getSettings().getString("buyCommand");
+        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).append(' ').toString().toLowerCase();
 
         headFile = new HeadFile(this);
 
@@ -134,11 +136,9 @@ public class Plugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preCommandListener(PlayerCommandPreprocessEvent event) {
-        String[] message = event.getMessage().split(" ");
-
-        if (message[0].equalsIgnoreCase("/" + buyCommand)) {
-            new BuyCommand().process(event.getPlayer(), message);
-
+        String message = event.getMessage().toLowerCase();
+        if (message.startsWith(buyCommandSearchString)) {
+            new BuyCommand().process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
         }
     }
@@ -232,6 +232,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public void setBuyCommand(String value) {
         buyCommand = value;
+        buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).append(' ').toString().toLowerCase();
     }
 
     public void setServerStore(String value) {
