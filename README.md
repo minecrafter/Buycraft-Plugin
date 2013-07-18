@@ -57,6 +57,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.7
+
+		- Major performance improvements over the entire plugin.
+		- New /buycraft report command, this will assist our customer support in helping you resolve any future issues.
+
 	Version 5.6
 
 		- Implemented a thread pool to improve performance on larger servers
