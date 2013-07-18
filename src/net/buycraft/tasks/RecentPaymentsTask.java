@@ -69,6 +69,7 @@ public class RecentPaymentsTask extends ApiTask {
             } 
         } catch (JSONException e) {
             getLogger().severe("JSON parsing error.");
+            ReportTask.setLastException(e);
         }
     }
 }

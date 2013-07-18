@@ -3,6 +3,7 @@ package net.buycraft.tasks;
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 import net.buycraft.util.Updater;
+
 import org.json.JSONObject;
 
 public class AuthenticateTask extends ApiTask {
@@ -60,6 +61,7 @@ public class AuthenticateTask extends ApiTask {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            ReportTask.setLastException(e);
                         }
                     }
                 };
@@ -67,6 +69,7 @@ public class AuthenticateTask extends ApiTask {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 }

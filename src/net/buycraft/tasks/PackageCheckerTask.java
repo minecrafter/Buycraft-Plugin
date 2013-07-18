@@ -101,6 +101,7 @@ public class PackageCheckerTask extends ApiTask {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 }

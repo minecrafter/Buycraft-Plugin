@@ -1,7 +1,9 @@
 package net.buycraft.heads;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Settings;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONException;
@@ -45,6 +47,7 @@ public class HeadFile {
             }
         } catch(Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
         
         plugin.getCommand("buysign").setExecutor(listener);
@@ -90,6 +93,7 @@ public class HeadFile {
             loadSigns();
         } catch(Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 

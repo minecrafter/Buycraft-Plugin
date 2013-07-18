@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import net.buycraft.tasks.ReportTask;
+
 public class Language {
     private final String LOCATION = "plugins/Buycraft/language.conf";
     private File file;
@@ -31,6 +33,7 @@ public class Language {
             properties.load(new FileInputStream(LOCATION));
         } catch (IOException e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 
@@ -69,8 +72,10 @@ public class Language {
                 properties.store(new FileOutputStream(LOCATION), "Buycraft Plugin (English language file)");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                ReportTask.setLastException(e);
             } catch (IOException e) {
                 e.printStackTrace();
+                ReportTask.setLastException(e);
             }
         }
     }

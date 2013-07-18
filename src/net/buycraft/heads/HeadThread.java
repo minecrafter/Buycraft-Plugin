@@ -1,6 +1,8 @@
 package net.buycraft.heads;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.ReportTask;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -58,6 +60,7 @@ public class HeadThread implements Runnable {
             this.headList = headList;
         } catch(Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(Plugin.getInstance(), new Runnable() {
             public void run() {
