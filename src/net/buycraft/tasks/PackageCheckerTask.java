@@ -4,7 +4,6 @@ import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 import net.buycraft.util.Chat;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -18,6 +17,12 @@ public class PackageCheckerTask extends ApiTask {
 
     private Boolean manualExecution;
 
+    private static long lastExecution;
+
+    public static long getLastExecution() {
+        return lastExecution;
+    }
+
     public static void call(Boolean manualExecution) {
         Plugin.getInstance().addTask(new PackageCheckerTask(manualExecution));
     }
@@ -29,6 +34,7 @@ public class PackageCheckerTask extends ApiTask {
 
     public void run() {
         try {
+            lastExecution = System.currentTimeMillis();
             if (plugin.isAuthenticated(null)) {
                 if (plugin.getSettings().getBoolean("commandChecker") || manualExecution) {
                 	// Fetch online player list

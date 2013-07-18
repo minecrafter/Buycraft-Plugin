@@ -72,6 +72,11 @@ public class ReportTask extends ApiTask {
             int serverPort = Bukkit.getPort();
             String buycraftVersion = Plugin.getInstance().getVersion();
 
+            boolean isAuthenticated = Plugin.getInstance().isAuthenticated(null);
+            double lastPackageCheckerExecutionTime = (System.currentTimeMillis() - PackageCheckerTask.getLastExecution()) / 1000.0 / 60.0;
+            String lastPackageCheckerExecution = PackageCheckerTask.getLastExecution() != 0 ? lastPackageCheckerExecutionTime + " minutes ago": "Never";
+
+
             String pingGoogle = pingCheck(googleAddress);
             String pingApi = pingCheck(apiAddress);
 
@@ -86,6 +91,10 @@ public class ReportTask extends ApiTask {
                     "Server Name: ", serverName, "\n",
                     "Server IP: ", serverIP, ":", serverPort, "\n",
                     "Buycraft Version: ", buycraftVersion, '\n',
+                    '\n',
+                    "#### Buycraft Info ####", '\n',
+                    "Authenticated: ", isAuthenticated, '\n',
+                    "Last Package Checker Execution: ", lastPackageCheckerExecution, '\n',
                     '\n',
                     "#### Connection ####", '\n',
                     "Google Ping Result: ", pingGoogle, '\n',
