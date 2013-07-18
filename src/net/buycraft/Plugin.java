@@ -147,7 +147,7 @@ public class Plugin extends JavaPlugin implements Listener {
             File targetFile = new File(targetLocation);
 
             if (overwrite || targetFile.exists() == false || targetFile.length() == 0) {
-                InputStream inFile = getClass().getClassLoader().getResourceAsStream(jarFileName);
+                InputStream inFile = getResource(jarFileName);
                 FileWriter outFile = new FileWriter(targetFile);
 
                 int c;
