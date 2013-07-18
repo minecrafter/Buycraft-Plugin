@@ -1,6 +1,7 @@
 package net.buycraft.util;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.ReportTask;
 
 import java.io.*;
 import java.net.URL;
@@ -44,6 +45,7 @@ public class Updater {
             plugin.getLogger().info("Installed latest version, please restart to apply changes.");
         } catch (IOException e) {
             plugin.getLogger().info("Failed to download new version. " + e.getLocalizedMessage());
+            ReportTask.setLastException(e);
         }
     }
 
@@ -67,6 +69,7 @@ public class Updater {
 
             jar.close();
         } catch (Exception e) {
+            ReportTask.setLastException(e);
             e.printStackTrace();
         }
     }

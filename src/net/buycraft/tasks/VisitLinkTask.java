@@ -27,6 +27,7 @@ public class VisitLinkTask extends ApiTask {
             this.URL = "http://is.gd/create.php?format=json&url=" + URLEncoder.encode(URL, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 
@@ -60,6 +61,7 @@ public class VisitLinkTask extends ApiTask {
             }
         } catch (JSONException e) {
             getLogger().severe("JSON parsing error.");
+            ReportTask.setLastException(e);
         }
 
         if (player != null) {

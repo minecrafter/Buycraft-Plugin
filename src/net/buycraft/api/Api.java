@@ -1,6 +1,8 @@
 package net.buycraft.api;
 
 import net.buycraft.Plugin;
+import net.buycraft.tasks.ReportTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,6 +100,7 @@ public class Api {
                 }
             } catch (JSONException e) {
                 plugin.getLogger().severe("JSON parsing error.");
+                ReportTask.setLastException(e);
             }
         }
 
@@ -129,14 +132,19 @@ public class Api {
             return content;
         } catch (ConnectException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
+            ReportTask.setLastException(e);
         } catch (SocketTimeoutException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to timeout error.");
+            ReportTask.setLastException(e);
         } catch (FileNotFoundException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to file not found.");
+            ReportTask.setLastException(e);
         } catch (UnknownHostException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
+            ReportTask.setLastException(e);
         } catch (Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
 
         return null;

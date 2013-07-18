@@ -2,6 +2,7 @@ package net.buycraft.tasks;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,7 @@ public class ReloadPackagesTask extends ApiTask {
             }
         } catch (JSONException e) {
             plugin.getLogger().severe("Failed to load packages due to JSON parse error.");
+            ReportTask.setLastException(e);
         }
     }
 }

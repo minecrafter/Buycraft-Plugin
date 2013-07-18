@@ -5,7 +5,9 @@ import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.PackageCheckerTask;
 import net.buycraft.tasks.RecentPaymentsTask;
 import net.buycraft.tasks.ReloadPackagesTask;
+import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,6 +31,18 @@ public class BuycraftCommand {
         			RecentPaymentsTask.call(commandSender, playerLookup);
 
                     return true;
+            	}
+            	
+            	if (args[0].equalsIgnoreCase("report")) {
+            	    // Call the report task, if it fails we don't send the following messages to the player
+                    if (ReportTask.call(commandSender) && commandSender instanceof Player) {
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Beginning generation of report");
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                    }
+            	    return true;
             	}
             	
                 if (args[0].equalsIgnoreCase("secret")) {
@@ -115,6 +129,7 @@ public class BuycraftCommand {
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft forcecheck:" + ChatColor.GREEN + " Check for pending commands");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft secret <key>:" + ChatColor.GREEN + " Set the Secret key");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft payments <ign>:" + ChatColor.GREEN + " Get recent payments of a user");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft report:" + ChatColor.GREEN + " Generate an error report");
                 }
                    
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.hasPermission("buycraft.signs") || commandSender.isOp()) {

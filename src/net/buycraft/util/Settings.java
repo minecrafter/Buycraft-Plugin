@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import net.buycraft.tasks.ReportTask;
+
 public class Settings {
     private final String LOCATION = "plugins/Buycraft/settings.conf";
     private File file;
@@ -31,6 +33,7 @@ public class Settings {
             properties.load(new FileInputStream(LOCATION));
         } catch (IOException e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 
@@ -69,8 +72,10 @@ public class Settings {
             properties.store(new FileOutputStream(LOCATION), "Buycraft Plugin");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         } catch (IOException e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 

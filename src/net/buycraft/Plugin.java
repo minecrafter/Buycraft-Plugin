@@ -10,6 +10,7 @@ import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Plugin extends JavaPlugin implements Listener {
     private static Plugin instance;
@@ -159,8 +161,10 @@ public class Plugin extends JavaPlugin implements Listener {
             }
         } catch (NullPointerException e) {
             getLogger().info("Failed to create " + jarFileName + ".");
+            ReportTask.setLastException(e);
         } catch (Exception e) {
             e.printStackTrace();
+            ReportTask.setLastException(e);
         }
     }
 
