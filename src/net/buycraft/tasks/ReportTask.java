@@ -67,6 +67,9 @@ public class ReportTask extends ApiTask {
             String os = System.getProperty("os.name") + " | " + System.getProperty("os.version") + " | " + System.getProperty("os.arch");
             String javaVersion = System.getProperty("java.version") + " | " + System.getProperty("java.vendor");
             String serverVersion = Bukkit.getBukkitVersion();
+            String serverName = Bukkit.getServer().getName();
+            String serverIP = Bukkit.getIp();
+            int serverPort = Bukkit.getPort();
             String buycraftVersion = Plugin.getInstance().getVersion();
 
             String pingGoogle = pingCheck(googleAddress);
@@ -80,6 +83,8 @@ public class ReportTask extends ApiTask {
                     "Operating system: ", os, '\n',
                     "Java Version: ", javaVersion, '\n',
                     "Server Version: ", serverVersion, '\n',
+                    "Server Name: ", serverName, "\n",
+                    "Server IP: ", serverIP, ":", serverPort, "\n",
                     "Buycraft Version: ", buycraftVersion, '\n',
                     '\n',
                     "#### Connection ####", '\n',
