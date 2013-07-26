@@ -32,6 +32,7 @@ public class CommandExecuteTask extends ApiTask {
      */
     public void queueCommand(String command, String username) {
         try {
+            username = Bukkit.getServer().getOfflinePlayer(username).getName();
         	command = REPLACE_NAME.matcher(command).replaceAll(username);
 
             Bukkit.getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");

@@ -43,7 +43,7 @@ public class PackageCheckerTask extends ApiTask {
                     	// Put players in a HashMap for quick access
                     	HashMap<String, Player> onlinePlayerSet = new HashMap<String, Player>(onlinePlayers.length);
                     	for (Player player : onlinePlayers) {
-                    		onlinePlayerSet.put(player.getName(), player);
+                    		onlinePlayerSet.put(player.getName().toLowerCase(), player);
                     	}
                     	
                         JSONObject apiResponse = plugin.getApi().commandsGetAction();
@@ -57,7 +57,7 @@ public class PackageCheckerTask extends ApiTask {
                         		for (int i = 0; i < commandsPayload.length(); i++) {
                         			JSONObject row = commandsPayload.getJSONObject(i);
 
-                        			String username = row.getString("ign");
+                        			String username = row.getString("ign").toLowerCase();
                         			Boolean requireOnline = row.getBoolean("requireOnline");
                         			String command = row.getJSONArray("commands").getString(0);
 
