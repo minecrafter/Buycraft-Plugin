@@ -57,6 +57,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.8
+
+		- Fixed a bug with case sensitive usernames.
+
 	Version 5.7
 
 		- Major performance improvements over the entire plugin.
