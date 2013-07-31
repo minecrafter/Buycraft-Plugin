@@ -40,11 +40,6 @@ public class PackageCheckerTask extends ApiTask {
                 	// Fetch online player list
                 	Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
                     if (onlinePlayers.length > 0 || manualExecution) {
-                    	// Put players in a HashMap for quick access
-                    	HashMap<String, Player> onlinePlayerSet = new HashMap<String, Player>(onlinePlayers.length);
-                    	for (Player player : onlinePlayers) {
-                    		onlinePlayerSet.put(player.getName().toLowerCase(), player);
-                    	}
                     	
                         JSONObject apiResponse = plugin.getApi().commandsGetAction();
                         
@@ -57,12 +52,12 @@ public class PackageCheckerTask extends ApiTask {
                         		for (int i = 0; i < commandsPayload.length(); i++) {
                         			JSONObject row = commandsPayload.getJSONObject(i);
 
-                        			String username = row.getString("ign").toLowerCase();
+                        			String username = row.getString("ign");
                         			Boolean requireOnline = row.getBoolean("requireOnline");
                         			String command = row.getJSONArray("commands").getString(0);
                                     int delay = row.getInt("delay");
 
-                        			if (requireOnline == false || onlinePlayerSet.containsKey(username)) {
+                        			if (requireOnline == false || getPlayer(onlinePlayers, username) == null) {
                         				executedCommands.add(username);
                         					
                         				String c = command;
@@ -81,10 +76,9 @@ public class PackageCheckerTask extends ApiTask {
 
                         		if (executedCommands.size() > 0) {
                         			for (String username : executedCommands) {
-                        				Player player = onlinePlayerSet.get(username);
+                        				Player player = getPlayer(onlinePlayers, username);
 
                         				if (player != null) {
-
                         					player.sendMessage(new String[] {
                         							Chat.header(), 
                         							Chat.seperator(),
@@ -109,5 +103,13 @@ public class PackageCheckerTask extends ApiTask {
             e.printStackTrace();
             ReportTask.setLastException(e);
         }
+    }
+
+    private Player getPlayer(Player[] players, String name) {
+        for (Player player : players) {
+            if (player.getName().equalsIgnoreCase(name))
+                return player;
+        }
+        return null;
     }
 }
