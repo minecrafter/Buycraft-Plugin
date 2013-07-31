@@ -60,6 +60,7 @@ public class PackageCheckerTask extends ApiTask {
                         			String username = row.getString("ign").toLowerCase();
                         			Boolean requireOnline = row.getBoolean("requireOnline");
                         			String command = row.getJSONArray("commands").getString(0);
+                                    int delay = row.getInt("delay");
 
                         			if (requireOnline == false || onlinePlayerSet.containsKey(username)) {
                         				executedCommands.add(username);
@@ -67,13 +68,12 @@ public class PackageCheckerTask extends ApiTask {
                         				String c = command;
                         				String u = username;
                         				
-                        				Plugin.getInstance().getCommandExecutor().queueCommand(c, u);;
+                        				Plugin.getInstance().getCommandExecutor().queueCommand(c, u, delay);
                         			}
                         		}
                         		
                         		// If the plugin is disabled here our commands won't get executed so we return
                         		if (!Plugin.getInstance().isEnabled()) {
-                        		    Plugin.getInstance().getCommandExecutor().clearCommands();
                         		    return;
                         		}
                         		
