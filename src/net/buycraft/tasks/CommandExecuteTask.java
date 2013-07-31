@@ -23,10 +23,17 @@ public class CommandExecuteTask extends ApiTask {
 	private final AtomicBoolean isScheduled;
 	private BukkitTask task;
 
+	private String lastLongRunningCommand = "None";
+
     public CommandExecuteTask() {
 		commandQueue = new PriorityBlockingQueue<PackageCommand>();
 		isScheduled = new AtomicBoolean(false);
 	}
+    
+    public String getLastLongRunningCommand()
+    {
+        return lastLongRunningCommand;
+    }
     
     /**
      * Parses the command and queues it to be executed in the main thread
@@ -79,7 +86,15 @@ public class CommandExecuteTask extends ApiTask {
 		// Cap execution time at 500us
 		while (!commandQueue.isEmpty() && commandQueue.peek().runtime > System.currentTimeMillis() && System.nanoTime() - start < 500000) {
 			try {
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandQueue.poll().command);
+			    long cmdStart = System.currentTimeMillis();
+			    String command = commandQueue.poll().command;
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+				// Check if the command lasted longer than our threshold
+				long cmdDiff = System.currentTimeMillis() - cmdStart;
+				if (cmdDiff >= 10) {
+				    // Save the command and time it took to run
+				    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + command;
+				}
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
