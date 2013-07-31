@@ -1,11 +1,17 @@
 package net.buycraft.util;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class PackageCommand implements Comparable<PackageCommand> {
+    private final static AtomicInteger nextId = new AtomicInteger(Integer.MIN_VALUE);
+
+    private final int id;
     public final String command;
     public final long runtime;
-    
+
     public PackageCommand(String command, int tickDelay)
     {
+        this.id = nextId.getAndIncrement();
         this.command = command;
         this.runtime = System.currentTimeMillis() + tickDelay * 50L;
     }
@@ -21,7 +27,7 @@ public class PackageCommand implements Comparable<PackageCommand> {
         if (runtime < o.runtime)
             return -1;
 
-        // Make sure we never have two similar commands match
-        return hashCode() > o.hashCode() ? 1 : -1;
+        // Make sure the commands are ordered correctly
+        return id > o.id ? 1 : -1;
     }
 }
