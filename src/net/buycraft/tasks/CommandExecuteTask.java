@@ -84,7 +84,7 @@ public class CommandExecuteTask extends ApiTask {
 	public void run() {
 		long start = System.nanoTime();
 		// Cap execution time at 500us
-		while (!commandQueue.isEmpty() && commandQueue.peek().runtime > System.currentTimeMillis() && System.nanoTime() - start < 500000) {
+		while (!commandQueue.isEmpty() && commandQueue.peek().runtime <= System.currentTimeMillis() && System.nanoTime() - start < 500000) {
 			try {
 			    long cmdStart = System.currentTimeMillis();
 			    String command = commandQueue.poll().command;
