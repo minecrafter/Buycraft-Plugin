@@ -24,6 +24,7 @@ public class ReportTask extends ApiTask {
 
     private static final String googleAddress = "www.google.com";
     private static final String apiAddress = "api.buycraft.net";
+    private static final String isGdAddress = "www.is.gd";
     private static final String apiAccessPath = "http://" + apiAddress + "/ok.php";
 
     private static boolean running = false;
@@ -79,7 +80,8 @@ public class ReportTask extends ApiTask {
 
             String pingGoogle = pingCheck(googleAddress);
             String pingApi = pingCheck(apiAddress);
-
+            String isGdCheck = pingCheck(isGdAddress);
+            
             String serviceCheck = checkOkay();
 
             writeReport(parseData(
@@ -93,12 +95,17 @@ public class ReportTask extends ApiTask {
                     "Buycraft Version: ", buycraftVersion, '\n',
                     '\n',
                     "#### Buycraft Info ####", '\n',
+                    "Store URL: " , Plugin.getInstance().getServerStore(), '\n',
+                    "Store ID: " , Plugin.getInstance().getServerID(), '\n',
+                    "Buy Command: ", Plugin.getInstance().getBuyCommand(), '\n',
                     "Authenticated: ", isAuthenticated, '\n',
+                    "Error code: ", Plugin.getInstance().getAuthenticatedCode(), '\n',
                     "Last Package Checker Execution: ", lastPackageCheckerExecution, '\n',
                     '\n',
                     "#### Connection ####", '\n',
                     "Google Ping Result: ", pingGoogle, '\n',
                     "Buycraft API Ping Result: ", pingApi, '\n',
+                    "URL Shortener Ping Result: ", isGdCheck, '\n',
                     "Buycraft API Status Result: ", serviceCheck, '\n',
                     '\n',
                     "#### Performance ####", '\n',
@@ -190,7 +197,7 @@ public class ReportTask extends ApiTask {
 
         try {
             socket = new Socket(url, 80);
-            return "Connected to " + url + " successfully!!";
+            return "Connected to " + url + " successfully.";
         } catch (UnknownHostException e) {
             return "Could not resolve host " + url;
         } catch (IOException e) {
@@ -211,7 +218,7 @@ public class ReportTask extends ApiTask {
             URL url = new URL(apiAccessPath);
             s = new Scanner(url.openStream());
 
-            return s.hasNextLine() ? "Responce from API - " + s.nextLine() : "No responce from API";
+            return s.hasNextLine() ? "Response from API - " + s.nextLine() : "No response from API";
         } catch (IOException e) {
             return "Failed to connect to the API - " + e.getClass().toString() + " | " + e.getMessage();
         } finally {

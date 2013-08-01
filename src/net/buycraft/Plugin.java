@@ -40,9 +40,9 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private Api api;
 
-    private int serverID;
-    private String serverCurrency;
-    private String serverStore;
+    private int serverID = 0;
+    private String serverCurrency = "";
+    private String serverStore = "";
 
     private PackageManager packageManager;
     private ChatManager chatManager;
@@ -173,17 +173,23 @@ public class Plugin extends JavaPlugin implements Listener {
                 commandSender.sendMessage(Chat.seperator());
                 commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft has failed to startup.");
                 commandSender.sendMessage(Chat.seperator());
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is normally to do with an invalid Secret key,");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the Secret key into the settings.conf");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
-                commandSender.sendMessage(Chat.seperator());
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
-                commandSender.sendMessage(Chat.seperator());
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If the previous advice failed, please contact");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "customer support via support@buycraft.net and");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "reference the code " + authenticatedCode + ".");
-                commandSender.sendMessage(Chat.seperator());
+                if(authenticatedCode == 101)  {
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is because of an invalid secret key,");
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the Secret key into the settings.conf");
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
+	                commandSender.sendMessage(Chat.seperator());
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "You can find your secret key from the control panel.");
+	                commandSender.sendMessage(Chat.seperator());
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
+	                commandSender.sendMessage(Chat.seperator());
+	            } else {
+	                commandSender.sendMessage(Chat.seperator());
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please execute the '/buycraft report' command and");
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "then send the generated report.txt file to");
+	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "support@buycraft.net. We will be happy to help.");
+	                commandSender.sendMessage(Chat.seperator());
+	            }
                 commandSender.sendMessage(Chat.footer());
             }
 
