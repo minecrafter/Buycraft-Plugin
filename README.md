@@ -57,6 +57,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 5.9
+
+		- Included support for delayed commands.
+
 	Version 5.8
 
 		- Fixed a bug with case sensitive usernames.

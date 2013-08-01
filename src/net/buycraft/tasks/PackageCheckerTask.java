@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 public class PackageCheckerTask extends ApiTask {
