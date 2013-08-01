@@ -57,7 +57,7 @@ public class PackageCheckerTask extends ApiTask {
                         			String command = row.getJSONArray("commands").getString(0);
                                     int delay = row.getInt("delay");
 
-                        			if (requireOnline == false || getPlayer(onlinePlayers, username) == null) {
+                        			if (requireOnline == false || getPlayer(onlinePlayers, username) != null) {
                         				executedCommands.add(username);
                         					
                         				String c = command;
