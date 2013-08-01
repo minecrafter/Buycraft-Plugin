@@ -100,7 +100,10 @@ public class ReportTask extends ApiTask {
                     "Google Ping Result: ", pingGoogle, '\n',
                     "Buycraft API Ping Result: ", pingApi, '\n',
                     "Buycraft API Status Result: ", serviceCheck, '\n',
-                    '\n', 
+                    '\n',
+                    "#### Performance ####", '\n',
+                    "Long Running Command: ", Plugin.getInstance().getCommandExecutor().getLastLongRunningCommand(), '\n',
+                    '\n',
                     "#### Last Exception ####", '\n',
                     lastException != null ? lastException : "No errors since startup"
                     ));
