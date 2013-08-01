@@ -6,12 +6,14 @@ public class PackageCommand implements Comparable<PackageCommand> {
     private final static AtomicInteger nextId = new AtomicInteger(Integer.MIN_VALUE);
 
     private final int id;
+    public final String username;
     public final String command;
     public final long runtime;
 
-    public PackageCommand(String command, int tickDelay)
+    public PackageCommand(String username, String command, int tickDelay)
     {
         this.id = nextId.getAndIncrement();
+        this.username = username;
         this.command = command;
         this.runtime = System.currentTimeMillis() + tickDelay * 50L;
     }
