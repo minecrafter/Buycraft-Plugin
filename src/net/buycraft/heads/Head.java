@@ -58,7 +58,7 @@ public class Head {
         }
         sign.setLine(1, name);
         if(currency) {
-            if (Plugin.getInstance().getSettings().getBoolean("buysignsRemoveFreePrice") && price <= 0.0) {
+            if (price <= 0.0 && Plugin.getInstance().getSettings().getBoolean("buysignsRemoveFreePrice")) {
                 sign.setLine(2, null);
             } else {
                 sign.setLine(2, NumberFormat.getCurrencyInstance().format(price).substring(1) + " " + this.currency);
