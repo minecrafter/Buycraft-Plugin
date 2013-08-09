@@ -35,9 +35,9 @@ public class Head {
     }
 
     private Skull getSkull(Sign sign) {
-        Block b = sign.getBlock();
+        Block b = sign.getBlock().getRelative(BlockFace.UP);
         for(BlockFace face : HeadListener.FACES) {
-            Block s = b.getRelative(BlockFace.UP).getRelative(face);
+            Block s = b.getRelative(face);
             if(s.getState() instanceof Skull) {
                 return (Skull) s.getState();
             }
