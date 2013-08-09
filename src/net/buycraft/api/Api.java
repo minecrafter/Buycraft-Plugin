@@ -3,6 +3,7 @@ package net.buycraft.api;
 import net.buycraft.Plugin;
 import net.buycraft.tasks.ReportTask;
 
+import org.bukkit.Bukkit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,7 +86,10 @@ public class Api {
         }
 
         apiCallParams.put("secret", apiKey);
-        apiCallParams.put("version", String.valueOf(plugin.getVersion()));
+        apiCallParams.put("version", plugin.getVersion());
+        apiCallParams.put("players_count", String.valueOf(Bukkit.getOnlinePlayers().length));
+        apiCallParams.put("players_max", String.valueOf(Bukkit.getMaxPlayers()));
+        apiCallParams.put("server_port", String.valueOf(Bukkit.getPort()));
 
         String url = apiUrl + generateUrlQueryString(apiCallParams);
 
