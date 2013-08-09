@@ -1,5 +1,7 @@
 package net.buycraft.heads;
 
+import net.buycraft.Plugin;
+
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -56,7 +58,11 @@ public class Head {
         }
         sign.setLine(1, name);
         if(currency) {
-            sign.setLine(2, NumberFormat.getCurrencyInstance().format(price).substring(1) + " " + this.currency);
+            if (Plugin.getInstance().getSettings().getBoolean("buysignsRemoveFreePrice") && price <= 0.0) {
+                sign.setLine(2, null);
+            } else {
+                sign.setLine(2, NumberFormat.getCurrencyInstance().format(price).substring(1) + " " + this.currency);
+            }
         }
         sign.update();
     }
