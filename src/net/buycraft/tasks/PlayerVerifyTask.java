@@ -51,7 +51,7 @@ public class PlayerVerifyTask extends ApiTask {
             // Make the call to the api
             JSONObject result = Plugin.getInstance().getApi().playerVerifyAction(new JSONArray(playerCodes));
 
-            if (result == null) {
+            if (result == null || result.getInt("code") != 0) {
                 String apiFailureMessage = ChatColor.RED + Plugin.getInstance().getLanguage().getString("playerVerifyApiFailure");
 
                 // Tell each player that the verification of their code failed
@@ -68,7 +68,7 @@ public class PlayerVerifyTask extends ApiTask {
                 return;
             }
 
-            JSONArray verificationResultArray = result.getJSONArray("result");
+            JSONArray verificationResultArray = result.getJSONArray("payload");
 
             for (int i = 0; i < verificationResultArray.length(); ++i) {
                 JSONObject playerVerifyResult = verificationResultArray.getJSONObject(i);
