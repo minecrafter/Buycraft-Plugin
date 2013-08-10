@@ -55,11 +55,17 @@ public class Language {
         defaultProperties.put("packageName", "Name");
         defaultProperties.put("packagePrice", "Price");
         defaultProperties.put("pageNotFound", "Page not found.");
+        
         defaultProperties.put("playerVerifyBegin", "Code is being verified. Please wait for code confirmation.");
         defaultProperties.put("playerVerifyNoCode", "Must provide a verification code.");
         defaultProperties.put("playerVerifySuccess", "Code verified. You will receive your package shortly.");
         defaultProperties.put("playerVerifyFailure", "Code verification failed. Check you typed the code correctly");
         defaultProperties.put("playerVerifyApiFailure", "Code verification failed. Connection to Buycraft failed.");
+        
+        defaultProperties.put("playerCheckExpiringBegin", "Fetcing expiring packages. Please wait a moment.");
+        defaultProperties.put("playerCheckExpiringApiFailure", "Couldn't check for expiring packages. Connection to Buycraft API failed.");
+        defaultProperties.put("playerCheckExpiringHeader", "Expiring packages:");
+        defaultProperties.put("playerCheckExpiringNone", "None");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();

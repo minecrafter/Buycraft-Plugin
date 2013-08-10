@@ -41,6 +41,15 @@ public class Api {
         return call(apiCallParams);
     }
 
+    public JSONObject playerCheckPackagesAction(JSONArray players) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "getExpiring");
+        apiCallParams.put("players", players.toString());
+
+        return call(apiCallParams);
+    }
+
     public JSONObject authenticateAction() {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 

@@ -36,7 +36,19 @@ public class BuyCommand {
                             commandSender.sendMessage(Chat.footer());
                         }
                         return true;
-                    } else if (args[1].equalsIgnoreCase("page") && args.length == 3) {
+                    }
+
+                    if (args[1].equalsIgnoreCase("expire")) {
+                        plugin.getPlayerCheckExipreTask().checkExpired(commandSender);
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerCheckExpiringBegin"));
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                        return true;
+                    }
+
+                    if (args[1].equalsIgnoreCase("page") && args.length == 3) {
                         pageToView = args[2];
                     } else {
                         if (args.length == 2 && isNumber(args[1])) {

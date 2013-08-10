@@ -10,6 +10,7 @@ import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.PlayerCheckExpireTask;
 import net.buycraft.tasks.PlayerVerifyTask;
 import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
@@ -49,6 +50,7 @@ public class Plugin extends JavaPlugin implements Listener {
     private ChatManager chatManager;
     private CommandExecuteTask commandExecutor;
     private PlayerVerifyTask playerVerifyTask;
+    private PlayerCheckExpireTask playerCheckExpireTask;
 
     private boolean authenticated = false;
     private int authenticatedCode = 1;
@@ -90,6 +92,7 @@ public class Plugin extends JavaPlugin implements Listener {
         chatManager = new ChatManager();
         commandExecutor = new CommandExecuteTask();
         playerVerifyTask = new PlayerVerifyTask();
+        playerCheckExpireTask = new PlayerCheckExpireTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
 
@@ -258,6 +261,11 @@ public class Plugin extends JavaPlugin implements Listener {
     public PlayerVerifyTask getPlayerVerifyTask() {
         return playerVerifyTask;
     }
+
+    public PlayerCheckExpireTask getPlayerCheckExipreTask() {
+        return playerCheckExpireTask;
+    }
+
     public String getServerCurrency() {
         return serverCurrency;
     }
