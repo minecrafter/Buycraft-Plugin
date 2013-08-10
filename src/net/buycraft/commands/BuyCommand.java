@@ -20,34 +20,6 @@ public class BuyCommand {
                 String pageToView = "1";
 
                 if (args.length > 1) {
-                    if (args[1].equalsIgnoreCase("verify")) {
-                        if (args.length >= 3) {
-                            plugin.getPlayerVerifyTask().verifyPlayerCode(commandSender, args[2]);
-                            commandSender.sendMessage(Chat.header());
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerVerifyBegin"));
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.footer());
-                        } else {
-                            commandSender.sendMessage(Chat.header());
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("playerVerifyNoCode"));
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.footer());
-                        }
-                        return true;
-                    }
-
-                    if (args[1].equalsIgnoreCase("expire")) {
-                        plugin.getPlayerCheckExipreTask().checkExpired(commandSender);
-                        commandSender.sendMessage(Chat.header());
-                        commandSender.sendMessage(Chat.seperator());
-                        commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerCheckExpiringBegin"));
-                        commandSender.sendMessage(Chat.seperator());
-                        commandSender.sendMessage(Chat.footer());
-                        return true;
-                    }
-
                     if (args[1].equalsIgnoreCase("page") && args.length == 3) {
                         pageToView = args[2];
                     } else {

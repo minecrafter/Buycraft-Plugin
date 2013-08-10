@@ -19,6 +19,35 @@ public class BuycraftCommand {
     public static boolean process(CommandSender commandSender, String[] args) {
         Plugin plugin = Plugin.getInstance();
         if (args.length > 0) {
+            if (commandSender instanceof Player) {
+                if (args[1].equalsIgnoreCase("verify")) {
+                    if (args.length >= 3) {
+                        plugin.getPlayerVerifyTask().verifyPlayerCode((Player) commandSender, args[2]);
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerVerifyBegin"));
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                    } else {
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("playerVerifyNoCode"));
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                    }
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("expire")) {
+                    plugin.getPlayerCheckExipreTask().checkExpired((Player) commandSender);
+                    commandSender.sendMessage(Chat.header());
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerCheckExpiringBegin"));
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.footer());
+                    return true;
+                }
+            }
             if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
             	
             	if(args[0].equalsIgnoreCase("payments")) {
@@ -122,7 +151,9 @@ public class BuycraftCommand {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + ":" + ChatColor.GREEN + " View available packages for sale");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " page <ID>:" + ChatColor.GREEN + " Navigate through package pages");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " <ID>: " + ChatColor.GREEN + " Purchase a specific package");
-                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " verify <Code>:" + ChatColor.GREEN + " Verify your order");
+                commandSender.sendMessage(Chat.seperator());
+                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft verify <Code>:" + ChatColor.GREEN + " Verify your order");
+                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft expire:" + ChatColor.GREEN + " Check when your packages expire");
                 commandSender.sendMessage(Chat.seperator());
                 
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
