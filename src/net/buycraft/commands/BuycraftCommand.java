@@ -122,6 +122,7 @@ public class BuycraftCommand {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + ":" + ChatColor.GREEN + " View available packages for sale");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " page <ID>:" + ChatColor.GREEN + " Navigate through package pages");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " <ID>: " + ChatColor.GREEN + " Purchase a specific package");
+                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " verify <Code>:" + ChatColor.GREEN + " Verify your order");
                 commandSender.sendMessage(Chat.seperator());
                 
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {

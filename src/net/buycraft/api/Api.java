@@ -4,6 +4,7 @@ import net.buycraft.Plugin;
 import net.buycraft.tasks.ReportTask;
 
 import org.bukkit.Bukkit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +30,15 @@ public class Api {
         } else {
             this.apiUrl = "http://api.buycraft.net/v3";
         }
+    }
+
+    public JSONObject playerVerifyAction(JSONArray playerCodes) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "verify");
+        apiCallParams.put("verify", playerCodes.toString());
+
+        return call(apiCallParams);
     }
 
     public JSONObject authenticateAction() {
