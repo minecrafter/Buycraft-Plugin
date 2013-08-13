@@ -40,7 +40,7 @@ public class CommandExecuteTask extends ApiTask {
      * Parses the command and queues it to be executed in the main thread
      * @param delay The time in seconds for the task to be delayed
      */
-    public void queueCommand(String command, String username, int delay) {
+    public void queueCommand(int commandId, String command, String username, int delay) {
         // Convert delay from seconds to ticks
         delay *= 20;
         try {
@@ -52,7 +52,8 @@ public class CommandExecuteTask extends ApiTask {
                 String newCommand = command.replace("{mcmyadmin}", "");                
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
-                commandQueue.add(new PackageCommand(username, command, delay));
+                if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId));
+                    commandQueue.add(new PackageCommand(commandId, username, command, delay));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,6 +97,8 @@ public class CommandExecuteTask extends ApiTask {
 				    // Save the command and time it took to run
 				    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + pkgcmd.command;
 				}
+				// Queue the command for deletion
+				Plugin.getInstance().getCommandDeleteTask().deleteCommand(pkgcmd.getId());
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

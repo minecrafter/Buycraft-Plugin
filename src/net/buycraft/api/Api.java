@@ -92,7 +92,7 @@ public class Api {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "commands");
-        apiCallParams.put("do", "remove");
+        apiCallParams.put("do", "removeId");
 
         apiCallParams.put("commands", commandsToDelete);
 

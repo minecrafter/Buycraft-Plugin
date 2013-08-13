@@ -51,6 +51,7 @@ public class PackageCheckerTask extends ApiTask {
                                 for (int i = 0; i < commandsPayload.length(); i++) {
                                     JSONObject row = commandsPayload.getJSONObject(i);
 
+                                    int commandId = row.getInt("id");
                                     String username = row.getString("ign");
                                     boolean requireOnline = row.getBoolean("requireOnline");
                                     String command = row.getJSONArray("commands").getString(0);
@@ -62,7 +63,7 @@ public class PackageCheckerTask extends ApiTask {
                                         String c = command;
                                         String u = username;
                                         
-                                        Plugin.getInstance().getCommandExecutor().queueCommand(c, u, delay);
+                                        Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay);
                                     }
                                 }
                                 
@@ -87,8 +88,6 @@ public class PackageCheckerTask extends ApiTask {
                                             });
                                         }
                                     }
-
-                                    CommandDeleteTask.call(new JSONArray(executedCommands.toArray()).toString());
                                 }
 
                                 plugin.getLogger().info("Package checker successfully executed.");

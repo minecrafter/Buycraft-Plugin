@@ -8,6 +8,7 @@ import net.buycraft.commands.EnableChatCommand;
 import net.buycraft.heads.HeadFile;
 import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
+import net.buycraft.tasks.CommandDeleteTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
 import net.buycraft.tasks.PlayerCheckExpireTask;
@@ -51,6 +52,7 @@ public class Plugin extends JavaPlugin implements Listener {
     private CommandExecuteTask commandExecutor;
     private PlayerVerifyTask playerVerifyTask;
     private PlayerCheckExpireTask playerCheckExpireTask;
+    private CommandDeleteTask commandDeleteTask;
 
     private boolean authenticated = false;
     private int authenticatedCode = 1;
@@ -93,6 +95,7 @@ public class Plugin extends JavaPlugin implements Listener {
         commandExecutor = new CommandExecuteTask();
         playerVerifyTask = new PlayerVerifyTask();
         playerCheckExpireTask = new PlayerCheckExpireTask();
+        commandDeleteTask = new CommandDeleteTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
 
@@ -110,6 +113,9 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
+        // Make sure any commands which have been run are deleted
+        commandDeleteTask.runNow();
+
         executors.shutdown();
         while (!executors.isTerminated()) {
         }
@@ -264,6 +270,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public PlayerCheckExpireTask getPlayerCheckExipreTask() {
         return playerCheckExpireTask;
+    }
+
+    public CommandDeleteTask getCommandDeleteTask() {
+        return commandDeleteTask;
     }
 
     public String getServerCurrency() {
