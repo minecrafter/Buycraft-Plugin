@@ -51,6 +51,7 @@ public class CommandDeleteTask extends ApiTask {
     public void run() {
         try
         {
+            scheduled.set(false);
             Integer[] commandIds = clearCommands();
 
             if (commandIds.length == 0)
