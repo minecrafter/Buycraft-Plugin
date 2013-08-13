@@ -13,23 +13,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 public class CommandExecuteTask extends ApiTask {
-	private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
-	
-	/**
-	 * Queues commands to be run
-	 * <p>
-	 * Note: 'Probably' not required, but safer to use it than not.
-	 */
-	private final PriorityBlockingQueue<PackageCommand> commandQueue;
-	private final AtomicBoolean isScheduled;
-	private BukkitTask task;
+    private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
+    
+    /**
+     * Queues commands to be run
+     * <p>
+     * Note: 'Probably' not required, but safer to use it than not.
+     */
+    private final PriorityBlockingQueue<PackageCommand> commandQueue;
+    private final AtomicBoolean isScheduled;
+    private BukkitTask task;
 
-	private String lastLongRunningCommand = "None";
+    private String lastLongRunningCommand = "None";
 
     public CommandExecuteTask() {
-		commandQueue = new PriorityBlockingQueue<PackageCommand>();
-		isScheduled = new AtomicBoolean(false);
-	}
+        commandQueue = new PriorityBlockingQueue<PackageCommand>();
+        isScheduled = new AtomicBoolean(false);
+    }
     
     public String getLastLongRunningCommand()
     {
@@ -45,7 +45,7 @@ public class CommandExecuteTask extends ApiTask {
         delay *= 20;
         try {
             username = Bukkit.getServer().getOfflinePlayer(username).getName();
-        	command = REPLACE_NAME.matcher(command).replaceAll(username);
+            command = REPLACE_NAME.matcher(command).replaceAll(username);
 
             if (command.startsWith("{mcmyadmin}")) {
                 Plugin.getInstance().getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");
@@ -66,52 +66,52 @@ public class CommandExecuteTask extends ApiTask {
      * Should be run after PackageChecker finishes
      */
     public void scheduleExecutor() {
-    	if (commandQueue.isEmpty()) {
-    		// What?
-    		return;
-    	}
-    	// Make sure the task is not already scheduled
-    	// NOTE: This will only happen if commands take 6000 ticks to execute (Lets play it safe)
-    	if (isScheduled.compareAndSet(false, true)) {
-    	    task = syncTimer(this, 1L, 1L);
+        if (commandQueue.isEmpty()) {
+            // What?
+            return;
+        }
+        // Make sure the task is not already scheduled
+        // NOTE: This will only happen if commands take 6000 ticks to execute (Lets play it safe)
+        if (isScheduled.compareAndSet(false, true)) {
+            task = syncTimer(this, 1L, 1L);
             // Make sure the task was actually scheduled
-    	    if (task == null) {
-    	        isScheduled.set(false);
-    	    }
-    	}
+            if (task == null) {
+                isScheduled.set(false);
+            }
+        }
     }
 
-	public void run() {
-		long start = System.nanoTime();
-		// Cap execution time at 500us
-		while (!commandQueue.isEmpty() && commandQueue.peek().runtime <= System.currentTimeMillis() && System.nanoTime() - start < 500000) {
-			try {
+    public void run() {
+        long start = System.nanoTime();
+        // Cap execution time at 500us
+        while (!commandQueue.isEmpty() && commandQueue.peek().runtime <= System.currentTimeMillis() && System.nanoTime() - start < 500000) {
+            try {
                 PackageCommand pkgcmd = commandQueue.poll();
                 Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
-			    long cmdStart = System.currentTimeMillis();
+                long cmdStart = System.currentTimeMillis();
 
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), pkgcmd.command);
-				// Check if the command lasted longer than our threshold
-				long cmdDiff = System.currentTimeMillis() - cmdStart;
-				if (cmdDiff >= 10) {
-				    // Save the command and time it took to run
-				    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + pkgcmd.command;
-				}
-				// Queue the command for deletion
-				Plugin.getInstance().getCommandDeleteTask().deleteCommand(pkgcmd.getId());
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), pkgcmd.command);
+                // Check if the command lasted longer than our threshold
+                long cmdDiff = System.currentTimeMillis() - cmdStart;
+                if (cmdDiff >= 10) {
+                    // Save the command and time it took to run
+                    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + pkgcmd.command;
+                }
+                // Queue the command for deletion
+                Plugin.getInstance().getCommandDeleteTask().deleteCommand(pkgcmd.getId());
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
 
-		if (commandQueue.isEmpty()) {
-			BukkitTask task = this.task;
-			// Null the task now so we can't overwrite a new one
-			this.task = null;
-			// Allow a new task to be scheduled
-			isScheduled.set(false);
-			// Cancel the current task
-			task.cancel();
-		}
+        if (commandQueue.isEmpty()) {
+            BukkitTask task = this.task;
+            // Null the task now so we can't overwrite a new one
+            this.task = null;
+            // Allow a new task to be scheduled
+            isScheduled.set(false);
+            // Cancel the current task
+            task.cancel();
+        }
     }
 }

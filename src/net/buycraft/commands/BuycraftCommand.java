@@ -49,21 +49,21 @@ public class BuycraftCommand {
                 }
             }
             if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
-            	
-            	if(args[0].equalsIgnoreCase("payments")) {
-            		String playerLookup = "";
-            		
-            		if(args.length == 2) {
-            			playerLookup = args[1];
-            		}
-            			
-        			RecentPaymentsTask.call(commandSender, playerLookup);
+                
+                if(args[0].equalsIgnoreCase("payments")) {
+                    String playerLookup = "";
+                    
+                    if(args.length == 2) {
+                        playerLookup = args[1];
+                    }
+                        
+                    RecentPaymentsTask.call(commandSender, playerLookup);
 
                     return true;
-            	}
-            	
-            	if (args[0].equalsIgnoreCase("report")) {
-            	    // Call the report task, if it fails we don't send the following messages to the player
+                }
+                
+                if (args[0].equalsIgnoreCase("report")) {
+                    // Call the report task, if it fails we don't send the following messages to the player
                     if (ReportTask.call(commandSender) && commandSender instanceof Player) {
                         commandSender.sendMessage(Chat.header());
                         commandSender.sendMessage(Chat.seperator());
@@ -71,9 +71,9 @@ public class BuycraftCommand {
                         commandSender.sendMessage(Chat.seperator());
                         commandSender.sendMessage(Chat.footer());
                     }
-            	    return true;
-            	}
-            	
+                    return true;
+                }
+                
                 if (args[0].equalsIgnoreCase("secret")) {
                     if (args.length == 2) {
                         String secretKey = args[1];
@@ -123,7 +123,7 @@ public class BuycraftCommand {
                         
                         if(plugin.getHeadFile().enabled)
                         {
-                        	plugin.getHeadFile().getHeadThread().update();
+                            plugin.getHeadFile().getHeadThread().update();
                         }
                         
                         if (commandSender instanceof Player) {
@@ -165,7 +165,7 @@ public class BuycraftCommand {
                 }
                    
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.hasPermission("buycraft.signs") || commandSender.isOp()) {
-                	commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator());
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign begin/filter <Package>:" + ChatColor.GREEN + " Set payment signs");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign end:" + ChatColor.GREEN + " End payment signs");
                 }

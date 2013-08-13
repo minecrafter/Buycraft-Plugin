@@ -73,7 +73,7 @@ public class Api {
         apiCallParams.put("limit", String.valueOf(limit));
         
         if(usernameSpecific) {
-        	apiCallParams.put("ign", username);
+            apiCallParams.put("ign", username);
         }
 
         return call(apiCallParams);

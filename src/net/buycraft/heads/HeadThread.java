@@ -32,7 +32,7 @@ public class HeadThread implements Runnable {
         List<Head> headList = new ArrayList<Head>();
         try {
             // repopulate headList
-        	JSONObject apiResponse = Plugin.getInstance().getApi().paymentsAction(100, false, "");
+            JSONObject apiResponse = Plugin.getInstance().getApi().paymentsAction(100, false, "");
 
             if (apiResponse != null && apiResponse.getInt("code") == 0) {
                 JSONArray entries = apiResponse.getJSONArray("payload");

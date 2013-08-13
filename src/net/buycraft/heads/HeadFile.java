@@ -112,8 +112,8 @@ public class HeadFile {
         }
     }
 
-	public HeadThread getHeadThread()
-	{
-		return thread;
-	}   
+    public HeadThread getHeadThread()
+    {
+        return thread;
+    }   
 }
