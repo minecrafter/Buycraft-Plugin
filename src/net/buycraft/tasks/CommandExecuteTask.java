@@ -1,5 +1,7 @@
 package net.buycraft.tasks;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import net.buycraft.api.ApiTask;
 import net.buycraft.util.PackageCommand;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 public class CommandExecuteTask extends ApiTask {
@@ -23,6 +26,8 @@ public class CommandExecuteTask extends ApiTask {
     private final PriorityBlockingQueue<PackageCommand> commandQueue;
     private final AtomicBoolean isScheduled;
     private BukkitTask task;
+
+    private final HashMap<String, Integer> requiredInventorySlots = new HashMap<String, Integer>();
 
     private String lastLongRunningCommand = "None";
 
@@ -90,6 +95,21 @@ public class CommandExecuteTask extends ApiTask {
 
                 // Ignore the command if the player does not have enough free item slots
                 if (!pkgcmd.hasRequiredInventorySlots()) {
+                    Player player = Bukkit.getPlayer(pkgcmd.username);
+                    int result = pkgcmd.calculateRequiredInventorySlots(player);
+                    if (result > 0) {
+                        // Fetch any current amounts
+                        Integer currentRequired = requiredInventorySlots.get(player.getName());
+                        // Check an amount exists
+                        if (currentRequired == null) {
+                            currentRequired = 0;
+                        }
+
+                        // Update the hash map with the higher result
+                        if (currentRequired < result) {
+                            requiredInventorySlots.put(player.getName(), result);
+                        }
+                    }
                     continue;
                 }
 
@@ -112,6 +132,17 @@ public class CommandExecuteTask extends ApiTask {
         }
 
         if (commandQueue.isEmpty()) {
+            // Tell users that they need more inventory space
+            for (Entry<String, Integer> e : requiredInventorySlots.entrySet()) {
+                Player p = Bukkit.getPlayerExact(e.getKey());
+                if (p == null) {
+                    continue;
+                }
+                p.sendMessage(String.format(Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory"), e.getValue()));
+            }
+            // Clear the map
+            requiredInventorySlots.clear();
+
             BukkitTask task = this.task;
             // Null the task now so we can't overwrite a new one
             this.task = null;

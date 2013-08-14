@@ -1,8 +1,5 @@
 package net.buycraft.util;
 
-import net.buycraft.Plugin;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,13 +30,16 @@ public class PackageCommand implements Comparable<Object> {
     }
 
     public boolean hasRequiredInventorySlots() {
+        return requiredInventorySlots > 0;
+    }
+
+    public int calculateRequiredInventorySlots(Player player) {
         if (requiredInventorySlots == 0) {
-            return true;
+            return 0;
         }
 
-        Player player = Bukkit.getPlayer(username);
         if (player == null) {
-            return false;
+            return -1;
         }
 
         PlayerInventory inv = player.getInventory();
@@ -49,13 +49,11 @@ public class PackageCommand implements Comparable<Object> {
             ItemStack item = inv.getItem(i);
             if (item == null || item.getType() == Material.AIR) {
                 if (++emptyCount == requiredInventorySlots) {
-                    return true;
+                    return 0;
                 }
             }
         }
-
-        player.sendMessage(String.format(Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory"), requiredInventorySlots));
-        return false;
+        return requiredInventorySlots - emptyCount;
     }
 
     public int compareTo(Object o) {
