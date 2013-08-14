@@ -40,7 +40,7 @@ public class CommandExecuteTask extends ApiTask {
      * Parses the command and queues it to be executed in the main thread
      * @param delay The time in seconds for the task to be delayed
      */
-    public void queueCommand(int commandId, String command, String username, int delay) {
+    public void queueCommand(int commandId, String command, String username, int delay, int requiredInventorySlots) {
         // Convert delay from seconds to ticks
         delay *= 20;
         try {
@@ -53,7 +53,7 @@ public class CommandExecuteTask extends ApiTask {
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
                 if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId));
-                    commandQueue.add(new PackageCommand(commandId, username, command, delay));
+                    commandQueue.add(new PackageCommand(commandId, username, command, delay, requiredInventorySlots));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +87,12 @@ public class CommandExecuteTask extends ApiTask {
         while (!commandQueue.isEmpty() && commandQueue.peek().runtime <= System.currentTimeMillis() && System.nanoTime() - start < 500000) {
             try {
                 PackageCommand pkgcmd = commandQueue.poll();
+
+                // Ignore the command if the player does not have enough free item slots
+                if (!pkgcmd.hasRequiredInventorySlots()) {
+                    continue;
+                }
+
                 Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
                 long cmdStart = System.currentTimeMillis();
 
@@ -97,6 +103,7 @@ public class CommandExecuteTask extends ApiTask {
                     // Save the command and time it took to run
                     lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + pkgcmd.command;
                 }
+
                 // Queue the command for deletion
                 Plugin.getInstance().getCommandDeleteTask().deleteCommand(pkgcmd.getId());
             } catch (Throwable e) {

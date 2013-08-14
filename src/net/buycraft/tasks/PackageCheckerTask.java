@@ -56,6 +56,7 @@ public class PackageCheckerTask extends ApiTask {
                                     boolean requireOnline = row.getBoolean("requireOnline");
                                     String command = row.getJSONArray("commands").getString(0);
                                     int delay = row.getInt("delay");
+                                    int requiredInventorySlots = row.getInt("requireInventorySlot");
 
                                     if (requireOnline == false || getPlayer(onlinePlayers, username) != null) {
                                         executedCommands.add(username);
@@ -63,7 +64,7 @@ public class PackageCheckerTask extends ApiTask {
                                         String c = command;
                                         String u = username;
                                         
-                                        Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay);
+                                        Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay, requiredInventorySlots);
                                     }
                                 }
                                 
