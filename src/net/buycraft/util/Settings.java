@@ -50,6 +50,7 @@ public class Settings {
         defaultProperties.put("buyCommand", "buy");
         defaultProperties.put("headsEnabled", "false");
         defaultProperties.put("headsCurrency", "true");
+        defaultProperties.put("buysignsRemoveFreePrice", "false");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();

@@ -19,22 +19,51 @@ public class BuycraftCommand {
     public static boolean process(CommandSender commandSender, String[] args) {
         Plugin plugin = Plugin.getInstance();
         if (args.length > 0) {
+            if (commandSender instanceof Player) {
+                if (args[1].equalsIgnoreCase("verify")) {
+                    if (args.length >= 3) {
+                        plugin.getPlayerVerifyTask().verifyPlayerCode((Player) commandSender, args[2]);
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerVerifyBegin"));
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                    } else {
+                        commandSender.sendMessage(Chat.header());
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("playerVerifyNoCode"));
+                        commandSender.sendMessage(Chat.seperator());
+                        commandSender.sendMessage(Chat.footer());
+                    }
+                    return true;
+                }
+
+                if (args[1].equalsIgnoreCase("expire")) {
+                    plugin.getPlayerCheckExipreTask().checkExpired((Player) commandSender);
+                    commandSender.sendMessage(Chat.header());
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("playerCheckExpiringBegin"));
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.footer());
+                    return true;
+                }
+            }
             if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
-            	
-            	if(args[0].equalsIgnoreCase("payments")) {
-            		String playerLookup = "";
-            		
-            		if(args.length == 2) {
-            			playerLookup = args[1];
-            		}
-            			
-        			RecentPaymentsTask.call(commandSender, playerLookup);
+                
+                if(args[0].equalsIgnoreCase("payments")) {
+                    String playerLookup = "";
+                    
+                    if(args.length == 2) {
+                        playerLookup = args[1];
+                    }
+                        
+                    RecentPaymentsTask.call(commandSender, playerLookup);
 
                     return true;
-            	}
-            	
-            	if (args[0].equalsIgnoreCase("report")) {
-            	    // Call the report task, if it fails we don't send the following messages to the player
+                }
+                
+                if (args[0].equalsIgnoreCase("report")) {
+                    // Call the report task, if it fails we don't send the following messages to the player
                     if (ReportTask.call(commandSender) && commandSender instanceof Player) {
                         commandSender.sendMessage(Chat.header());
                         commandSender.sendMessage(Chat.seperator());
@@ -42,9 +71,9 @@ public class BuycraftCommand {
                         commandSender.sendMessage(Chat.seperator());
                         commandSender.sendMessage(Chat.footer());
                     }
-            	    return true;
-            	}
-            	
+                    return true;
+                }
+                
                 if (args[0].equalsIgnoreCase("secret")) {
                     if (args.length == 2) {
                         String secretKey = args[1];
@@ -94,7 +123,7 @@ public class BuycraftCommand {
                         
                         if(plugin.getHeadFile().enabled)
                         {
-                        	plugin.getHeadFile().getHeadThread().update();
+                            plugin.getHeadFile().getHeadThread().update();
                         }
                         
                         if (commandSender instanceof Player) {
@@ -123,6 +152,9 @@ public class BuycraftCommand {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " page <ID>:" + ChatColor.GREEN + " Navigate through package pages");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " <ID>: " + ChatColor.GREEN + " Purchase a specific package");
                 commandSender.sendMessage(Chat.seperator());
+                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft verify <Code>:" + ChatColor.GREEN + " Verify your order");
+                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft expire:" + ChatColor.GREEN + " Check when your packages expire");
+                commandSender.sendMessage(Chat.seperator());
                 
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.isOp()) {
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft reload:" + ChatColor.GREEN + " Reload the package cache");
@@ -133,7 +165,7 @@ public class BuycraftCommand {
                 }
                    
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.hasPermission("buycraft.signs") || commandSender.isOp()) {
-                	commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator());
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign begin/filter <Package>:" + ChatColor.GREEN + " Set payment signs");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign end:" + ChatColor.GREEN + " End payment signs");
                 }

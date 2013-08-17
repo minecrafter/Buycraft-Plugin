@@ -1,5 +1,7 @@
 package net.buycraft.heads;
 
+import net.buycraft.Plugin;
+
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,9 +37,9 @@ public class Head {
     }
 
     private Skull getSkull(Sign sign) {
-        Block b = sign.getBlock();
+        Block b = sign.getBlock().getRelative(BlockFace.UP);
         for(BlockFace face : HeadListener.FACES) {
-            Block s = b.getRelative(BlockFace.UP).getRelative(face);
+            Block s = b.getRelative(face);
             if(s.getState() instanceof Skull) {
                 return (Skull) s.getState();
             }
@@ -56,7 +58,11 @@ public class Head {
         }
         sign.setLine(1, name);
         if(currency) {
-            sign.setLine(2, NumberFormat.getCurrencyInstance().format(price).substring(1) + " " + this.currency);
+            if (price <= 0.0 && Plugin.getInstance().getSettings().getBoolean("buysignsRemoveFreePrice")) {
+                sign.setLine(2, null);
+            } else {
+                sign.setLine(2, NumberFormat.getCurrencyInstance().format(price).substring(1) + " " + this.currency);
+            }
         }
         sign.update();
     }

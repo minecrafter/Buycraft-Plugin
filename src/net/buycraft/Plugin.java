@@ -8,8 +8,11 @@ import net.buycraft.commands.EnableChatCommand;
 import net.buycraft.heads.HeadFile;
 import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
+import net.buycraft.tasks.CommandDeleteTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.PlayerCheckExpireTask;
+import net.buycraft.tasks.PlayerVerifyTask;
 import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
@@ -47,6 +50,9 @@ public class Plugin extends JavaPlugin implements Listener {
     private PackageManager packageManager;
     private ChatManager chatManager;
     private CommandExecuteTask commandExecutor;
+    private PlayerVerifyTask playerVerifyTask;
+    private PlayerCheckExpireTask playerCheckExpireTask;
+    private CommandDeleteTask commandDeleteTask;
 
     private boolean authenticated = false;
     private int authenticatedCode = 1;
@@ -87,6 +93,9 @@ public class Plugin extends JavaPlugin implements Listener {
         packageManager = new PackageManager();
         chatManager = new ChatManager();
         commandExecutor = new CommandExecuteTask();
+        playerVerifyTask = new PlayerVerifyTask();
+        playerCheckExpireTask = new PlayerCheckExpireTask();
+        commandDeleteTask = new CommandDeleteTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
 
@@ -104,6 +113,9 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
+        // Make sure any commands which have been run are deleted
+        commandDeleteTask.runNow();
+
         executors.shutdown();
         while (!executors.isTerminated()) {
         }
@@ -174,22 +186,22 @@ public class Plugin extends JavaPlugin implements Listener {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft has failed to startup.");
                 commandSender.sendMessage(Chat.seperator());
                 if(authenticatedCode == 101)  {
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is because of an invalid secret key,");
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the Secret key into the settings.conf");
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
-	                commandSender.sendMessage(Chat.seperator());
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "You can find your secret key from the control panel.");
-	                commandSender.sendMessage(Chat.seperator());
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
-	                commandSender.sendMessage(Chat.seperator());
-	            } else {
-	                commandSender.sendMessage(Chat.seperator());
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please execute the '/buycraft report' command and");
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "then send the generated report.txt file to");
-	                commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "support@buycraft.net. We will be happy to help.");
-	                commandSender.sendMessage(Chat.seperator());
-	            }
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This is because of an invalid secret key,");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "please enter the Secret key into the settings.conf");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "file, and reload your server.");
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "You can find your secret key from the control panel.");
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
+                    commandSender.sendMessage(Chat.seperator());
+                } else {
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please execute the '/buycraft report' command and");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "then send the generated report.txt file to");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "support@buycraft.net. We will be happy to help.");
+                    commandSender.sendMessage(Chat.seperator());
+                }
                 commandSender.sendMessage(Chat.footer());
             }
 
@@ -249,7 +261,19 @@ public class Plugin extends JavaPlugin implements Listener {
     }
     
     public CommandExecuteTask getCommandExecutor() {
-    	return commandExecutor;
+        return commandExecutor;
+    }
+
+    public PlayerVerifyTask getPlayerVerifyTask() {
+        return playerVerifyTask;
+    }
+
+    public PlayerCheckExpireTask getPlayerCheckExipreTask() {
+        return playerCheckExpireTask;
+    }
+
+    public CommandDeleteTask getCommandDeleteTask() {
+        return commandDeleteTask;
     }
 
     public String getServerCurrency() {
@@ -286,6 +310,6 @@ public class Plugin extends JavaPlugin implements Listener {
     
     public HeadFile getHeadFile()
     {
-    	return headFile;
+        return headFile;
     }
 }

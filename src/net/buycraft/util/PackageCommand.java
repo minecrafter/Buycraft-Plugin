@@ -1,26 +1,78 @@
 package net.buycraft.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
-public class PackageCommand implements Comparable<PackageCommand> {
-    private final static AtomicInteger nextId = new AtomicInteger(Integer.MIN_VALUE);
 
+public class PackageCommand implements Comparable<Object> {
     private final int id;
     public final String username;
     public final String command;
     public final long runtime;
 
-    public PackageCommand(String username, String command, int tickDelay)
+    public final int requiredInventorySlots;
+
+    public PackageCommand(int id, String username, String command, int tickDelay, int requiredInventorySlots)
     {
-        this.id = nextId.getAndIncrement();
+        this.id = id;
         this.username = username;
         this.command = command;
         this.runtime = System.currentTimeMillis() + tickDelay * 50L;
+
+        this.requiredInventorySlots = requiredInventorySlots;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public boolean hasRequiredInventorySlots() {
+        return requiredInventorySlots > 0;
+    }
+
+    public int calculateRequiredInventorySlots(Player player) {
+        if (requiredInventorySlots == 0) {
+            return 0;
+        }
+
+        if (player == null) {
+            return -1;
+        }
+
+        PlayerInventory inv = player.getInventory();
+        int size = inv.getSize();
+        int emptyCount = 0;
+        for (int i = 0; i < size; ++i) {
+            ItemStack item = inv.getItem(i);
+            if (item == null || item.getType() == Material.AIR) {
+                if (++emptyCount == requiredInventorySlots) {
+                    return 0;
+                }
+            }
+        }
+        return requiredInventorySlots - emptyCount;
+    }
+
+    public int compareTo(Object o) {
+        // If the objects are the same return 0
+        if (this == o)
+            return 0;
+
+        if (o.getClass() == Integer.class) {
+            return compareTo((Integer) o);
+        } else if (o instanceof PackageCommand) {
+            return compareTo((PackageCommand) o);
+        }
+
+        // Just do something random
+        return hashCode() > o.hashCode() ? 1: -1;
     }
 
     public int compareTo(PackageCommand o) {
-        // If the objects are the same return 0
-        if (this == o)
+        if (id == o.id)
             return 0;
 
         if (runtime > o.runtime)
@@ -31,5 +83,9 @@ public class PackageCommand implements Comparable<PackageCommand> {
 
         // Make sure the commands are ordered correctly
         return id > o.id ? 1 : -1;
+    }
+
+    public int compareTo(Integer i) {
+        return id > i ? 1 : id == i ? 0 : -1;
     }
 }

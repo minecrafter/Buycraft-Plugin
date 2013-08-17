@@ -1,7 +1,12 @@
 package net.buycraft.heads;
 
+import java.util.ArrayList;
+
+import net.buycraft.Plugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -47,11 +52,15 @@ public class HeadSign {
         if(filter.equalsIgnoreCase("null")) {
             filter = null;
         }
-        Location[] loc = new Location[arr.length()-1];
+        ArrayList<Location> loc = new ArrayList<Location>(arr.length()-1);
         for(int i=1; i<arr.length(); i++) {
-            loc[i-1] = getLocation(arr.getString(i));
+            Location l = getLocation(arr.getString(i));
+            if (l != null) {
+                loc.add(l);
+            }
         }
-        return new HeadSign(loc, filter);
+
+        return new HeadSign(loc.toArray(new Location[loc.size()]), filter);
     }
 
     public static String getLocation(Location loc) {
@@ -60,7 +69,21 @@ public class HeadSign {
 
     public static Location getLocation(String loc) {
         String spl[] = loc.split(",");
-        return new Location(Bukkit.getWorld(spl[0]), Integer.parseInt(spl[1]), Integer.parseInt(spl[2]), Integer.parseInt(spl[3]));
+
+        if (spl.length != 4) {
+            Plugin.getInstance().getLogger().warning("Invalid HeadSign location found: " + loc);
+            Plugin.getInstance().getLogger().warning("Fix it or remove it from your heads.yml");
+            return null;
+        }
+
+        World world = Bukkit.getWorld(spl[0]);
+
+        if (world == null) {
+            Plugin.getInstance().getLogger().warning("Missing world for HeadSign location: " + loc);
+            return null;
+        }
+
+        return new Location(world, Integer.parseInt(spl[1]), Integer.parseInt(spl[2]), Integer.parseInt(spl[3]));
     }
 
 }

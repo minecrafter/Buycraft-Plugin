@@ -3,6 +3,8 @@ package net.buycraft.api;
 import net.buycraft.Plugin;
 import net.buycraft.tasks.ReportTask;
 
+import org.bukkit.Bukkit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +32,24 @@ public class Api {
         }
     }
 
+    public JSONObject playerVerifyAction(JSONArray playerCodes) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "verify");
+        apiCallParams.put("verify", playerCodes.toString());
+
+        return call(apiCallParams);
+    }
+
+    public JSONObject playerCheckPackagesAction(JSONArray players) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "getExpiring");
+        apiCallParams.put("players", players.toString());
+
+        return call(apiCallParams);
+    }
+
     public JSONObject authenticateAction() {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
@@ -53,7 +73,7 @@ public class Api {
         apiCallParams.put("limit", String.valueOf(limit));
         
         if(usernameSpecific) {
-        	apiCallParams.put("ign", username);
+            apiCallParams.put("ign", username);
         }
 
         return call(apiCallParams);
@@ -72,7 +92,7 @@ public class Api {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "commands");
-        apiCallParams.put("do", "remove");
+        apiCallParams.put("do", "removeId");
 
         apiCallParams.put("commands", commandsToDelete);
 
@@ -85,7 +105,10 @@ public class Api {
         }
 
         apiCallParams.put("secret", apiKey);
-        apiCallParams.put("version", String.valueOf(plugin.getVersion()));
+        apiCallParams.put("version", plugin.getVersion());
+        apiCallParams.put("players_count", String.valueOf(Bukkit.getOnlinePlayers().length));
+        apiCallParams.put("players_max", String.valueOf(Bukkit.getMaxPlayers()));
+        apiCallParams.put("server_port", String.valueOf(Bukkit.getPort()));
 
         String url = apiUrl + generateUrlQueryString(apiCallParams);
 
