@@ -20,15 +20,7 @@ public class CommandDeleteTask extends ApiTask {
     public synchronized void deleteCommand(int cid) {
         commandsToDelete.add(cid);
 
-        // Delay the task for 10 seconds to allow for more deletions to occur at once
-        if (scheduled.compareAndSet(false, true)) {
-            currentTask = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
-                public void run() {
-                    currentTask = null;
-                    Plugin.getInstance().addTask(CommandDeleteTask.this);
-                }
-            }, 600L);
-        }
+        schedule();
     }
 
     public synchronized boolean queuedForDeletion(int cid) {
@@ -69,9 +61,24 @@ public class CommandDeleteTask extends ApiTask {
         }
     }
 
+    private void schedule() {
+        // Delay the task for 10 seconds to allow for more deletions to occur at once
+        if (scheduled.compareAndSet(false, true)) {
+            currentTask = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                public void run() {
+                    currentTask = null;
+                    Plugin.getInstance().addTask(CommandDeleteTask.this);
+                }
+            }, 600L);
+        }
+    }
     private synchronized void removeCommands(Integer[] commandIds) {
         for (Integer id : commandIds) {
             commandsToDelete.remove(id);
+        }
+
+        if (!commandsToDelete.isEmpty()) {
+            schedule();
         }
     }
 
