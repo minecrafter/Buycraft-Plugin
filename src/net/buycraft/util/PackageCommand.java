@@ -29,7 +29,7 @@ public class PackageCommand implements Comparable<Object> {
         return id;
     }
 
-    public boolean hasRequiredInventorySlots() {
+    public boolean requiresFreeInventorySlots() {
         return requiredInventorySlots > 0;
     }
 

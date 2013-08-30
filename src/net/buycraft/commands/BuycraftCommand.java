@@ -20,7 +20,7 @@ public class BuycraftCommand {
         Plugin plugin = Plugin.getInstance();
         if (args.length > 0) {
             if (commandSender instanceof Player) {
-                if (args[1].equalsIgnoreCase("verify")) {
+                if (false && args[0].equalsIgnoreCase("verify")) {
                     if (args.length >= 3) {
                         plugin.getPlayerVerifyTask().verifyPlayerCode((Player) commandSender, args[2]);
                         commandSender.sendMessage(Chat.header());
@@ -38,7 +38,7 @@ public class BuycraftCommand {
                     return true;
                 }
 
-                if (args[1].equalsIgnoreCase("expire")) {
+                if (args[0].equalsIgnoreCase("expire")) {
                     plugin.getPlayerCheckExipreTask().checkExpired((Player) commandSender);
                     commandSender.sendMessage(Chat.header());
                     commandSender.sendMessage(Chat.seperator());
@@ -152,7 +152,7 @@ public class BuycraftCommand {
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " page <ID>:" + ChatColor.GREEN + " Navigate through package pages");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/" + plugin.getBuyCommand() + " <ID>: " + ChatColor.GREEN + " Purchase a specific package");
                 commandSender.sendMessage(Chat.seperator());
-                commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft verify <Code>:" + ChatColor.GREEN + " Verify your order");
+                //commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft verify <Code>:" + ChatColor.GREEN + " Verify your order");
                 commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buycraft expire:" + ChatColor.GREEN + " Check when your packages expire");
                 commandSender.sendMessage(Chat.seperator());
                 

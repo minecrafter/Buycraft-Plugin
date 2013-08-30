@@ -94,7 +94,7 @@ public class CommandExecuteTask extends ApiTask {
                 PackageCommand pkgcmd = commandQueue.poll();
 
                 // Ignore the command if the player does not have enough free item slots
-                if (!pkgcmd.hasRequiredInventorySlots()) {
+                if (pkgcmd.requiresFreeInventorySlots()) {
                     Player player = Bukkit.getPlayer(pkgcmd.username);
                     int result = pkgcmd.calculateRequiredInventorySlots(player);
                     if (result > 0) {
