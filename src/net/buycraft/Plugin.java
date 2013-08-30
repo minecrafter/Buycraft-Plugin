@@ -11,8 +11,6 @@ import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.CommandDeleteTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PackageCheckerTask;
-import net.buycraft.tasks.PlayerCheckExpireTask;
-import net.buycraft.tasks.PlayerVerifyTask;
 import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
@@ -50,8 +48,6 @@ public class Plugin extends JavaPlugin implements Listener {
     private PackageManager packageManager;
     private ChatManager chatManager;
     private CommandExecuteTask commandExecutor;
-    private PlayerVerifyTask playerVerifyTask;
-    private PlayerCheckExpireTask playerCheckExpireTask;
     private CommandDeleteTask commandDeleteTask;
 
     private boolean authenticated = false;
@@ -93,8 +89,6 @@ public class Plugin extends JavaPlugin implements Listener {
         packageManager = new PackageManager();
         chatManager = new ChatManager();
         commandExecutor = new CommandExecuteTask();
-        playerVerifyTask = new PlayerVerifyTask();
-        playerCheckExpireTask = new PlayerCheckExpireTask();
         commandDeleteTask = new CommandDeleteTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
@@ -262,14 +256,6 @@ public class Plugin extends JavaPlugin implements Listener {
     
     public CommandExecuteTask getCommandExecutor() {
         return commandExecutor;
-    }
-
-    public PlayerVerifyTask getPlayerVerifyTask() {
-        return playerVerifyTask;
-    }
-
-    public PlayerCheckExpireTask getPlayerCheckExipreTask() {
-        return playerCheckExpireTask;
     }
 
     public CommandDeleteTask getCommandDeleteTask() {
