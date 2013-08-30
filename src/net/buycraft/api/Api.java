@@ -26,9 +26,9 @@ public class Api {
         this.apiKey = plugin.getSettings().getString("secret");
 
         if (plugin.getSettings().getBoolean("https")) {
-            this.apiUrl = "https://api.buycraft.net/v3";
+            this.apiUrl = "https://api.buycraft.localhost/v3";
         } else {
-            this.apiUrl = "http://api.buycraft.net/v3";
+            this.apiUrl = "http://api.buycraft.localhost/v3";
         }
     }
 
@@ -132,6 +132,10 @@ public class Api {
 
     public static String HttpRequest(String url) {
         try {
+        	System.out.println("-----------------");
+        	System.out.println("OUT: " + url);
+        	System.out.println();
+        	System.out.println();
             String content = "";
 
             URL conn = new URL(url);
@@ -151,7 +155,12 @@ public class Api {
             }
 
             in.close();
-
+            
+            System.out.println("IN: " + content);
+            System.out.println();
+            System.out.println();
+            System.out.println("-----------------");
+            
             return content;
         } catch (ConnectException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");

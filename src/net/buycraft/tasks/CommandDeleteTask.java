@@ -32,7 +32,7 @@ public class CommandDeleteTask extends ApiTask {
     }
 
     public synchronized boolean queuedForDeletion(int cid) {
-        return commandsToDelete.add(cid);
+        return commandsToDelete.contains(cid);
     }
 
     /**
