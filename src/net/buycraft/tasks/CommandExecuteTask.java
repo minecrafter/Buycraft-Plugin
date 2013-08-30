@@ -1,6 +1,7 @@
 package net.buycraft.tasks;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,9 +10,11 @@ import java.util.regex.Pattern;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
+import net.buycraft.util.Chat;
 import net.buycraft.util.PackageCommand;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -28,6 +31,7 @@ public class CommandExecuteTask extends ApiTask {
     private BukkitTask task;
 
     private final HashMap<String, Integer> requiredInventorySlots = new HashMap<String, Integer>();
+    private final HashSet<String> creditedCommands = new HashSet<String>();
 
     private String lastLongRunningCommand = "None";
 
@@ -94,7 +98,7 @@ public class CommandExecuteTask extends ApiTask {
                 PackageCommand pkgcmd = commandQueue.poll();
 
                 // Ignore the command if the player does not have enough free item slots
-                if (!pkgcmd.hasRequiredInventorySlots()) {
+                if (pkgcmd.requiresFreeInventorySlots()) {
                     Player player = Bukkit.getPlayer(pkgcmd.username);
                     int result = pkgcmd.calculateRequiredInventorySlots(player);
                     if (result > 0) {
@@ -114,6 +118,7 @@ public class CommandExecuteTask extends ApiTask {
                 }
 
                 Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
+                creditedCommands.add(pkgcmd.username);
                 long cmdStart = System.currentTimeMillis();
 
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), pkgcmd.command);
@@ -142,6 +147,22 @@ public class CommandExecuteTask extends ApiTask {
             }
             // Clear the map
             requiredInventorySlots.clear();
+            
+            for (String name : creditedCommands) {
+                Player p = Bukkit.getPlayerExact(name);
+                if (p == null) {
+                    continue;
+                }
+                p.sendMessage(new String[] {
+                        Chat.header(), 
+                        Chat.seperator(),
+                        Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("commandsExecuted"),
+                        Chat.seperator(), 
+                        Chat.footer()
+                });
+            }
+            // Clear the set
+            creditedCommands.clear();
 
             BukkitTask task = this.task;
             // Null the task now so we can't overwrite a new one

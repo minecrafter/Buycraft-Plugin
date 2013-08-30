@@ -46,8 +46,6 @@ public class PackageCheckerTask extends ApiTask {
                                 JSONObject apiPayload = apiResponse.getJSONObject("payload");
                                 JSONArray commandsPayload = apiPayload.getJSONArray("commands");
 
-                                LinkedHashSet<String> executedCommands = new LinkedHashSet<String>();
-
                                 for (int i = 0; i < commandsPayload.length(); i++) {
                                     JSONObject row = commandsPayload.getJSONObject(i);
 
@@ -59,8 +57,6 @@ public class PackageCheckerTask extends ApiTask {
                                     int requiredInventorySlots = row.getInt("requireInventorySlot");
 
                                     if (requireOnline == false || getPlayer(onlinePlayers, username) != null) {
-                                        executedCommands.add(username);
-                                            
                                         String c = command;
                                         String u = username;
                                         
@@ -74,22 +70,6 @@ public class PackageCheckerTask extends ApiTask {
                                 }
                                 
                                 Plugin.getInstance().getCommandExecutor().scheduleExecutor();
-
-                                if (executedCommands.size() > 0) {
-                                    for (String username : executedCommands) {
-                                        Player player = getPlayer(onlinePlayers, username);
-
-                                        if (player != null) {
-                                            player.sendMessage(new String[] {
-                                                    Chat.header(), 
-                                                    Chat.seperator(),
-                                                    Chat.seperator() + ChatColor.GREEN + plugin.getLanguage().getString("commandsExecuted"),
-                                                    Chat.seperator(), 
-                                                    Chat.footer()
-                                            });
-                                        }
-                                    }
-                                }
 
                                 plugin.getLogger().info("Package checker successfully executed.");
                             } else {
