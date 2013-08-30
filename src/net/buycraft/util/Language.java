@@ -67,7 +67,8 @@ public class Language {
         defaultProperties.put("playerCheckExpiringHeader", "Packages:");
         defaultProperties.put("playerCheckExpiringNone", "You don't have any packages");
 
-        defaultProperties.put("commandExecuteNotEnoughFreeInventory", "You need %d free inventory slots to receive certain items. Please empty your inventory.");
+        defaultProperties.put("commandExecuteNotEnoughFreeInventory", "%d free inventory slot(s) are required.");
+        defaultProperties.put("commandExecuteNotEnoughFreeInventory2", "Please empty your inventory to receive these items.");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();

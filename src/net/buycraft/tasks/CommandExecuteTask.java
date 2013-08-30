@@ -61,8 +61,10 @@ public class CommandExecuteTask extends ApiTask {
                 String newCommand = command.replace("{mcmyadmin}", "");                
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
-                if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId));
+                if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId))
+                {
                     commandQueue.add(new PackageCommand(commandId, username, command, delay, requiredInventorySlots));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,8 +115,10 @@ public class CommandExecuteTask extends ApiTask {
                         if (currentRequired < result) {
                             requiredInventorySlots.put(player.getName(), result);
                         }
+                        
+                        continue;
                     }
-                    continue;
+               
                 }
 
                 Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
@@ -143,7 +147,14 @@ public class CommandExecuteTask extends ApiTask {
                 if (p == null) {
                     continue;
                 }
-                p.sendMessage(String.format(Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory"), e.getValue()));
+                p.sendMessage(new String[] {
+                        Chat.header(), 
+                        Chat.seperator(),
+                        Chat.seperator() + ChatColor.RED + String.format(Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory"), e.getValue()),
+                        Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory2"),
+                        Chat.seperator(), 
+                        Chat.footer()
+                });
             }
             // Clear the map
             requiredInventorySlots.clear();

@@ -132,10 +132,12 @@ public class Api {
 
     public static String HttpRequest(String url) {
         try {
-        	System.out.println("-----------------");
-        	System.out.println("OUT: " + url);
-        	System.out.println();
-        	System.out.println();
+        	
+        	if(Plugin.getInstance().getSettings().getBoolean("debug")) {
+        		Plugin.getInstance().getLogger().info("---------------------------------------------------");
+        		Plugin.getInstance().getLogger().info("Request URL: " + url);
+        	}
+        	
             String content = "";
 
             URL conn = new URL(url);
@@ -156,10 +158,10 @@ public class Api {
 
             in.close();
             
-            System.out.println("IN: " + content);
-            System.out.println();
-            System.out.println();
-            System.out.println("-----------------");
+            if(Plugin.getInstance().getSettings().getBoolean("debug")) {
+            	Plugin.getInstance().getLogger().info("JSON Response: " + content);
+            	Plugin.getInstance().getLogger().info("---------------------------------------------------");
+            }
             
             return content;
         } catch (ConnectException e) {
