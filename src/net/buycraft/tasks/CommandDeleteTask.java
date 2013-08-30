@@ -52,13 +52,15 @@ public class CommandDeleteTask extends ApiTask {
         try
         {
             scheduled.set(false);
-            Integer[] commandIds = clearCommands();
+            Integer[] commandIds = fetchCommands();
 
             if (commandIds.length == 0)
                 // What are we doing here??
                 return;
 
             getApi().commandsDeleteAction(new JSONArray(commandIds).toString());
+
+            removeCommands(commandIds);
         }
         catch (Exception e)
         {
@@ -67,9 +69,14 @@ public class CommandDeleteTask extends ApiTask {
         }
     }
 
-    private synchronized Integer[] clearCommands() {
+    private synchronized void removeCommands(Integer[] commandIds) {
+        for (Integer id : commandIds) {
+            commandsToDelete.remove(id);
+        }
+    }
+
+    private synchronized Integer[] fetchCommands() {
         Integer[] commandIds = commandsToDelete.toArray(new Integer[commandsToDelete.size()]);
-        commandsToDelete.clear();
         return commandIds;
     }
 
