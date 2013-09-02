@@ -56,17 +56,6 @@ public class Language {
         defaultProperties.put("packagePrice", "Price");
         defaultProperties.put("pageNotFound", "Page not found.");
         
-        defaultProperties.put("playerVerifyBegin", "Code is being verified. Please wait for code confirmation.");
-        defaultProperties.put("playerVerifyNoCode", "Must provide a verification code.");
-        defaultProperties.put("playerVerifySuccess", "Code verified. You will receive your package shortly.");
-        defaultProperties.put("playerVerifyFailure", "Code verification failed. Check you typed the code correctly");
-        defaultProperties.put("playerVerifyApiFailure", "Code verification failed. Connection to Buycraft failed.");
-        
-        defaultProperties.put("playerCheckExpiringBegin", "Fetcing your current packages. Please wait a moment.");
-        defaultProperties.put("playerCheckExpiringApiFailure", "Couldn't check your packages. Connection to Buycraft API failed.");
-        defaultProperties.put("playerCheckExpiringHeader", "Packages:");
-        defaultProperties.put("playerCheckExpiringNone", "You don't have any packages");
-
         defaultProperties.put("commandExecuteNotEnoughFreeInventory", "%d free inventory slot(s) are required.");
         defaultProperties.put("commandExecuteNotEnoughFreeInventory2", "Please empty your inventory to receive these items.");
 

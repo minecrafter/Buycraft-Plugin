@@ -46,7 +46,6 @@ public class Settings {
         defaultProperties.put("https", "false");
         defaultProperties.put("disableBuyCommand", "false");
         defaultProperties.put("directPay", "false");
-        defaultProperties.put("directPayGateway", "paypal");
         defaultProperties.put("buyCommand", "buy");
         defaultProperties.put("headsEnabled", "false");
         defaultProperties.put("headsCurrency", "true");

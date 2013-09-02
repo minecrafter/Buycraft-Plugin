@@ -42,9 +42,7 @@ public class BuyCommand {
                                 String buyNowLink = plugin.getServerStore() + "/checkout/packages?action=add&package=" + packageModel.getId() + "&ign=" + commandSender.getName();
 
                                 if (plugin.getSettings().getBoolean("directPay")) {
-                                    String directGateway = plugin.getSettings().getString("directPayGateway");
-
-                                    buyNowLink = plugin.getServerStore() + "/checkout/pay?direct=true&package=" + packageModel.getId() + "&agreement=true&gateway=" + directGateway + "&ign=" + commandSender.getName();
+                                    buyNowLink = plugin.getServerStore() + "/checkout/packages?popup=true&action=add&direct=true&package=" + packageModel.getId() + "&ign=" + commandSender.getName();
                                 }
 
                                 VisitLinkTask.call((Player) commandSender, buyNowLink);
