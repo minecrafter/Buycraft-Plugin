@@ -51,6 +51,7 @@ public class Settings {
         defaultProperties.put("headsCurrency", "true");
         defaultProperties.put("buysignsRemoveFreePrice", "false");
         defaultProperties.put("debug", "false");
+        defaultProperties.put("commandThrottleCount", "150");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();
@@ -89,6 +90,15 @@ public class Settings {
 
     }
 
+    public int getInt(String key) {
+        if (properties.containsKey(key)) {
+            return Integer.valueOf(getString(key));
+        } else {
+            throw new RuntimeException("Settings key '" + key + "' not found in the settings.conf file.");
+        }
+
+    }
+    
     public String getString(String key) {
         if (properties.containsKey(key)) {
             return properties.getProperty(key);

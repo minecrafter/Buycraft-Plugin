@@ -26,34 +26,21 @@ public class Api {
         this.apiKey = plugin.getSettings().getString("secret");
 
         if (plugin.getSettings().getBoolean("https")) {
-            this.apiUrl = "https://api.buycraft.localhost/v3";
+            this.apiUrl = "https://api.buycraft.net/v3";
         } else {
-            this.apiUrl = "http://api.buycraft.localhost/v3";
+            this.apiUrl = "http://api.buycraft.net/v3";
         }
-    }
-
-    public JSONObject playerVerifyAction(JSONArray playerCodes) {
-        HashMap<String, String> apiCallParams = new HashMap<String, String>();
-
-        apiCallParams.put("action", "verify");
-        apiCallParams.put("verify", playerCodes.toString());
-
-        return call(apiCallParams);
-    }
-
-    public JSONObject playerCheckPackagesAction(JSONArray players) {
-        HashMap<String, String> apiCallParams = new HashMap<String, String>();
-
-        apiCallParams.put("action", "getExpiring");
-        apiCallParams.put("players", players.toString());
-
-        return call(apiCallParams);
     }
 
     public JSONObject authenticateAction() {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "info");
+        
+        apiCallParams.put("serverPort", String.valueOf(Bukkit.getPort()));
+        apiCallParams.put("onlineMode", String.valueOf(Bukkit.getOnlineMode()));
+        apiCallParams.put("playersMax", String.valueOf(Bukkit.getMaxPlayers()));
+        apiCallParams.put("version", plugin.getVersion());
 
         return call(apiCallParams);
     }
@@ -105,11 +92,8 @@ public class Api {
         }
 
         apiCallParams.put("secret", apiKey);
-        apiCallParams.put("version", plugin.getVersion());
-        apiCallParams.put("players_count", String.valueOf(Bukkit.getOnlinePlayers().length));
-        apiCallParams.put("players_max", String.valueOf(Bukkit.getMaxPlayers()));
-        apiCallParams.put("server_port", String.valueOf(Bukkit.getPort()));
-
+        apiCallParams.put("playersOnline", String.valueOf(Bukkit.getOnlinePlayers().length));
+  
         String url = apiUrl + generateUrlQueryString(apiCallParams);
 
         if (url != null) {

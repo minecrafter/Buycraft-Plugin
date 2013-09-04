@@ -57,6 +57,13 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 6.0
+
+		- Support for the new required inventory slots feature.
+		- Improved support for commands which do not require the player to be online.
+		- You can now filter buy signs witch have a price of 0.00.
+		- Misc bug fixes and improvements. 
+
 	Version 5.9
 
 		- Included support for delayed commands.

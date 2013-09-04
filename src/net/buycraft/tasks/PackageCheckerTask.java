@@ -2,14 +2,11 @@ package net.buycraft.tasks;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
-import net.buycraft.util.Chat;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.LinkedHashSet;
 
 public class PackageCheckerTask extends ApiTask {
     private Plugin plugin;
@@ -45,7 +42,8 @@ public class PackageCheckerTask extends ApiTask {
                             if (apiResponse != null && apiResponse.getInt("code") == 0) {
                                 JSONObject apiPayload = apiResponse.getJSONObject("payload");
                                 JSONArray commandsPayload = apiPayload.getJSONArray("commands");
-
+                                int executedCount = 0;
+                                
                                 for (int i = 0; i < commandsPayload.length(); i++) {
                                     JSONObject row = commandsPayload.getJSONObject(i);
 
@@ -55,12 +53,22 @@ public class PackageCheckerTask extends ApiTask {
                                     String command = row.getJSONArray("commands").getString(0);
                                     int delay = row.getInt("delay");
                                     int requiredInventorySlots = row.getInt("requireInventorySlot");
-
+                                    
                                     if (requireOnline == false || getPlayer(onlinePlayers, username) != null) {
-                                        String c = command;
-                                        String u = username;
+                                    	if(executedCount < plugin.getSettings().getInt("commandThrottleCount")) {
+                                    		String c = command;
+                                        	String u = username;
                                         
-                                        Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay, requiredInventorySlots);
+                                        	Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay, requiredInventorySlots);
+                                        
+                                        	executedCount++;
+                                    	}
+                                    	else
+                                    	{
+                                    		plugin.getLogger().info("Skipping " + (commandsPayload.length() - executedCount) + " command(s) to prevent server load. To stop this from happening please change 'commandThrottleCount' to a higher value in settings.conf.");
+                                    		
+                                    		break;
+                                    	}
                                     }
                                 }
                                 
