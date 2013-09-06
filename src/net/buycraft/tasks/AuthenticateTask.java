@@ -34,6 +34,7 @@ public class AuthenticateTask extends ApiTask {
                                 plugin.setServerID(payload.getInt("serverId"));
                                 plugin.setServerCurrency(payload.getString("serverCurrency"));
                                 plugin.setServerStore(payload.getString("serverStore"));
+                                plugin.setPendingPlayerCheckerInterval(payload.getInt("updateUsernameInterval"));
                                 plugin.setAuthenticated(true);
 
                                 if (payload.has("buyCommand")) {

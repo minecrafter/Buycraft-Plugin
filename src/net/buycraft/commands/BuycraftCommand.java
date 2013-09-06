@@ -2,7 +2,6 @@ package net.buycraft.commands;
 
 import net.buycraft.Plugin;
 import net.buycraft.tasks.AuthenticateTask;
-import net.buycraft.tasks.PackageCheckerTask;
 import net.buycraft.tasks.RecentPaymentsTask;
 import net.buycraft.tasks.ReloadPackagesTask;
 import net.buycraft.tasks.ReportTask;
@@ -90,13 +89,13 @@ public class BuycraftCommand {
                     }
 
                     if (args[0].equalsIgnoreCase("forcecheck")) {
-                        PackageCheckerTask.call(true);
-                        
+                        plugin.getPendingPlayerCheckerTask().call(true);
+
                         if(plugin.getHeadFile().enabled)
                         {
                             plugin.getHeadFile().getHeadThread().update();
                         }
-                        
+
                         if (commandSender instanceof Player) {
                             commandSender.sendMessage(Chat.header());
                             commandSender.sendMessage(Chat.seperator());
