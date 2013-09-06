@@ -117,6 +117,8 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
             ReportTask.setLastException(e);
+        } finally {
+            running.set(false);
         }
     }
 
