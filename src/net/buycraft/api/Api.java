@@ -26,9 +26,9 @@ public class Api {
         this.apiKey = plugin.getSettings().getString("secret");
 
         if (plugin.getSettings().getBoolean("https")) {
-            this.apiUrl = "https://api.buycraft.net/v3";
+            this.apiUrl = "https://api.buycraft.net/v4";
         } else {
-            this.apiUrl = "http://api.buycraft.net/v3";
+            this.apiUrl = "http://api.buycraft.net/v4";
         }
     }
 
@@ -52,7 +52,7 @@ public class Api {
 
         return call(apiCallParams);
     }
-    
+
     public JSONObject paymentsAction(int limit, boolean usernameSpecific, String username) {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
@@ -66,11 +66,23 @@ public class Api {
         return call(apiCallParams);
     }
 
-    public JSONObject commandsGetAction() {
+    public JSONObject fetchPendingPlayers() {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "pendingUsers");
+
+        return call(apiCallParams);
+    }
+
+    public JSONObject fetchPlayerCommands(JSONArray players, boolean offlineCommands) {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "commands");
         apiCallParams.put("do", "lookup");
+
+        apiCallParams.put("users", players.toString());
+        apiCallParams.put("offlineCommands", String.valueOf(offlineCommands));
+        apiCallParams.put("offlineCommandLimit", String.valueOf(plugin.getSettings().getInt("commandThrottleCount")));
 
         return call(apiCallParams);
     }

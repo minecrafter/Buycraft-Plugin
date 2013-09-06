@@ -10,7 +10,7 @@ import net.buycraft.packages.PackageManager;
 import net.buycraft.tasks.AuthenticateTask;
 import net.buycraft.tasks.CommandDeleteTask;
 import net.buycraft.tasks.CommandExecuteTask;
-import net.buycraft.tasks.PackageCheckerTask;
+import net.buycraft.tasks.PendingPlayerCheckerTask;
 import net.buycraft.tasks.ReportTask;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
@@ -24,6 +24,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -49,6 +50,9 @@ public class Plugin extends JavaPlugin implements Listener {
     private ChatManager chatManager;
     private CommandExecuteTask commandExecutor;
     private CommandDeleteTask commandDeleteTask;
+    private PendingPlayerCheckerTask pendingPlayerCheckerTask;
+
+    private BukkitTask pendingPlayerCheckerTaskExecutor;
 
     private boolean authenticated = false;
     private int authenticatedCode = 1;
@@ -90,20 +94,17 @@ public class Plugin extends JavaPlugin implements Listener {
         chatManager = new ChatManager();
         commandExecutor = new CommandExecuteTask();
         commandDeleteTask = new CommandDeleteTask();
+        pendingPlayerCheckerTask = new PendingPlayerCheckerTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
 
         headFile = new HeadFile(this);
 
         AuthenticateTask.call();
-        getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
-            public void run() {
-                PackageCheckerTask.call(false);
-            }
-        }, 6000L, 6000L);
 
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(pendingPlayerCheckerTask, this);
     }
 
     public void onDisable() {
@@ -242,6 +243,25 @@ public class Plugin extends JavaPlugin implements Listener {
         serverStore = value;
     }
 
+    public void setPendingPlayerCheckerInterval(int interval) {
+        if (pendingPlayerCheckerTaskExecutor != null) {
+            pendingPlayerCheckerTaskExecutor.cancel();
+            pendingPlayerCheckerTaskExecutor = null;
+        }
+
+        // Convert seconds to ticks
+        interval *= 20;
+
+        if (getSettings().getBoolean("commandChecker")) {
+            pendingPlayerCheckerTaskExecutor = getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+                public void run() {
+                    pendingPlayerCheckerTask.call(false);
+                }
+            }, interval, interval);
+        }
+
+    }
+
     public Integer getServerID() {
         return serverID;
     }
@@ -260,6 +280,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public CommandDeleteTask getCommandDeleteTask() {
         return commandDeleteTask;
+    }
+
+    public PendingPlayerCheckerTask getPendingPlayerCheckerTask() {
+        return pendingPlayerCheckerTask;
     }
 
     public String getServerCurrency() {

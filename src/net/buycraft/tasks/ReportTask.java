@@ -74,8 +74,8 @@ public class ReportTask extends ApiTask {
             String buycraftVersion = Plugin.getInstance().getVersion();
 
             boolean isAuthenticated = Plugin.getInstance().isAuthenticated(null);
-            double lastPackageCheckerExecutionTime = (System.currentTimeMillis() - PackageCheckerTask.getLastExecution()) / 1000.0 / 60.0;
-            String lastPackageCheckerExecution = PackageCheckerTask.getLastExecution() != 0 ? lastPackageCheckerExecutionTime + " minutes ago": "Never";
+            double lastPackageCheckerExecutionTime = (System.currentTimeMillis() - CommandFetchTask.getLastExecution()) / 1000.0 / 60.0;
+            String lastPackageCheckerExecution = CommandFetchTask.getLastExecution() != 0 ? lastPackageCheckerExecutionTime + " minutes ago": "Never";
 
 
             String pingGoogle = pingCheck(googleAddress);
