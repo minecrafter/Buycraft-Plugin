@@ -105,10 +105,6 @@ public class BuycraftCommand {
                         } else {
                         	commandSender.sendMessage("Force check successfully executed.");
                         }
-                        else
-                        {
-                        	commandSender.sendMessage("Force check successfully executed.");
-                        }
 
                         return true;
                     }

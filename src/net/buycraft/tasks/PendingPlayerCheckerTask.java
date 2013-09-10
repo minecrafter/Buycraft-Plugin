@@ -33,7 +33,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
 
     public PendingPlayerCheckerTask() {
         plugin = Plugin.getInstance();
-        lastPlayerLogin = System.currentTimeMillis() / 1000L;
+        lastPlayerLogin = System.currentTimeMillis();
     }
 
     public void call(boolean manualExecution) {
@@ -49,7 +49,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
         if (pendingPlayers.remove(event.getPlayer().getName().toLowerCase())) {
             CommandFetchTask.call(false, event.getPlayer());
         }
-        lastPlayerLogin = System.currentTimeMillis() / 1000L;
+        lastPlayerLogin = System.currentTimeMillis();
     }
 
     public void run() {
@@ -68,10 +68,12 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
             Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
 
             // If nobody has logged in for over 3 hours do not execute the package checker (Manual execution is an exception)
-            if (!manualExecution && lastPlayerLogin < ((System.currentTimeMillis() / 1000L) - 10800)) {
+            if (!manualExecution && lastPlayerLogin < (System.currentTimeMillis() - 1080000)) {
                 return;
+            } else if (onlinePlayers.length > 0) {
+                lastPlayerLogin = System.currentTimeMillis();
             }
-            
+
             // Fetch pending players
             JSONObject apiResponse = plugin.getApi().fetchPendingPlayers();
 
