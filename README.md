@@ -57,6 +57,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 6.1
+
+		- The package checker now runs at an interval of 2.5 minutes instead of 5.
+
 	Version 6.0
 
 		- Support for the new required inventory slots feature.
@@ -71,42 +75,3 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 	Version 5.8
 
 		- Fixed a bug with case sensitive usernames.
-
-	Version 5.7
-
-		- Major performance improvements over the entire plugin.
-		- New /buycraft report command, this will assist our customer support in helping you resolve any future issues.
-
-	Version 5.6
-
-		- Implemented a thread pool to improve performance on larger servers
-		- You can now display recent payments in game! Read above to find out how to do this.
-		- New "/buycraft payments <ign>"" command, will list the payments over all users or a specific user.
-
-	Version 5.5
-
-		- Fixes an exception with the /buycraft command.
-
-	Version 5.4
-	
-		- Changing the /buy command is now a simple option in the settings file.
-		- Improved how commands are executed (Thread-safe, should stop some bugs with certain plugins).
-	
-	Version 5.3
-	
-		- Improved how commands are executed.
-	
-	Version 5.2
-	
-		- Improved the "/buycraft secret" command in which it no longer restarts the server upon execution.
-		- More threading improvements (Mainly to the authentication of the secret key).
-		- If the plugin fails to start an error code will now be displayed specifying the reason.
-		- URL shortener has been improved with better error responses.
-		
-	Version 5.1
-	
-		- Threading improvements
-	
-	Version 5.0
-	
-		- Fix for the "Package not found" bug.
