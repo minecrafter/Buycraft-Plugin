@@ -257,7 +257,7 @@ public class Plugin extends JavaPlugin implements Listener {
                 public void run() {
                     pendingPlayerCheckerTask.call(false);
                 }
-            }, interval, interval);
+            }, 20, interval);
         }
 
     }
