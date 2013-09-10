@@ -29,9 +29,11 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
     /** Stores players with pending commands in lower case */
     private HashSet<String> pendingPlayers = new HashSet<String>();
     private boolean manualExecution;
+    private long lastPlayerLogin;
 
     public PendingPlayerCheckerTask() {
         plugin = Plugin.getInstance();
+        lastPlayerLogin = System.currentTimeMillis() / 1000L;
     }
 
     public void call(boolean manualExecution) {
@@ -47,6 +49,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
         if (pendingPlayers.contains(event.getPlayer().getName().toLowerCase())) {
             CommandFetchTask.call(false, event.getPlayer());
         }
+        lastPlayerLogin = System.currentTimeMillis() / 1000L;
     }
 
     public void run() {
@@ -64,11 +67,11 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
             // Fetch online player list
             Player[] onlinePlayers = plugin.getServer().getOnlinePlayers();
 
-            // If there are no players online don't do anything (Manual execution is an exception)
-            if (!manualExecution && onlinePlayers.length == 0) {
+            // If nobody has logged in for over 3 hours do not execute the package checker (Manual execution is an exception)
+            if (!manualExecution && lastPlayerLogin < ((System.currentTimeMillis() / 1000L) - 10800)) {
                 return;
             }
-
+            
             // Fetch pending players
             JSONObject apiResponse = plugin.getApi().fetchPendingPlayers();
 
