@@ -88,4 +88,23 @@ public class PackageCommand implements Comparable<Object> {
     public int compareTo(Integer i) {
         return id > i ? 1 : id == i ? 0 : -1;
     }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PackageCommand other = (PackageCommand) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
 }
