@@ -103,6 +103,10 @@ public class BuycraftCommand {
                             commandSender.sendMessage(Chat.seperator());
                             commandSender.sendMessage(Chat.footer());
                         }
+                        else
+                        {
+                        	commandSender.sendMessage("Force check successfully executed.");
+                        }
 
                         return true;
                     }
