@@ -46,7 +46,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public synchronized void onPlayerJoin(PlayerJoinEvent event) {
         // If the player has pending commands we call the package checker
-        if (pendingPlayers.contains(event.getPlayer().getName().toLowerCase())) {
+        if (pendingPlayers.remove(event.getPlayer().getName().toLowerCase())) {
             CommandFetchTask.call(false, event.getPlayer());
         }
         lastPlayerLogin = System.currentTimeMillis() / 1000L;

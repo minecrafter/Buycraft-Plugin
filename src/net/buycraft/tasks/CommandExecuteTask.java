@@ -61,8 +61,7 @@ public class CommandExecuteTask extends ApiTask {
                 String newCommand = command.replace("{mcmyadmin}", "");                
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
-                if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId))
-                {
+                if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(commandId)) {
                     commandQueue.add(new PackageCommand(commandId, username, command, delay, requiredInventorySlots));
                 }
             }
