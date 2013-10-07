@@ -164,7 +164,6 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
     }
 
     public synchronized void showPage(Player player, int categoryId, int pageNumber) {
-        System.out.println(buyMenus.toString());
         if (!checkReady(player)) {
             return;
         }
