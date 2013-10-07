@@ -9,16 +9,15 @@ import org.bukkit.Material;
 public class PackageCategory {
 
     private final List<PackageModal> packages;
-    private final int niceId;
+    protected int niceId;
     private final int id;
     private final String name;
     private final String description;
     private final Material guiItem;
 
     @SuppressWarnings("deprecation")
-	public PackageCategory(int niceId, int id, String name, String description, int guiItemId) {
+	public PackageCategory(int id, String name, String description, int guiItemId) {
         this.packages = new ArrayList<PackageModal>(1);
-        this.niceId = niceId;
         this.id = id;
         this.name = name;
         this.description = description != null && description.length() > 0 ? description : null;

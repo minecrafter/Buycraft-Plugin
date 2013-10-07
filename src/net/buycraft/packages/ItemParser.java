@@ -35,24 +35,11 @@ public class ItemParser {
     }
 
     public static ItemStack getCategoryItem(PackageCategory c) {
-       ItemStack item = new ItemStack(c != null && c.getGuiItem() != null ? c.getGuiItem() : Material.BOOK);
+       ItemStack item = new ItemStack(c.getGuiItem() != null ? c.getGuiItem() : Material.BOOK);
 
-       String name;
-       String description;
-       int id;
-
-       if (c != null) {
-           name = c.getName();
-           description = c.getDescription();
-           id = c.getNiceId();
-       } else {
-           name = Plugin.getInstance().getLanguage().getString("uncategorized");
-           description = null;
-           id = 0;
-       }
-       setDisplayName(item, ChatColor.LIGHT_PURPLE + name);
-       setLore(item, description, new String[] {
-           ChatColor.YELLOW + Plugin.getInstance().getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + id,
+       setDisplayName(item, ChatColor.LIGHT_PURPLE + c.getName());
+       setLore(item, c.getDescription(), new String[] {
+           ChatColor.YELLOW + Plugin.getInstance().getLanguage().getString("packageId") + ": " + ChatColor.LIGHT_PURPLE + c.getNiceId(),
            null, null, null
            });
 

@@ -2,6 +2,7 @@ package net.buycraft.packages;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class PackageManager {
@@ -14,12 +15,25 @@ public class PackageManager {
     }
 
     public synchronized void addCategory(int categoryId, String name, String description, int guiItemId) {
-        packageCategories.add(new PackageCategory(packageCategories.size() + 1, categoryId, name, description, guiItemId));
+        packageCategories.add(new PackageCategory(categoryId, name, description, guiItemId));
     }
 
     public synchronized void add(int categoryId, int id, int materialId, String name, String description, String price) {
         PackageCategory category = getPackageCategory(categoryId);
         packagesForSale.add(new PackageModal(category, id, materialId, name, description, price, packagesForSale.size() + 1));
+    }
+
+    public synchronized void cleanCategories() {
+        int nextId = 1;
+        Iterator<PackageCategory> it = packageCategories.iterator();
+        while (it.hasNext()) {
+            PackageCategory p = it.next();
+            if (p.getPackages().isEmpty()) {
+                it.remove();
+            } else {
+                p.niceId = p.getId() != 0 ? nextId++ : 0;
+            }
+        }
     }
 
     public synchronized List<PackageCategory> getCategories() {

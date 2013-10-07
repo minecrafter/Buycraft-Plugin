@@ -15,7 +15,6 @@ import net.buycraft.util.BuycraftInventoryCreator.BuycraftInventoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -55,8 +54,8 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
 
         // Check that the inventory is valid
         if (holder.id != expectedInventoryHolderId) {
-            for (HumanEntity e : inv.getViewers()) {
-                e.closeInventory();
+            while (!inv.getViewers().isEmpty()) {
+                inv.getViewers().get(0).closeInventory();
             }
             return;
         }
@@ -97,27 +96,18 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
             return;
         }
 
-        int id;
-
-        // Show all items
-        if (currentPage == 1 && event.getSlot() == 0) {
-            id = 0;
         // Show category items
-        } else {
-            PackageCategory c = ItemParser.getCategory(event.getCurrentItem());
+        PackageCategory c = ItemParser.getCategory(event.getCurrentItem());
 
-            // Invalid category
-            if (c == null) {
-                Plugin.getInstance().getLogger().severe("Failed to find PackageCategory shown in inventory");
-                event.getInventory().setItem(event.getSlot(), null);
-                return;
-            }
-
-            id = c.getNiceId();
+        // Invalid category
+        if (c == null) {
+            Plugin.getInstance().getLogger().severe("Failed to find PackageCategory shown in inventory");
+            event.getInventory().setItem(event.getSlot(), null);
+            return;
         }
 
         event.getWhoClicked().closeInventory();
-        showPage((Player) event.getWhoClicked(), id, 1);
+        showPage((Player) event.getWhoClicked(), c.getNiceId(), 1);
     }
 
     private synchronized void handleCategoryViewClick(InventoryClickEvent event, int currentCategoryId, int currentPage) {
@@ -174,6 +164,7 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
     }
 
     public synchronized void showPage(Player player, int categoryId, int pageNumber) {
+        System.out.println(buyMenus.toString());
         if (!checkReady(player)) {
             return;
         }
@@ -207,16 +198,14 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         boolean useMainMenu = false;
         BuyMenuInventoryHolder invHolder = new BuyMenuInventoryHolder(++expectedInventoryHolderId);
 
-        if (!categories.isEmpty()) {
+        if (categories.size() > 1) {
             useMainMenu = true;
             BuycraftInventoryCreator.createMainMenu(invHolder, newBuyMenus, categories);
         }
 
         for (PackageCategory c : categories) {
-            BuycraftInventoryCreator.createCategoryPages(invHolder, newBuyMenus, c);
+            BuycraftInventoryCreator.createPackagePages(invHolder, newBuyMenus, c, useMainMenu);
         }
-
-        BuycraftInventoryCreator.createPackagePages(invHolder, newBuyMenus, Plugin.getInstance().getPackageManager().getPackagesForSale(), useMainMenu);
 
         HashMap<String, String> newMenuKeys = new HashMap<String, String>(newBuyMenus.size());
 
@@ -232,8 +221,8 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
     public synchronized void pluginReloaded() {
         if (buyMenus != null) {
             for (Inventory inv : buyMenus.values()) {
-                for (HumanEntity e : inv.getViewers()) {
-                    e.closeInventory();
+                while (!inv.getViewers().isEmpty()) {
+                    inv.getViewers().get(0).closeInventory();
                 }
             }
         }

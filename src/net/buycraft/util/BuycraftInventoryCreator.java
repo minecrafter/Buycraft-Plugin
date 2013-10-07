@@ -41,11 +41,6 @@ public class BuycraftInventoryCreator {
                 }
             }
 
-            if (!globalMade) {
-                globalMade = true;
-                inv.addItem(ItemParser.getCategoryItem(null));
-            }
-
             // Fill empty slots of the inventory
             for (; categoryI < categories.size(); ++categoryI) {
                 // When this returns a un-empty map the current view is full
@@ -67,24 +62,16 @@ public class BuycraftInventoryCreator {
         }
     }
 
-    public static void createCategoryPages(InventoryHolder holder, Map<String, Inventory> inventories, PackageCategory category) {
-        createPackagePages(holder, inventories, category.getPackages(), category, true);
-    }
-
-    public static void createPackagePages(InventoryHolder holder, Map<String, Inventory> inventories, List<PackageModal> packages, boolean addHome) {
-        createPackagePages(holder, inventories, packages, null, addHome);
-    }
-
-    private static void createPackagePages(InventoryHolder holder, Map<String, Inventory> inventories, List<PackageModal> packages, PackageCategory category, boolean addHome) {
+    public static void createPackagePages(InventoryHolder holder, Map<String, Inventory> inventories, PackageCategory category, boolean addHome) {
         int pageId = 1;
+        List<PackageModal> packages = category.getPackages();
         int itemsToBeMade = packages.size();
-        String invTitle = category != null ? category.getName() : Plugin.getInstance().getLanguage().getString("uncategorized");
         for (int itemI = 0; itemI < packages.size(); ++itemI) {
             // Fetch the number of slots we need
             int size = getSize(itemsToBeMade + 9);
 
             // Create the inventory
-            Inventory inv = createInventory(holder, size, pageId > 1 ? invTitle + " " + pageId : invTitle);
+            Inventory inv = createInventory(holder, size, pageId > 1 ? category.getName() + " " + pageId : category.getName());
 
             // If we are adding any other buttons we need a free line of slots
             if (addHome || itemsToBeMade > size) {
@@ -109,7 +96,7 @@ public class BuycraftInventoryCreator {
                 placePrevAndNextPage(inv, pageId > 1, itemsToBeMade > size, addHome);
             }
             itemsToBeMade -= size;
-            inventories.put(CATEGORY_MENU.toString() + (category != null ? category.getNiceId() : 0) + "-" + pageId++, inv);
+            inventories.put(CATEGORY_MENU.toString() + (addHome ? category.getNiceId() : 0) + "-" + pageId++, inv);
         }
     }
 

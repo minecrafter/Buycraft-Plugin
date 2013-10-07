@@ -54,6 +54,7 @@ public class ReloadPackagesTask extends ApiTask {
                 plugin.getPackageManager().add(categoryId, row.getInt("id"), row.getInt("guiItemId"), row.get("name").toString(), row.getString("shortDescription"), row.get("price").toString());
             }
 
+            plugin.getPackageManager().cleanCategories();
             plugin.getBuyUi().packagesReset();
             plugin.getLogger().info("Loaded " + packages.length() + " package(s) into the cache.");
 

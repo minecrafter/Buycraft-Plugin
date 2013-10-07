@@ -58,7 +58,6 @@ public class Language {
         defaultProperties.put("categoryMenu", "Category Menu");
 
         defaultProperties.put("inventoryMenuPrefix", "Buycraft");
-        defaultProperties.put("uncategorized", "Uncategorized");
         defaultProperties.put("chooseACategory", "Choose a category");
         defaultProperties.put("category", "Category");
         defaultProperties.put("inventoryMenuNotReady", "The inventory menu has not been loaded yet. Please wait.");
