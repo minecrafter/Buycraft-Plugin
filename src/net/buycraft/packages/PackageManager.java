@@ -1,24 +1,52 @@
 package net.buycraft.packages;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PackageManager {
+    private List<PackageCategory> packageCategories;
     private List<PackageModal> packagesForSale;
 
     public PackageManager() {
+        this.packageCategories = new ArrayList<PackageCategory>();
         this.packagesForSale = new ArrayList<PackageModal>();
     }
 
-    public void add(int id, String name, String price, int order) {
-        packagesForSale.add(new PackageModal(id, name, price, order));
+    public synchronized void addCategory(int categoryId, String name, String description, int guiItemId) {
+        packageCategories.add(new PackageCategory(packageCategories.size() + 1, categoryId, name, description, guiItemId));
     }
 
-    public List<PackageModal> getPackagesForSale() {
-        return packagesForSale;
+    public synchronized void add(int categoryId, int id, int materialId, String name, String description, String price) {
+        PackageCategory category = getPackageCategory(categoryId);
+        packagesForSale.add(new PackageModal(category, id, materialId, name, description, price, packagesForSale.size() + 1));
     }
 
-    public PackageModal getPackageById(int packageId) {
+    public synchronized List<PackageCategory> getCategories() {
+        return Collections.unmodifiableList(packageCategories);
+    }
+
+    public synchronized PackageCategory getPackageCategory(int categoryId) {
+        for (PackageCategory c : packageCategories) {
+            if (c.getId() == categoryId)
+                return c;
+        }
+        return null;
+    }
+
+    public synchronized PackageCategory getPackageCategoryByNiceId(int categoryId) {
+        for (PackageCategory c : packageCategories) {
+            if (c.getNiceId() == categoryId)
+                return c;
+        }
+        return null;
+    }
+
+    public synchronized List<PackageModal> getPackagesForSale() {
+        return Collections.unmodifiableList(packagesForSale);
+    }
+
+    public synchronized PackageModal getPackageById(int packageId) {
         for (PackageModal packageModel : packagesForSale) {
             if (packageModel.getId() == packageId) {
                 return packageModel;
@@ -26,5 +54,20 @@ public class PackageManager {
         }
 
         return null;
+    }
+
+    public synchronized PackageModal getPackageByOrderId(int orderId) {
+        for (PackageModal packageModel : packagesForSale) {
+            if (packageModel.getOrder() == orderId) {
+                return packageModel;
+            }
+        }
+
+        return null;
+    }
+
+    public synchronized void reset() {
+        packageCategories.clear();
+        packagesForSale.clear();
     }
 }

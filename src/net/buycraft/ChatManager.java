@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.bukkit.entity.Player;
 
-public class ChatManager extends Thread {
+public class ChatManager {
     private HashSet<String> disabledChatSet;
 
     public ChatManager() {

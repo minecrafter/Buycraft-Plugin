@@ -75,6 +75,9 @@ public class BuycraftCommand {
 
                 if (plugin.isAuthenticated(commandSender)) {
                     if (args[0].equalsIgnoreCase("reload")) {
+                        if (plugin.getBuyUi() != null) {
+                            plugin.getBuyUi().pluginReloaded();
+                        }
                         ReloadPackagesTask.call();
 
                         if (commandSender instanceof Player) {

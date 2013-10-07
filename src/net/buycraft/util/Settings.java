@@ -45,6 +45,7 @@ public class Settings {
         defaultProperties.put("commandChecker", "true");
         defaultProperties.put("https", "false");
         defaultProperties.put("disableBuyCommand", "false");
+        defaultProperties.put("useBuyGUI", "true");
         defaultProperties.put("directPay", "false");
         defaultProperties.put("buyCommand", "buy");
         defaultProperties.put("headsEnabled", "false");

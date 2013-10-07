@@ -12,6 +12,9 @@ import net.buycraft.tasks.CommandDeleteTask;
 import net.buycraft.tasks.CommandExecuteTask;
 import net.buycraft.tasks.PendingPlayerCheckerTask;
 import net.buycraft.tasks.ReportTask;
+import net.buycraft.ui.BuyChatUI;
+import net.buycraft.ui.BuyInterface;
+import net.buycraft.ui.BuyInventoryUI;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
@@ -59,6 +62,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private String folderPath;
 
+    private BuyInterface buyUi;
     private String buyCommand = "buy";
     private String buyCommandSearchString = "/buy";
 
@@ -97,6 +101,7 @@ public class Plugin extends JavaPlugin implements Listener {
         pendingPlayerCheckerTask = new PendingPlayerCheckerTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
+        buyUi = getSettings().getBoolean("useBuyGUI") ? new BuyInventoryUI() : new BuyChatUI();
 
         headFile = new HeadFile(this);
 
@@ -110,6 +115,11 @@ public class Plugin extends JavaPlugin implements Listener {
     public void onDisable() {
         // Make sure any commands which have been run are deleted
         commandDeleteTask.runNow();
+
+        // Run BuyUI cleanup
+        if (buyUi != null) {
+            buyUi.pluginReloaded();
+        }
 
         executors.shutdown();
         while (!executors.isTerminated()) {
@@ -314,6 +324,9 @@ public class Plugin extends JavaPlugin implements Listener {
         return folderPath;
     }
 
+    public BuyInterface getBuyUi() {
+        return buyUi;
+    }
     public String getBuyCommand() {
         return buyCommand;
     }

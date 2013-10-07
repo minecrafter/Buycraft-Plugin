@@ -55,6 +55,16 @@ public class Language {
         defaultProperties.put("packageName", "Name");
         defaultProperties.put("packagePrice", "Price");
         defaultProperties.put("pageNotFound", "Page not found.");
+        defaultProperties.put("categoryMenu", "Category Menu");
+
+        defaultProperties.put("inventoryMenuPrefix", "Buycraft");
+        defaultProperties.put("uncategorized", "Uncategorized");
+        defaultProperties.put("chooseACategory", "Choose a category");
+        defaultProperties.put("category", "Category");
+        defaultProperties.put("inventoryMenuNotReady", "The inventory menu has not been loaded yet. Please wait.");
+        defaultProperties.put("nextPage", "Next Page");
+        defaultProperties.put("previousPage", "Previous Page");
+        defaultProperties.put("homePage", "Back to categories");
         
         defaultProperties.put("commandExecuteNotEnoughFreeInventory", "%d free inventory slot(s) are required.");
         defaultProperties.put("commandExecuteNotEnoughFreeInventory2", "Please empty your inventory to receive these items.");
