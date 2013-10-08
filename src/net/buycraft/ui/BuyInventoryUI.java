@@ -62,6 +62,11 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
 
         String key = menuKeys.get(event.getInventory().getName());
 
+        // Check the player is clicking inside our inventory
+        if (inv.getSize() >= event.getRawSlot()) {
+            return;
+        }
+
         // Find out what the player is doing
         BuycraftInventoryType type = BuycraftInventoryType.getType(key);
         key = type.stripType(key);
@@ -90,6 +95,11 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
 
         ItemType t = ItemType.checkType(event.getCurrentItem());
 
+        // Clicking in an invalid place
+        if (t == null) {
+            return;
+        }
+
         if (t != ItemType.OTHER) {
             currentPage += t == ItemType.NEXT ? 1 : -1;
             showCategoryPage((Player) event.getWhoClicked(), currentPage);
@@ -116,6 +126,11 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         }
 
         ItemType t = ItemType.checkType(event.getCurrentItem());
+
+        // Clicking in an invalid place
+        if (t == null) {
+            return;
+        }
 
         if (t == ItemType.HOME) {
             event.getWhoClicked().closeInventory();

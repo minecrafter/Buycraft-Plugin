@@ -127,7 +127,16 @@ public class ItemParser {
         OTHER;
 
         public static ItemType checkType(ItemStack item) {
-            String name = item.getItemMeta().getDisplayName();
+            if (!item.hasItemMeta()) {
+                return null;
+            }
+
+            ItemMeta meta = item.getItemMeta();
+            if (!meta.hasDisplayName()) {
+                return null;
+            }
+
+            String name = meta.getDisplayName();
 
             if (name.equals(nextPage.getItemMeta().getDisplayName()))
                 return NEXT;
