@@ -102,13 +102,13 @@ public class BuycraftInventoryCreator {
 
     private static void placePrevAndNextPage(Inventory inventory, boolean prevPage, boolean nextPage, boolean homePage) {
         if (prevPage) {
-            inventory.setItem(3, ItemParser.getPreviousPage());
+            inventory.setItem(nextPage ? 7 : 8, ItemParser.getPreviousPage());
         }
         if (nextPage) {
-            inventory.setItem(5, ItemParser.getNextPage());
+            inventory.setItem(8, ItemParser.getNextPage());
         }
         if (homePage) {
-            inventory.setItem(4, ItemParser.getHomePage());
+            inventory.setItem(0, ItemParser.getHomePage());
         }
     }
 
