@@ -63,7 +63,7 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         String key = menuKeys.get(event.getInventory().getName());
 
         // Check the player is clicking inside our inventory
-        if (inv.getSize() >= event.getRawSlot()) {
+        if (event.getRawSlot() >= inv.getSize()) {
             return;
         }
 
