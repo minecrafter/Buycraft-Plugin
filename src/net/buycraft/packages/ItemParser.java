@@ -84,24 +84,35 @@ public class ItemParser {
     }
 
     private static void fillLore(String description, String[] lore) {
-        int loreI;
-        for (loreI = 0; loreI < 4 && lore[loreI] != null; ++loreI);
+        int loreI = 0;
+        while (loreI < 4 && lore[++loreI] != null);
+
+        int maxLineLength = description.length() / (4 - loreI);
 
         while (loreI < 4) {
             // Find the first space
             int index = description.indexOf(' ');
 
             // If there are no more spaces we just set the string
-            if (index == -1 || description.length() < 20) {
+            if (index == -1 || description.length() < maxLineLength) {
                 lore[loreI] = description;
                 return;
             }
             // Find the next part of the string we can cut off
-            while ((index = description.indexOf(' ', index)) < 20);
-            index = description.lastIndexOf(' ', index);
+            while ((index = description.indexOf(' ', index + 1)) < maxLineLength) {
+                if (index == -1) {
+                    index = description.lastIndexOf(' ');
+                    break;
+                }
+            }
+
+            if (loreI == 3 && description.indexOf(' ', index + 1) == -1) {
+                lore[loreI++] = description;
+                return;
+            }
 
             lore[loreI++] = description.substring(0, index);
-            description.substring(index + 1);
+            description = description.substring(index + 1);
         }
     }
 
