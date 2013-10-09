@@ -56,7 +56,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 
 ---- CHANGE LOG ------------------------------------------------------------
-	
+		
+	Version 6.2
+
+		- Introducing a new /buy command interface which uses the inventory to browse categories/packages.
+
 	Version 6.1
 
 		- The package checker now runs at an interval of 2.5 minutes instead of 5.
