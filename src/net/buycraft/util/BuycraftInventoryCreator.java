@@ -115,7 +115,16 @@ public class BuycraftInventoryCreator {
     private static Inventory createInventory(InventoryHolder holder, int size, String title) {
         // Fetch the inventory title prefix
         String prefix = Plugin.getInstance().getLanguage().getString("inventoryMenuPrefix") + " - ";
-        return Bukkit.createInventory(holder, size, ChatColor.DARK_RED + prefix + title);
+
+        if (prefix.length() + title.length() > 30) {
+            if (title.length() > 30) {
+                title = title.substring(0, 28) + "..";
+            }
+        } else {
+            title = prefix + title;
+        }
+
+        return Bukkit.createInventory(holder, size, ChatColor.DARK_RED + title);
     }
 
     private static int getSize(int requiredSize) {
