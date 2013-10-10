@@ -2,7 +2,6 @@ package net.buycraft.tasks;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
-import net.buycraft.util.Updater;
 
 import org.json.JSONObject;
 
@@ -39,17 +38,6 @@ public class AuthenticateTask extends ApiTask {
 
                                 if (payload.has("buyCommand")) {
                                     plugin.setBuyCommand(payload.getString("buyCommand"));
-                                }
-
-                                if (payload.getDouble("latestVersion") > Double.valueOf(plugin.getVersion())) {
-                                    String downloadUrl = payload.getString("latestDownload");
-
-                                    if (plugin.getSettings().getBoolean("autoUpdate")) {
-                                        Updater updater = new Updater();
-                                        updater.download(downloadUrl);
-                                    } else {
-                                        plugin.getLogger().info("Ignoring update due to auto update disabled.");
-                                    }
                                 }
 
                                 plugin.getLogger().info("Authenticated with the specified Secret key.");

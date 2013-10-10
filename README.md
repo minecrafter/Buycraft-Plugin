@@ -57,6 +57,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 		
+	Version 6.3
+
+	 	- New auto updater system to comply with BukkitDev policies
+	 	- Fixed various bugs
+
 	Version 6.2
 
 		- Introducing a new /buy command interface which uses the inventory to browse categories/packages.

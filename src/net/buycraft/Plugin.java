@@ -18,6 +18,7 @@ import net.buycraft.ui.BuyInventoryUI;
 import net.buycraft.util.Chat;
 import net.buycraft.util.Language;
 import net.buycraft.util.Settings;
+import net.buycraft.util.Updater;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -43,6 +44,8 @@ public class Plugin extends JavaPlugin implements Listener {
     private Settings settings;
     private Language language;
 
+    private Updater updater = null;
+    
     private Api api;
 
     private int serverID = 0;
@@ -82,7 +85,7 @@ public class Plugin extends JavaPlugin implements Listener {
         // thread pool model
         executors = Executors.newFixedThreadPool(5);
         folderPath = getDataFolder().getAbsolutePath();
-
+        
         checkDirectory();
 
         moveFileFromJar("README.md", getFolderPath() + "/README.txt", true);
@@ -91,7 +94,13 @@ public class Plugin extends JavaPlugin implements Listener {
 
         settings = new Settings();
         language = new Language();
-
+        
+        if (settings.getBoolean("autoUpdate")) {
+    		this.updater = new Updater(this, "buycraft", this.getFile(), Updater.UpdateType.DEFAULT, true);
+    	} else {
+    		getLogger().info("Ignoring update due to auto update disabled.");
+    	}
+        
         api = new Api();
 
         packageManager = new PackageManager();
@@ -334,5 +343,10 @@ public class Plugin extends JavaPlugin implements Listener {
     public HeadFile getHeadFile()
     {
         return headFile;
+    }
+    
+    public Updater getUpdater()
+    {
+    	return updater;
     }
 }
