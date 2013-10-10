@@ -15,6 +15,7 @@ import net.buycraft.util.BuycraftInventoryCreator.BuycraftInventoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -115,7 +116,10 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
             event.getInventory().setItem(event.getSlot(), null);
             return;
         }
-
+        
+        Player player = (Player) event.getWhoClicked();
+        player.playSound(player.getLocation(), Sound.CLICK, 0.5f, 1f);
+        
         event.getWhoClicked().closeInventory();
         showPage((Player) event.getWhoClicked(), c.getNiceId(), 1);
     }
@@ -124,7 +128,10 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR) {
             return;
         }
-
+        
+        Player player = (Player) event.getWhoClicked();
+        player.playSound(player.getLocation(), Sound.CLICK, 0.5f, 1f);
+        
         ItemType t = ItemType.checkType(event.getCurrentItem());
 
         // Clicking in an invalid place
