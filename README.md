@@ -57,6 +57,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 		
+	Version 6.4
+
+		- Changed to the new ServerMods API auto updater
+		- Increased timeout of HTTP requests to the API
+
 	Version 6.3
 
 	 	- New auto updater system to comply with BukkitDev policies

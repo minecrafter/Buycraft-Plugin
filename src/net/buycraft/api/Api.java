@@ -146,14 +146,14 @@ public class Api {
 
             URL conn = new URL(url);
             URLConnection yc = conn.openConnection();
-
-            yc.setConnectTimeout(10000);
-            yc.setReadTimeout(10000);
-
+            
+            yc.setConnectTimeout(30000);
+            yc.setReadTimeout(30000);
+            
             BufferedReader in;
-
+            
             in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-
+            
             String inputLine;
 
             while ((inputLine = in.readLine()) != null) {

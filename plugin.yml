@@ -1,6 +1,6 @@
 name: Buycraft
 main: net.buycraft.Plugin
-version: 6.3
+version: 6.4
 author: Tebex Technologies Ltd
 website: http://buycraft.net
 commands:
