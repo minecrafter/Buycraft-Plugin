@@ -36,12 +36,8 @@ public class ReloadPackagesTask extends ApiTask {
             JSONArray packages = packagesResponse.getJSONArray("payload");
 
             for (int i = 0; i < categories.length(); ++i) {
-                if (packages.isNull(i)) {
-                    continue;
-                }
-
                 JSONObject row = categories.getJSONObject(i);
-                plugin.getPackageManager().addCategory(row.getInt("id"), row.getString("name"), row.getString("shortDescription"), row.getInt("guiItemId"));
+                plugin.getPackageManager().addCategory(row.isNull("id") ? 0 : row.getInt("id"), row.getString("name"), row.getString("shortDescription"), row.getInt("guiItemId"));
             }
 
             for (int i = 0; i < packages.length(); i++) {
