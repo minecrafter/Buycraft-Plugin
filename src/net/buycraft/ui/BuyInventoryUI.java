@@ -240,7 +240,7 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         }
 
         this.useMainMenu = useMainMenu;
-        this.defaultCategoryKey = useMainMenu ? categories.get(0).getNiceId() : 0;
+        this.defaultCategoryKey = categories.size() == 1 ? categories.get(0).getNiceId() : 0;
         this.menuKeys = newMenuKeys;
         this.buyMenus = newBuyMenus;
     }
