@@ -28,6 +28,7 @@ import org.bukkit.inventory.InventoryHolder;
 public class BuyInventoryUI extends AbstractBuyUI implements Listener, InventoryHolder {
 
     private int expectedInventoryHolderId = 0;
+    private int defaultCategoryKey;
     private HashMap<String, Inventory> buyMenus;
     private HashMap<String, String> menuKeys;
 
@@ -197,6 +198,10 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
             }
             pageNumber = 1;
         }
+        
+        if (categoryId == 0) {
+            categoryId = defaultCategoryKey;
+        }
 
         String key = BuycraftInventoryType.CATEGORY_MENU.toString() + categoryId + "-" + pageNumber;
         Inventory inv = buyMenus.get(key);
@@ -235,6 +240,7 @@ public class BuyInventoryUI extends AbstractBuyUI implements Listener, Inventory
         }
 
         this.useMainMenu = useMainMenu;
+        this.defaultCategoryKey = useMainMenu ? categories.get(0).getNiceId() : 0;
         this.menuKeys = newMenuKeys;
         this.buyMenus = newBuyMenus;
     }
