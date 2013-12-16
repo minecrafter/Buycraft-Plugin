@@ -145,10 +145,12 @@ public class Api {
             String content = "";
 
             URL conn = new URL(url);
-            URLConnection yc = conn.openConnection();
             
-            yc.setConnectTimeout(30000);
-            yc.setReadTimeout(30000);
+            HttpURLConnection yc = (HttpURLConnection) conn.openConnection();
+            
+            yc.setRequestMethod("GET");
+            yc.setConnectTimeout(45000);
+            yc.setReadTimeout(45000);
             
             BufferedReader in;
             
@@ -184,7 +186,7 @@ public class Api {
             e.printStackTrace();
             ReportTask.setLastException(e);
         }
-
+        
         return null;
     }
 
