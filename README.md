@@ -1,9 +1,8 @@
 ---- Buycraft Plugin ------------------------
 
-For setup instructions please visit http://buycraft.net.
+For setup instructions please visit https://buycraft.net.
 
-Purchase Premium and gain access to over 15 more awesome features. 
-To purchase Premium, go to http://server.buycraft.net/premium.
+Upgrade your account and receive many more awesome features by going to https://server.buycraft.net/plans.
 
 Are you in need of help? Please contact customer support via email (support@buycraft.net) or via the helpdesk at http://support.buycraft.net.
 
