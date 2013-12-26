@@ -53,6 +53,7 @@ public class Settings {
         defaultProperties.put("buysignsRemoveFreePrice", "false");
         defaultProperties.put("debug", "false");
         defaultProperties.put("commandThrottleCount", "150");
+        defaultProperties.put("disable-secret-command", "false");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();

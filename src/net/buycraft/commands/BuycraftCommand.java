@@ -45,32 +45,42 @@ public class BuycraftCommand {
                 }
                 
                 if (args[0].equalsIgnoreCase("secret")) {
-                    if (args.length == 2) {
-                        String secretKey = args[1];
-
-                        if (commandSender instanceof Player) {
-                            commandSender.sendMessage(Chat.header());
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Server authenticated. Type /buycraft for confirmation.");
-                            commandSender.sendMessage(Chat.seperator());
-                            commandSender.sendMessage(Chat.footer());
-                        }
-
-                        plugin.getSettings().setString("secret", secretKey);
-                        plugin.getApi().setApiKey(secretKey);
-
-                        AuthenticateTask.call();
-
-                        return true;
-                    } else {
-                        commandSender.sendMessage(Chat.header());
+                	if(plugin.getSettings().getBoolean("disable-secret-command") == false) {
+	                    if (args.length == 2) {
+	                        String secretKey = args[1];
+	
+	                        if (commandSender instanceof Player) {
+	                            commandSender.sendMessage(Chat.header());
+	                            commandSender.sendMessage(Chat.seperator());
+	                            commandSender.sendMessage(Chat.seperator() + ChatColor.GREEN + "Server authenticated. Type /buycraft for confirmation.");
+	                            commandSender.sendMessage(Chat.seperator());
+	                            commandSender.sendMessage(Chat.footer());
+	                        }
+	
+	                        plugin.getSettings().setString("secret", secretKey);
+	                        plugin.getApi().setApiKey(secretKey);
+	
+	                        AuthenticateTask.call();
+	
+	                        return true;
+	                    } else {
+	                        commandSender.sendMessage(Chat.header());
+	                        commandSender.sendMessage(Chat.seperator());
+	                        commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please enter a valid secret key.");
+	                        commandSender.sendMessage(Chat.seperator());
+	                        commandSender.sendMessage(Chat.footer());
+	
+	                        return true;
+	                    }
+                	} else {
+                		commandSender.sendMessage(Chat.header());
                         commandSender.sendMessage(Chat.seperator());
-                        commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please enter a valid secret key.");
+                        commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Please change the key in settings.conf.");
                         commandSender.sendMessage(Chat.seperator());
                         commandSender.sendMessage(Chat.footer());
 
                         return true;
-                    }
+                	}
                 }
 
                 if (plugin.isAuthenticated(commandSender)) {
