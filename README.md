@@ -55,7 +55,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 
 ---- CHANGE LOG ------------------------------------------------------------
-		
+	
+	Version 6.6
+
+		- Bug fixes
+
 	Version 6.5
 
 		- New option to only allow changing the secret key via the settings.conf file.
