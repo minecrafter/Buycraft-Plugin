@@ -88,7 +88,8 @@ public class BuycraftCommand {
                         if (plugin.getBuyUi() != null) {
                             plugin.getBuyUi().pluginReloaded();
                         }
-                        ReloadPackagesTask.call();
+                        
+                        AuthenticateTask.call();
 
                         if (commandSender instanceof Player) {
                             commandSender.sendMessage(Chat.header());

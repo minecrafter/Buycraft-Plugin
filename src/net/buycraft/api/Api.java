@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.util.HashMap;
@@ -149,8 +150,10 @@ public class Api {
             HttpURLConnection yc = (HttpURLConnection) conn.openConnection();
             
             yc.setRequestMethod("GET");
-            yc.setConnectTimeout(45000);
-            yc.setReadTimeout(45000);
+            yc.setConnectTimeout(15000);
+            yc.setReadTimeout(15000);
+            yc.setInstanceFollowRedirects(false);
+            yc.setAllowUserInteraction(false);
             
             BufferedReader in;
             
@@ -182,6 +185,9 @@ public class Api {
         } catch (UnknownHostException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
             ReportTask.setLastException(e);
+        } catch (IOException e) {
+        	 Plugin.getInstance().getLogger().severe(e.getMessage());
+             ReportTask.setLastException(e);
         } catch (Exception e) {
             e.printStackTrace();
             ReportTask.setLastException(e);
