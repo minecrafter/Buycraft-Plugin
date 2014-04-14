@@ -64,8 +64,15 @@ public class CommandFetchTask extends ApiTask {
             for (int i = 0; i < commandsPayload.length(); i++) {
                 JSONObject row = commandsPayload.getJSONObject(i);
 
+                String uuid = null;
                 int commandId = row.getInt("id");
                 String username = row.getString("ign");
+                
+                if(!row.isNull("uuid"))
+                {
+                	uuid = row.getString("uuid");
+                }
+                
                 boolean requireOnline = row.getBoolean("requireOnline");
                 String command = row.getString("command");
                 int delay = row.getInt("delay");
@@ -77,7 +84,7 @@ public class CommandFetchTask extends ApiTask {
                     String c = command;
                     String u = username;
 
-                    Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay, requiredInventorySlots);
+                    Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, uuid, delay, requiredInventorySlots);
                 }
             }
 

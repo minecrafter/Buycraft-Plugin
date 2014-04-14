@@ -9,15 +9,17 @@ import org.bukkit.inventory.PlayerInventory;
 public class PackageCommand implements Comparable<Object> {
     private final int id;
     public final String username;
+    public final String uuid;
     public final String command;
     public final long runtime;
 
     public final int requiredInventorySlots;
 
-    public PackageCommand(int id, String username, String command, int tickDelay, int requiredInventorySlots)
+    public PackageCommand(int id, String username, String uuid, String command, int tickDelay, int requiredInventorySlots)
     {
         this.id = id;
         this.username = username;
+        this.uuid = uuid;
         this.command = command;
         this.runtime = System.currentTimeMillis() + tickDelay * 50L;
 
