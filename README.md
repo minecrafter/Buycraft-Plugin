@@ -56,10 +56,6 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
-	Version 6.7
-
-		- Added support for the {uuid} variable. 
-
 	Version 6.6
 
 		- Bug fixes
@@ -92,3 +88,11 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 		- Improved support for commands which do not require the player to be online.
 		- You can now filter buy signs witch have a price of 0.00.
 		- Misc bug fixes and improvements. 
+
+	Version 5.9
+
+		- Included support for delayed commands.
+
+	Version 5.8
+
+		- Fixed a bug with case sensitive usernames.

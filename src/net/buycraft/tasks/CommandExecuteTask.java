@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class CommandExecuteTask extends ApiTask {
     private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
-    private static final Pattern REPLACE_UUID = Pattern.compile("[{\\(<\\[](uuid)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
     
     /**
      * Queues commands to be run
@@ -50,25 +49,19 @@ public class CommandExecuteTask extends ApiTask {
      * Parses the command and queues it to be executed in the main thread
      * @param delay The time in seconds for the task to be delayed
      */
-    public void queueCommand(int commandId, String command, String username, String uuid, int delay, int requiredInventorySlots) {
+    public void queueCommand(int commandId, String command, String username, int delay, int requiredInventorySlots) {
         // Convert delay from seconds to ticks
         delay *= 20;
         try {
             username = Bukkit.getServer().getOfflinePlayer(username).getName();
-            
             command = REPLACE_NAME.matcher(command).replaceAll(username);
-            
-            if(uuid != null)
-            {
-            	command = REPLACE_UUID.matcher(command).replaceAll(uuid);
-            }
 
             if (command.startsWith("{mcmyadmin}")) {
                 Plugin.getInstance().getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");
                 String newCommand = command.replace("{mcmyadmin}", "");                
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
-                PackageCommand pkgCmd = new PackageCommand(commandId, username, uuid, command, delay, requiredInventorySlots);
+                PackageCommand pkgCmd = new PackageCommand(commandId, username, command, delay, requiredInventorySlots);
                 if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(pkgCmd)) {
                     commandQueue.add(pkgCmd);
                 }
@@ -127,9 +120,8 @@ public class CommandExecuteTask extends ApiTask {
                     }
                
                 }
-                
+
                 Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
-                
                 creditedCommands.add(pkgcmd.username);
                 long cmdStart = System.currentTimeMillis();
 
