@@ -24,7 +24,7 @@ public class VisitLinkTask extends ApiTask {
     private VisitLinkTask(String playerName, String URL) {
         try {
             this.playerName = playerName;
-            this.URL = "http://is.gd/create.php?format=json&url=" + URLEncoder.encode(URL, "UTF-8");
+            this.URL = URLEncoder.encode(URL, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             ReportTask.setLastException(e);
@@ -34,23 +34,21 @@ public class VisitLinkTask extends ApiTask {
     public void run() {
         Player player = Bukkit.getPlayerExact(playerName);
         try {
-            String httpResponse = getApi().HttpRequest(URL);
-            
-            if (httpResponse != null) {
-                JSONObject jsonResponse = new JSONObject(httpResponse);
-
-                if (jsonResponse.has("shorturl")) {
+            JSONObject jsonResponse = getApi().urlAction(URL).getJSONObject("payload");
+       
+            if (jsonResponse != null) {
+                if (jsonResponse.has("url") && !jsonResponse.isNull("url")) {
 
                     if (player != null) {
                         player.sendMessage(new String[] {Chat.header(), Chat.seperator(),
                                 Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":",
-                                Chat.seperator(), Chat.seperator() + jsonResponse.getString("shorturl"),
+                                Chat.seperator(), Chat.seperator() + jsonResponse.getString("url"),
                                 Chat.seperator(), Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"), Chat.seperator(), Chat.footer()});
                     }
 
                     disableChat(playerName);
 
-                    getLogger().info("Generated short URL " + jsonResponse.getString("shorturl") + ".");
+                    getLogger().info("Generated short URL " + jsonResponse.getString("url") + ".");
 
                     return;
                 } else {

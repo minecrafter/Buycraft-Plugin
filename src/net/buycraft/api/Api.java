@@ -53,6 +53,15 @@ public class Api {
 
         return call(apiCallParams);
     }
+    
+    public JSONObject urlAction(String url) {
+        HashMap<String, String> apiCallParams = new HashMap<String, String>();
+
+        apiCallParams.put("action", "url");
+        apiCallParams.put("url", url);
+
+        return call(apiCallParams);
+    }
 
     public JSONObject packagesAction() {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();

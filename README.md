@@ -56,6 +56,10 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 6.7
+
+		- Moved to a different URL shortener for better reliability. 
+
 	Version 6.6
 
 		- Bug fixes
