@@ -32,6 +32,8 @@ public class VisitLinkTask extends ApiTask {
     }
 
     public void run() {
+        // Player is online so its fine to use this
+        @SuppressWarnings("deprecation")
         Player player = Bukkit.getPlayerExact(playerName);
         try {
             JSONObject jsonResponse = getApi().urlAction(URL).getJSONObject("payload");

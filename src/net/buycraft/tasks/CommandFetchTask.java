@@ -1,10 +1,13 @@
 package net.buycraft.tasks;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
+import net.buycraft.util.UuidUtil;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,19 +42,21 @@ public class CommandFetchTask extends ApiTask {
                 return;
             }
 
-            // Create an array of player names
-            String[] playerNames;
+            // Create an array of player names or uuids
+            String[] playerKeys = null;
+            boolean useUuids = Bukkit.getOnlineMode();
+            
             if (players.length > 0){
-                ArrayList<String> tmpPlayerNames = new ArrayList<String>(players.length);
+                ArrayList<String> tmpPlayerKeys= new ArrayList<String>(players.length);
                 for (Player player : players) {
-                    tmpPlayerNames.add(player.getName());
+                    tmpPlayerKeys.add(useUuids ? UuidUtil.uuidToString(player.getUniqueId()) : player.getName());
                 }
-                playerNames = tmpPlayerNames.toArray(new String[tmpPlayerNames.size()]);
+                playerKeys = tmpPlayerKeys.toArray(new String[tmpPlayerKeys.size()]);
             } else {
-                playerNames = new String[0];
+                playerKeys = new String[0];
             }
 
-            JSONObject apiResponse = plugin.getApi().fetchPlayerCommands(new JSONArray(playerNames), offlineCommands);
+            JSONObject apiResponse = plugin.getApi().fetchPlayerCommands(new JSONArray(playerKeys), offlineCommands, useUuids);
 
             if (apiResponse == null || apiResponse.getInt("code") != 0) {
                 plugin.getLogger().severe("No response/invalid key during package check.");
@@ -66,18 +71,20 @@ public class CommandFetchTask extends ApiTask {
 
                 int commandId = row.getInt("id");
                 String username = row.getString("ign");
+                String uuidStr = UuidUtil.addDashesToUUID(row.getString("uuid"));
+                UUID uuid = uuidStr.length() > 0 ? UUID.fromString(uuidStr) : null;
                 boolean requireOnline = row.getBoolean("requireOnline");
                 String command = row.getString("command");
                 int delay = row.getInt("delay");
                 int requiredInventorySlots = row.getInt("requireInventorySlot");
 
-                Player player = requireOnline ? getPlayer(players, username) : null;
+                Player player = requireOnline ? (Bukkit.getOnlineMode() && uuid != null ? getPlayer(players, uuid) : getPlayer(players, username)) : null;
 
-                if (requireOnline == false || player != null) {
+                if (!requireOnline || player != null) {
                     String c = command;
                     String u = username;
 
-                    Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, u, delay, requiredInventorySlots);
+                    Plugin.getInstance().getCommandExecutor().queueCommand(commandId, c, uuid, u, delay, requiredInventorySlots);
                 }
             }
 
@@ -98,6 +105,14 @@ public class CommandFetchTask extends ApiTask {
     private Player getPlayer(Player[] players, String name) {
         for (Player player : players) {
             if (player.getName().equalsIgnoreCase(name))
+                return player;
+        }
+        return null;
+    }
+    
+    private Player getPlayer(Player[] players, UUID uuid) {
+    	for (Player player : players) {
+            if (player.getUniqueId().equals(uuid))
                 return player;
         }
         return null;

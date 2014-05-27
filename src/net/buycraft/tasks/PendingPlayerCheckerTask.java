@@ -2,8 +2,10 @@ package net.buycraft.tasks;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +16,7 @@ import org.json.JSONObject;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
+import net.buycraft.util.UuidUtil;
 
 /**
  * Fetches an array of players which are waiting for commands to be run.
@@ -45,8 +48,10 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public synchronized void onPlayerJoin(PlayerJoinEvent event) {
+        Player p = event.getPlayer();
         // If the player has pending commands we call the package checker
-        if (pendingPlayers.remove(event.getPlayer().getName().toLowerCase())) {
+        String playerKey = Bukkit.getOnlineMode() ? UuidUtil.uuidToString(p.getUniqueId()) : p.getName().toLowerCase();
+        if (pendingPlayers.remove(playerKey)) {
             CommandFetchTask.call(false, event.getPlayer());
         }
         lastPlayerLogin = System.currentTimeMillis();
@@ -75,7 +80,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
             }
 
             // Fetch pending players
-            JSONObject apiResponse = plugin.getApi().fetchPendingPlayers();
+            JSONObject apiResponse = plugin.getApi().fetchPendingPlayers(Bukkit.getOnlineMode());
 
             if (apiResponse == null || apiResponse.getInt("code") != 0) {
                 plugin.getLogger().severe("No response/invalid key during pending players check.");
@@ -97,13 +102,23 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
 
                 // Iterate through each pending player
                 for (int i = 0; i < pendingPlayers.length(); ++i) {
-                    String playerName = pendingPlayers.getString(i).toLowerCase();
-                    Player player = getPlayer(onlinePlayers, playerName);
+                    String playerKey = pendingPlayers.getString(i);
+                    if (!Bukkit.getOnlineMode()) {
+                        // Player names should be in lowercase
+                        playerKey = playerKey.toLowerCase();
+                    }
+                    Player player = null;
+                    if (Bukkit.getOnlineMode()) {
+                        UUID uuid = UUID.fromString(UuidUtil.addDashesToUUID(playerKey));
+                        player = getPlayer(onlinePlayers, uuid);
+                    } else {
+                        player = getPlayer(onlinePlayers, playerKey);
+                    }
 
                     // Check if the player is offline
                     if (player == null) {
                         // Add them to the pending players set
-                        addPendingPlayer(playerName);
+                        addPendingPlayer(playerKey);
                     } else {
                         // Add the player to this online pending players list
                         onlinePendingPlayers.add(player);
@@ -131,14 +146,23 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
         pendingPlayers.clear();
     }
 
-    private synchronized void addPendingPlayer(String playerName) {
-        pendingPlayers.add(playerName.toLowerCase());
+    private synchronized void addPendingPlayer(String playerKey) {
+        pendingPlayers.add(playerKey);
     }
 
     private Player getPlayer(Player[] players, String name) {
         for (Player player : players) {
             if (player.getName().equalsIgnoreCase(name))
                 return player;
+        }
+        return null;
+    }
+    
+    private Player getPlayer(Player[] players, UUID uuid) {
+        for (Player player : players) {
+            if (player.getUniqueId().equals(uuid)) {
+                return player;
+            }
         }
         return null;
     }

@@ -62,6 +62,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private boolean authenticated = false;
     private int authenticatedCode = 1;
+    private boolean onlineMode;
 
     private String folderPath;
 
@@ -193,7 +194,8 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public Boolean isAuthenticated(CommandSender commandSender) {
-        if (!authenticated) {
+        boolean invalidOnlineMode = onlineMode && !getServer().getOnlineMode();
+        if (!authenticated || invalidOnlineMode) {
             if (commandSender != null) {
                 commandSender.sendMessage(Chat.header());
                 commandSender.sendMessage(Chat.seperator());
@@ -208,6 +210,12 @@ public class Plugin extends JavaPlugin implements Listener {
                     commandSender.sendMessage(Chat.seperator());
                     commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "If it did not resolve the issue, restart your server");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "a couple of times.");
+                    commandSender.sendMessage(Chat.seperator());
+                } else if (invalidOnlineMode) {
+                    commandSender.sendMessage(Chat.seperator());
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft is authenticated but the server is in offline mode.");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft requires this server to be set to online mode.");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Alternatively change Buycraft to offline mode from the control panel.");
                     commandSender.sendMessage(Chat.seperator());
                 } else {
                     commandSender.sendMessage(Chat.seperator());
@@ -235,6 +243,10 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public Integer getAuthenticatedCode() {
         return authenticatedCode;
+    }
+    
+    public void setOnlineMode(boolean onlineMode) {
+        this.onlineMode = onlineMode;
     }
 
     public static Plugin getInstance() {

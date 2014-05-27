@@ -84,21 +84,23 @@ public class Api {
         return call(apiCallParams);
     }
 
-    public JSONObject fetchPendingPlayers() {
+    public JSONObject fetchPendingPlayers(boolean useUuids) {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "pendingUsers");
+        apiCallParams.put("userType", useUuids ? "uuid" : "ign");
 
         return call(apiCallParams);
     }
 
-    public JSONObject fetchPlayerCommands(JSONArray players, boolean offlineCommands) {
+    public JSONObject fetchPlayerCommands(JSONArray players, boolean offlineCommands, boolean usingUuids) {
         HashMap<String, String> apiCallParams = new HashMap<String, String>();
 
         apiCallParams.put("action", "commands");
         apiCallParams.put("do", "lookup");
 
         apiCallParams.put("users", players.toString());
+        apiCallParams.put("userType", usingUuids ? "uuid" : "ign");
         apiCallParams.put("offlineCommands", String.valueOf(offlineCommands));
         apiCallParams.put("offlineCommandLimit", String.valueOf(plugin.getSettings().getInt("commandThrottleCount")));
 

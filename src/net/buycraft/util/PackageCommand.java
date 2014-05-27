@@ -1,5 +1,8 @@
 package net.buycraft.util;
 
+import java.util.UUID;
+import java.util.regex.Pattern;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -7,16 +10,22 @@ import org.bukkit.inventory.PlayerInventory;
 
 
 public class PackageCommand implements Comparable<Object> {
+    
+    private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
+    private static final Pattern REPLACE_UUID = Pattern.compile("[{\\(<\\[](uuid)[}\\)>\\]]");
+    
     private final int id;
+    public final UUID uuid;
     public final String username;
-    public final String command;
+    private final String command;
     public final long runtime;
 
     public final int requiredInventorySlots;
 
-    public PackageCommand(int id, String username, String command, int tickDelay, int requiredInventorySlots)
+    public PackageCommand(int id, UUID uuid, String username, String command, int tickDelay, int requiredInventorySlots)
     {
         this.id = id;
+        this.uuid = uuid;
         this.username = username;
         this.command = command;
         this.runtime = System.currentTimeMillis() + tickDelay * 50L;
@@ -27,6 +36,17 @@ public class PackageCommand implements Comparable<Object> {
     public int getId()
     {
         return id;
+    }
+    
+    public String getParsedCommand() {
+        String parsedCommand = this.command;
+        
+        parsedCommand = REPLACE_NAME.matcher(parsedCommand).replaceAll(username);
+        if (uuid != null) {
+            parsedCommand = REPLACE_UUID.matcher(parsedCommand).replaceAll(uuid.toString());
+        }
+        
+        return parsedCommand;
     }
 
     public boolean requiresFreeInventorySlots() {

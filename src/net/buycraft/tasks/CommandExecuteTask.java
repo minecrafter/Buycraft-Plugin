@@ -3,10 +3,10 @@ package net.buycraft.tasks;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
@@ -15,12 +15,12 @@ import net.buycraft.util.PackageCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 public class CommandExecuteTask extends ApiTask {
-    private static final Pattern REPLACE_NAME = Pattern.compile("[{\\(<\\[](name|player|username)[}\\)>\\]]", Pattern.CASE_INSENSITIVE);
-    
+
     /**
      * Queues commands to be run
      * <p>
@@ -49,19 +49,28 @@ public class CommandExecuteTask extends ApiTask {
      * Parses the command and queues it to be executed in the main thread
      * @param delay The time in seconds for the task to be delayed
      */
-    public void queueCommand(int commandId, String command, String username, int delay, int requiredInventorySlots) {
+    @SuppressWarnings("deprecation")
+	public void queueCommand(int commandId, String command, UUID uuid, String username, int delay, int requiredInventorySlots) {
         // Convert delay from seconds to ticks
         delay *= 20;
         try {
-            username = Bukkit.getServer().getOfflinePlayer(username).getName();
-            command = REPLACE_NAME.matcher(command).replaceAll(username);
+            if (uuid == null || !Bukkit.getOnlineMode()) {
+            	OfflinePlayer op = Bukkit.getOfflinePlayer(username);
+                username = op.getName();
+                uuid = op.getUniqueId();
+            } else {
+                String u = Bukkit.getOfflinePlayer(uuid).getName();
+                if (u != null) {
+                	username = u;
+                }
+            }
 
             if (command.startsWith("{mcmyadmin}")) {
                 Plugin.getInstance().getLogger().info("Executing command '" + command + "' on behalf of user '" + username + "'.");
                 String newCommand = command.replace("{mcmyadmin}", "");                
                 Logger.getLogger("McMyAdmin").info("Buycraft tried command: " + newCommand);
             } else {
-                PackageCommand pkgCmd = new PackageCommand(commandId, username, command, delay, requiredInventorySlots);
+                PackageCommand pkgCmd = new PackageCommand(commandId, uuid, username, command, delay, requiredInventorySlots);
                 if (!Plugin.getInstance().getCommandDeleteTask().queuedForDeletion(commandId) && !commandQueue.contains(pkgCmd)) {
                     commandQueue.add(pkgCmd);
                 }
@@ -101,7 +110,12 @@ public class CommandExecuteTask extends ApiTask {
 
                 // Ignore the command if the player does not have enough free item slots
                 if (pkgcmd.requiresFreeInventorySlots()) {
-                    Player player = Bukkit.getPlayer(pkgcmd.username);
+                    @SuppressWarnings("deprecation")
+                    Player player = Bukkit.getOnlineMode() && pkgcmd.uuid != null ? Bukkit.getPlayer(pkgcmd.uuid) : Bukkit.getPlayer(pkgcmd.username);
+                    if (player == null || !player.isOnline()) {
+                        // If the player is offline we can't do anything here
+                        continue;
+                    }
                     int result = pkgcmd.calculateRequiredInventorySlots(player);
                     if (result > 0) {
                         // Fetch any current amounts
@@ -120,17 +134,19 @@ public class CommandExecuteTask extends ApiTask {
                     }
                
                 }
+                
+                String command = pkgcmd.getParsedCommand();
 
-                Plugin.getInstance().getLogger().info("Executing command '" + pkgcmd.command + "' on behalf of user '" + pkgcmd.username + "'.");
+                Plugin.getInstance().getLogger().info("Executing command '" + command + "' on behalf of user '" + pkgcmd.username + "'.");
                 creditedCommands.add(pkgcmd.username);
                 long cmdStart = System.currentTimeMillis();
 
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), pkgcmd.command);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                 // Check if the command lasted longer than our threshold
                 long cmdDiff = System.currentTimeMillis() - cmdStart;
                 if (cmdDiff >= 10) {
                     // Save the command and time it took to run
-                    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + pkgcmd.command;
+                    lastLongRunningCommand = "Time=" + cmdDiff + "ms - CMD=" + command;
                 }
 
                 // Queue the command for deletion
@@ -143,6 +159,8 @@ public class CommandExecuteTask extends ApiTask {
         if (commandQueue.isEmpty()) {
             // Tell users that they need more inventory space
             for (Entry<String, Integer> e : requiredInventorySlots.entrySet()) {
+                // NOTE: Its fine to get players by name here because we know for sure who they are (We only just got their name a moment ago)
+                @SuppressWarnings("deprecation")
                 Player p = Bukkit.getPlayerExact(e.getKey());
                 if (p == null) {
                     continue;
@@ -160,6 +178,8 @@ public class CommandExecuteTask extends ApiTask {
             requiredInventorySlots.clear();
             
             for (String name : creditedCommands) {
+                // NOTE: Its fine to get players by name here because we know for sure who they are (We only just got their name a moment ago)
+                @SuppressWarnings("deprecation")
                 Player p = Bukkit.getPlayerExact(name);
                 if (p == null) {
                     continue;

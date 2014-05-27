@@ -3,6 +3,7 @@ package net.buycraft.tasks;
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 
+import org.bukkit.Bukkit;
 import org.json.JSONObject;
 
 public class AuthenticateTask extends ApiTask {
@@ -41,6 +42,14 @@ public class AuthenticateTask extends ApiTask {
                                 }
 
                                 plugin.getLogger().info("Authenticated with the specified Secret key.");
+                                
+                                boolean requiresOnlineMode = payload.getBoolean("onlineMode");
+                                plugin.setOnlineMode(requiresOnlineMode);
+                                
+                                if (requiresOnlineMode && !Bukkit.getOnlineMode()) {
+                                    plugin.getLogger().warning("This server must be in online mode");
+                                    return;
+                                }
                                 plugin.getLogger().info("Plugin is now ready to be used.");
 
                                 ReloadPackagesTask.call();
