@@ -17,6 +17,15 @@ public class BuyCommand {
             if (plugin.isAuthenticated(player)) {
                 String pageToView = "0";
                 String categoryToView = "0";
+                
+                if (!plugin.getPackageManager().hasPackages()) {
+                    player.sendMessage(Chat.header());
+                    player.sendMessage(Chat.seperator());
+                    player.sendMessage(Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("noPackagesForSale"));
+                    player.sendMessage(Chat.seperator());
+                    player.sendMessage(Chat.footer());
+                    return true;
+                }
 
                 if (args.length > 1) {
                     if (args[1].equalsIgnoreCase("page") && (args.length == 3 || args.length == 4)) {

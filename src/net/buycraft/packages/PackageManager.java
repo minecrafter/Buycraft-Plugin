@@ -35,6 +35,10 @@ public class PackageManager {
             }
         }
     }
+    
+    public synchronized boolean hasPackages() {
+        return !this.packageCategories.isEmpty();
+    }
 
     public synchronized List<PackageCategory> getCategories() {
         return Collections.unmodifiableList(packageCategories);
