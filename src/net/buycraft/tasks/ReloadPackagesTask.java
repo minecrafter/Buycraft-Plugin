@@ -24,12 +24,12 @@ public class ReloadPackagesTask extends ApiTask {
         plugin.getPackageManager().reset();
 
         try {
-        	JSONObject categoriesResponse = plugin.getApi().categoriesAction();
+            JSONObject categoriesResponse = plugin.getApi().categoriesAction();
             JSONObject packagesResponse = plugin.getApi().packagesAction();
 
             if (categoriesResponse == null || categoriesResponse.getInt("code") != 0 || packagesResponse == null || packagesResponse.getInt("code") != 0) {
-            	plugin.getLogger().severe("No response/invalid key during package reload.");
-            	return;
+                plugin.getLogger().severe("No response/invalid key during package reload.");
+                return;
             }
             
             JSONArray categories = categoriesResponse.getJSONArray("payload");
@@ -37,7 +37,14 @@ public class ReloadPackagesTask extends ApiTask {
 
             for (int i = 0; i < categories.length(); ++i) {
                 JSONObject row = categories.getJSONObject(i);
-                plugin.getPackageManager().addCategory(row.isNull("id") ? 0 : row.getInt("id"), row.getString("name"), row.getString("shortDescription"), row.getInt("guiItemId"));
+                
+                // Get item data
+                String guiItemData = row.getString("itemId");
+                int guiItemId = this.getGuiItemId(guiItemData);
+                short guiItemDamage = this.getGuidItemDamage(guiItemData);
+                
+                // Create category
+                plugin.getPackageManager().addCategory(row.isNull("id") ? 0 : row.getInt("id"), row.getString("name"), row.getString("shortDescription"), guiItemId, guiItemDamage);
             }
 
             for (int i = 0; i < packages.length(); i++) {
@@ -47,7 +54,13 @@ public class ReloadPackagesTask extends ApiTask {
 
                 JSONObject row = packages.getJSONObject(i);
                 int categoryId = row.isNull("category") ? 0 : row.getInt("category");
-                plugin.getPackageManager().add(categoryId, row.getInt("id"), row.getInt("guiItemId"), row.get("name").toString(), row.getString("shortDescription"), row.get("price").toString());
+                
+                // Get item data
+                String guiItemData = row.getString("itemId");
+                int guiItemId = this.getGuiItemId(guiItemData);
+                short guiItemDamage = this.getGuidItemDamage(guiItemData);
+                
+                plugin.getPackageManager().add(categoryId, row.getInt("id"), guiItemId, guiItemDamage, row.get("name").toString(), row.getString("shortDescription"), row.get("price").toString());
             }
 
             plugin.getPackageManager().cleanCategories();
@@ -61,5 +74,20 @@ public class ReloadPackagesTask extends ApiTask {
             plugin.getLogger().log(Level.SEVERE, "Error while resetting packages", e);
             ReportTask.setLastException(e);
         }
+    }
+    
+    private int getGuiItemId(String guiItemData) {
+        // Find colon index
+        int splitIndex = guiItemData.indexOf(':');
+        
+        return splitIndex != -1 ? Integer.parseInt(guiItemData) : Integer.parseInt(guiItemData.substring(0, splitIndex));
+    }
+    
+    private short getGuidItemDamage(String guiItemData) {
+        // Find colon index
+        int splitIndex = guiItemData.indexOf(':');
+        
+        int l = guiItemData.length();
+        return splitIndex != -1 && l > splitIndex + 1 ? Short.parseShort(guiItemData.substring(splitIndex + 1, l)) : 0;
     }
 }

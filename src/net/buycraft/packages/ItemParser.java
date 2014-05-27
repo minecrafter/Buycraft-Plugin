@@ -36,6 +36,9 @@ public class ItemParser {
 
     public static ItemStack getCategoryItem(PackageCategory c) {
        ItemStack item = new ItemStack(c.getGuiItem() != null ? c.getGuiItem() : Material.BOOK);
+       if (c.getGuiItem() != null) {
+           item.setDurability(c.getGuiItemDamage());
+       }
 
        setDisplayName(item, ChatColor.LIGHT_PURPLE + c.getName());
        setLore(item, c.getDescription(), new String[] {
@@ -54,6 +57,9 @@ public class ItemParser {
 
     public static ItemStack getPackageItem(PackageModal p) {
        ItemStack item = new ItemStack(p.getMaterial() != null ? p.getMaterial() : Material.PAPER);
+       if (p.getMaterial() != null) {
+    	   item.setDurability(p.getItemDamage());
+       }
 
        setDisplayName(item, ChatColor.LIGHT_PURPLE + p.getName());
        setLore(item, p.getDescription(), new String[] {

@@ -14,14 +14,16 @@ public class PackageCategory {
     private final String name;
     private final String description;
     private final Material guiItem;
+    private final short guiItemDamage;
 
     @SuppressWarnings("deprecation")
-	public PackageCategory(int id, String name, String description, int guiItemId) {
+	public PackageCategory(int id, String name, String description, int guiItemId, short guiItemDamage) {
         this.packages = new ArrayList<PackageModal>(1);
         this.id = id;
         this.name = name;
         this.description = description != null && description.length() > 0 ? description : null;
         this.guiItem = Material.getMaterial(guiItemId);
+        this.guiItemDamage = guiItemDamage;
     }
 
     public int getNiceId() {
@@ -42,6 +44,10 @@ public class PackageCategory {
 
     public Material getGuiItem() {
     	return guiItem;
+    }
+    
+    public short getGuiItemDamage() {
+    	return this.guiItemDamage;
     }
 
     protected void addPackage(PackageModal p) {

@@ -14,13 +14,13 @@ public class PackageManager {
         this.packagesForSale = new ArrayList<PackageModal>();
     }
 
-    public synchronized void addCategory(int categoryId, String name, String description, int guiItemId) {
-        packageCategories.add(new PackageCategory(categoryId, name, description, guiItemId));
+    public synchronized void addCategory(int categoryId, String name, String description, int guiItemId, short guiItemDamage) {
+        packageCategories.add(new PackageCategory(categoryId, name, description, guiItemId, guiItemDamage));
     }
 
-    public synchronized void add(int categoryId, int id, int materialId, String name, String description, String price) {
+    public synchronized void add(int categoryId, int id, int materialId, short materialDamage, String name, String description, String price) {
         PackageCategory category = getPackageCategory(categoryId);
-        packagesForSale.add(new PackageModal(category, id, materialId, name, description, price, packagesForSale.size() + 1));
+        packagesForSale.add(new PackageModal(category, id, materialId, materialDamage, name, description, price, packagesForSale.size() + 1));
     }
 
     public synchronized void cleanCategories() {
