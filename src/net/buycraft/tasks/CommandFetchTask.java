@@ -71,8 +71,17 @@ public class CommandFetchTask extends ApiTask {
 
                 int commandId = row.getInt("id");
                 String username = row.getString("ign");
-                String uuidStr = UuidUtil.addDashesToUUID(row.getString("uuid"));
-                UUID uuid = uuidStr.length() > 0 ? UUID.fromString(uuidStr) : null;
+
+                UUID uuid = null;
+
+                /**
+                 * Check if we were given a UUID for the player
+                 */
+                if(row.has("uuid") && row.getString("uuid").length() > 0){
+                    String uuidStr = UuidUtil.addDashesToUUID(row.getString("uuid"));
+                    uuid = UUID.fromString(uuidStr);
+                }
+
                 boolean requireOnline = row.getBoolean("requireOnline");
                 String command = row.getString("command");
                 int delay = row.getInt("delay");

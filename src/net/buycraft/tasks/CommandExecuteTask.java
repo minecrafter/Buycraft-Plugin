@@ -166,32 +166,39 @@ public class CommandExecuteTask extends ApiTask {
                     continue;
                 }
                 p.sendMessage(new String[] {
-                        Chat.header(), 
+                        Chat.header(),
                         Chat.seperator(),
                         Chat.seperator() + ChatColor.RED + String.format(Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory"), e.getValue()),
                         Chat.seperator() + ChatColor.RED + Plugin.getInstance().getLanguage().getString("commandExecuteNotEnoughFreeInventory2"),
-                        Chat.seperator(), 
+                        Chat.seperator(),
                         Chat.footer()
                 });
             }
+
+
+            if(requiredInventorySlots.size() == 0) {
+
+                for (String name : creditedCommands) {
+                    // NOTE: Its fine to get players by name here because we know for sure who they are (We only just got their name a moment ago)
+                    @SuppressWarnings("deprecation")
+                    Player p = Bukkit.getPlayerExact(name);
+                    if (p == null) {
+                        continue;
+                    }
+                    p.sendMessage(new String[]{
+                            Chat.header(),
+                            Chat.seperator(),
+                            Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("commandsExecuted"),
+                            Chat.seperator(),
+                            Chat.footer()
+                    });
+                }
+
+            }
+
             // Clear the map
             requiredInventorySlots.clear();
-            
-            for (String name : creditedCommands) {
-                // NOTE: Its fine to get players by name here because we know for sure who they are (We only just got their name a moment ago)
-                @SuppressWarnings("deprecation")
-                Player p = Bukkit.getPlayerExact(name);
-                if (p == null) {
-                    continue;
-                }
-                p.sendMessage(new String[] {
-                        Chat.header(), 
-                        Chat.seperator(),
-                        Chat.seperator() + ChatColor.GREEN + Plugin.getInstance().getLanguage().getString("commandsExecuted"),
-                        Chat.seperator(), 
-                        Chat.footer()
-                });
-            }
+
             // Clear the set
             creditedCommands.clear();
 

@@ -79,8 +79,8 @@ public class ReloadPackagesTask extends ApiTask {
     private int getGuiItemId(String guiItemData) {
         // Find colon index
         int splitIndex = guiItemData.indexOf(':');
-        
-        return splitIndex != -1 ? Integer.parseInt(guiItemData) : Integer.parseInt(guiItemData.substring(0, splitIndex));
+
+        return splitIndex == -1 ? Integer.parseInt(guiItemData) : Integer.parseInt(guiItemData.substring(0, splitIndex));
     }
     
     private short getGuidItemDamage(String guiItemData) {
