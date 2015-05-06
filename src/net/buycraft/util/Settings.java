@@ -54,7 +54,7 @@ public class Settings {
         defaultProperties.put("debug", "false");
         defaultProperties.put("commandThrottleCount", "150");
         defaultProperties.put("disable-secret-command", "false");
-        defaultProperties.put("isBungiecord", "false");
+        defaultProperties.put("isBungeecord", "false");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();
