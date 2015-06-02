@@ -144,6 +144,9 @@ public class Api {
     }
 
     public static String HttpRequest(String url) {
+
+        HttpURLConnection yc = null;
+
         try {
         	
         	if(Plugin.getInstance().getSettings().getBoolean("debug")) {
@@ -155,14 +158,14 @@ public class Api {
 
             URL conn = new URL(url);
             
-            HttpURLConnection yc = (HttpURLConnection) conn.openConnection();
+            yc = (HttpURLConnection) conn.openConnection();
             
             yc.setRequestMethod("GET");
             yc.setConnectTimeout(15000);
             yc.setReadTimeout(15000);
             yc.setInstanceFollowRedirects(false);
             yc.setAllowUserInteraction(false);
-            
+
             BufferedReader in;
             
             in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
@@ -180,8 +183,6 @@ public class Api {
             	Plugin.getInstance().getLogger().info("---------------------------------------------------");
             }
 
-            logToFile(url, content, yc.getResponseCode());
-
             return content;
         } catch (ConnectException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
@@ -196,13 +197,35 @@ public class Api {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to unknown host.");
             ReportTask.setLastException(e);
         } catch (IOException e) {
-        	 Plugin.getInstance().getLogger().severe(e.getMessage());
-             ReportTask.setLastException(e);
+            Plugin.getInstance().getLogger().severe(e.getMessage());
+            ReportTask.setLastException(e);
+            
+            try{
+                String content = "";
+
+                BufferedReader in;
+
+                in = new BufferedReader(new InputStreamReader(yc.getErrorStream()));
+
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    content = content + inputLine;
+                }
+
+
+                in.close();
+
+                logToFile(url, content, yc.getResponseCode());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             ReportTask.setLastException(e);
         }
-        
+
         return null;
     }
 
