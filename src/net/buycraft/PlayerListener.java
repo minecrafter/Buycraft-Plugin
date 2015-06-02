@@ -39,6 +39,16 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (plugin.getChatManager().isDisabled(event.getPlayer())) {
             event.setCancelled(true);
+
+            String message = "";
+            message += Chat.header() + "\n";
+            message += Chat.seperator() + "\n";
+            message += Chat.seperator() + ChatColor.RED + plugin.getLanguage().getString("turnChatBackOn") + "\n";
+            message += Chat.seperator() + "\n";
+            message += Chat.footer();
+
+            event.getPlayer().sendMessage(message);
+
         } else {
             plugin.getChatManager().clearPlayerSet(event.getRecipients());
         }
@@ -62,6 +72,12 @@ public class PlayerListener implements Listener {
             Sign sign = (Sign) block.getState();
 
             if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Buycraft]")){
+
+                if(!plugin.signSelector.signs.containsKey(block.getLocation())){
+                    event.getPlayer().sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.RED + "Unkown buycraft sign. Delete this sign and add a new one." + "\n" + Chat.footer());
+                    return;
+                }
+
                 int packageId = plugin.signSelector.signs.get(block.getLocation());
 
                 plugin.getBuyUi().showPackage(event.getPlayer(), packageId);
