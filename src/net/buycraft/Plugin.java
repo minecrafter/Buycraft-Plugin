@@ -15,12 +15,10 @@ import net.buycraft.tasks.ReportTask;
 import net.buycraft.ui.BuyChatUI;
 import net.buycraft.ui.BuyInterface;
 import net.buycraft.ui.BuyInventoryUI;
-import net.buycraft.util.Chat;
-import net.buycraft.util.Language;
-import net.buycraft.util.Settings;
-import net.buycraft.util.Updater;
+import net.buycraft.util.*;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -57,6 +55,8 @@ public class Plugin extends JavaPlugin implements Listener {
     private CommandExecuteTask commandExecutor;
     private CommandDeleteTask commandDeleteTask;
     private PendingPlayerCheckerTask pendingPlayerCheckerTask;
+
+    public SignSelector signSelector;
 
     private BukkitTask pendingPlayerCheckerTaskExecutor;
 
@@ -95,6 +95,8 @@ public class Plugin extends JavaPlugin implements Listener {
 
         settings = new Settings();
         language = new Language();
+
+        signSelector = new SignSelector();
         
         if (settings.getBoolean("autoUpdate")) {
     		this.updater = new Updater(this, 31571, this.getFile(), Updater.UpdateType.DEFAULT, true);

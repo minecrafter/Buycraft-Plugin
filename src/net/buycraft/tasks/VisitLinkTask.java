@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 public class VisitLinkTask extends ApiTask {
     private String playerName;
     private String URL;
+    private Plugin plugin;
 
     public static void call(Player player, String URL) {
         Plugin.getInstance().addTask(new VisitLinkTask(player.getName(), URL));
@@ -25,6 +26,7 @@ public class VisitLinkTask extends ApiTask {
         try {
             this.playerName = playerName;
             this.URL = URLEncoder.encode(URL, "UTF-8");
+            this.plugin = Plugin.getInstance();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             ReportTask.setLastException(e);
@@ -42,10 +44,21 @@ public class VisitLinkTask extends ApiTask {
                 if (jsonResponse.has("url") && !jsonResponse.isNull("url")) {
 
                     if (player != null) {
-                        player.sendMessage(new String[] {Chat.header(), Chat.seperator(),
-                                Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":",
-                                Chat.seperator(), Chat.seperator() + jsonResponse.getString("url"),
-                                Chat.seperator(), Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn"), Chat.seperator(), Chat.footer()});
+
+                        String message = "";
+
+                        message += Chat.header() + "\n";
+                        message += Chat.seperator() + "\n";
+                        message += Chat.seperator() + ChatColor.GREEN + getLanguage().getString("pleaseVisit") + ":" + "\n";
+                        message += Chat.seperator() + "\n";
+                        message += Chat.seperator() + "\n";
+                        message += Chat.seperator() + jsonResponse.getString("url") + "\n";
+                        message += Chat.seperator() + "\n";
+                        message += Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn") + "\n";
+                        message += Chat.seperator() + "\n";
+                        message += Chat.footer();
+
+                        player.sendMessage(message);
                     }
 
                     disableChat(playerName);
