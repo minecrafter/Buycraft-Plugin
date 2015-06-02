@@ -8,10 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -182,7 +179,9 @@ public class Api {
             	Plugin.getInstance().getLogger().info("JSON Response: " + content);
             	Plugin.getInstance().getLogger().info("---------------------------------------------------");
             }
-            
+
+            logToFile(url, content, yc.getResponseCode());
+
             return content;
         } catch (ConnectException e) {
             Plugin.getInstance().getLogger().severe("HTTP request failed due to connection error.");
@@ -228,5 +227,24 @@ public class Api {
 
     public void setApiKey(String value) {
         apiKey = value;
+    }
+
+    public static void logToFile(String url, String body, int responseCode){
+        FileWriter file = null;
+
+        try {
+            file = new FileWriter(new File(Plugin.getInstance().getDataFolder(), "http.log").getPath(), true);
+
+            file.append("REQUEST URI: " + url + "\n");
+            file.append("RESPONSE CODE: " + responseCode + "\n");
+            file.append("CONTENT:\n" + body + "\n");
+            file.append("--------------------------\n");
+            file.flush();
+            file.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

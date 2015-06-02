@@ -118,7 +118,7 @@ public class PlayerListener implements Listener {
 
                 plugin.signSelector.saveSign(event.getBlock().getLocation(), packageId);
 
-                player.sendMessage("Saved!");
+                player.sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.GREEN + "Saved new Buycraft sign" + "\n" + Chat.footer());
 
                 return;
             }
@@ -137,6 +137,9 @@ public class PlayerListener implements Listener {
 
             if(plugin.signSelector.signs.get(block.getLocation()) != null){
                 plugin.signSelector.deleteSign(block.getLocation());
+
+                event.getPlayer().sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.RED + "Removed Buycraft sign" + "\n" + Chat.footer());
+
             }
 
         }
