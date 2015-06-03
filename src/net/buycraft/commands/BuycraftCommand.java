@@ -150,7 +150,8 @@ public class BuycraftCommand {
                    
                 if (commandSender instanceof Player == false || commandSender.hasPermission("buycraft.admin") || commandSender.hasPermission("buycraft.signs") || commandSender.isOp()) {
                     commandSender.sendMessage(Chat.seperator());
-                    commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign begin/filter <Package>:" + ChatColor.GREEN + " Set payment signs");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign begin:" + ChatColor.GREEN + " Start payment signs");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign filter <Package>:" + ChatColor.GREEN + " Displays only one Package");
                     commandSender.sendMessage(Chat.seperator() + ChatColor.LIGHT_PURPLE + "/buysign end:" + ChatColor.GREEN + " End payment signs");
                 }
 
