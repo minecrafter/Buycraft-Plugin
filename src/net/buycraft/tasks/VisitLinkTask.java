@@ -37,6 +37,9 @@ public class VisitLinkTask extends ApiTask {
         // Player is online so its fine to use this
         @SuppressWarnings("deprecation")
         Player player = Bukkit.getPlayerExact(playerName);
+
+        Boolean shouldDisableChat = plugin.getConfig().getBoolean("disableChatOnBuyCommand");
+
         try {
             JSONObject jsonResponse = getApi().urlAction(URL).getJSONObject("payload");
        
@@ -53,15 +56,22 @@ public class VisitLinkTask extends ApiTask {
                         message += Chat.seperator() + "\n";
                         message += Chat.seperator() + "\n";
                         message += Chat.seperator() + jsonResponse.getString("url") + "\n";
-                        message += Chat.seperator() + "\n";
-                        message += Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn") + "\n";
+
+                        if(shouldDisableChat) {
+                            message += Chat.seperator() + "\n";
+                            message += Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn") + "\n";
+                        }
+                        
                         message += Chat.seperator() + "\n";
                         message += Chat.footer();
 
                         player.sendMessage(message);
                     }
 
-                    disableChat(playerName);
+
+                    if(shouldDisableChat){
+                        disableChat(playerName);
+                    }
 
                     getLogger().info("Generated short URL " + jsonResponse.getString("url") + ".");
 
