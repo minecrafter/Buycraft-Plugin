@@ -1,5 +1,6 @@
 package net.buycraft.tasks;
 
+import com.sun.scenario.Settings;
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 import net.buycraft.util.Chat;
@@ -38,7 +39,7 @@ public class VisitLinkTask extends ApiTask {
         @SuppressWarnings("deprecation")
         Player player = Bukkit.getPlayerExact(playerName);
 
-        Boolean shouldDisableChat = plugin.getConfig().getBoolean("disableChatOnBuyCommand");
+        Boolean shouldDisableChat = plugin.getSettings().getBoolean("disableChatOnBuyCommand");
 
         try {
             JSONObject jsonResponse = getApi().urlAction(URL).getJSONObject("payload");
@@ -59,7 +60,7 @@ public class VisitLinkTask extends ApiTask {
 
                         if(shouldDisableChat) {
                             message += Chat.seperator() + "\n";
-                            message += Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn") + "\n";
+                            message += Chat.seperator() + ChatColor.RED + getLanguage().getString("turnChatBackOn").replace("{{ENABLE_CHAT_COMMAND}}", plugin.getSettings().getString("re-enableChatCommand")) + "\n";
                         }
                         
                         message += Chat.seperator() + "\n";

@@ -46,7 +46,7 @@ public class Language {
         defaultProperties.put("chatAlreadyEnabled", "Your chat is already enabled.");
         defaultProperties.put("commandsExecuted", "Your purchased packages have been credited.");
         defaultProperties.put("pleaseVisit", "Please click the link below to continue");
-        defaultProperties.put("turnChatBackOn", "Type /ec to turn your chat back on.");
+        defaultProperties.put("turnChatBackOn", "Type /{{ENABLE_CHAT_COMMAND}} to turn your chat back on.");
         defaultProperties.put("packageNotFound", "Package not found.");
         defaultProperties.put("noPackagesForSale", "We currently do not have any packages for sale.");
         defaultProperties.put("toPurchase", "To purchase a package, please type");

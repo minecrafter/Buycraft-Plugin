@@ -70,6 +70,9 @@ public class Plugin extends JavaPlugin implements Listener {
     private String buyCommand = "buy";
     private String buyCommandSearchString = "/buy";
 
+    private String ecCommand = "ec";
+    private String ecCommandSearchString = "/ec";
+
     private ExecutorService executors = null;
 
     private HeadFile headFile = null;
@@ -113,6 +116,7 @@ public class Plugin extends JavaPlugin implements Listener {
         pendingPlayerCheckerTask = new PendingPlayerCheckerTask();
 
         setBuyCommand(getSettings().getString("buyCommand"));
+        setEcCommand(getSettings().getString("re-enableChatCommand"));
         buyUi = getSettings().getBoolean("useBuyGUI") ? new BuyInventoryUI() : new BuyChatUI();
 
         headFile = new HeadFile(this);
@@ -140,9 +144,6 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("ec")) {
-            return EnableChatCommand.process(commandSender, args);
-        }
 
         if (label.equalsIgnoreCase("buycraft")) {
             return BuycraftCommand.process(commandSender, args);
@@ -153,12 +154,24 @@ public class Plugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preCommandListener(PlayerCommandPreprocessEvent event) {
+
         String message = event.getMessage().toLowerCase();
-        int cmdLength = buyCommandSearchString.length();
-        if (message.startsWith(buyCommandSearchString) && (message.length() == cmdLength || message.charAt(cmdLength) == ' ')) {
+
+        int buyCmdLength = buyCommandSearchString.length();
+        if (message.startsWith(buyCommandSearchString) && (message.length() == buyCmdLength || message.charAt(buyCmdLength) == ' ')) {
             BuyCommand.process(event.getPlayer(), message.split(" "));
             event.setCancelled(true);
+            return;
         }
+
+        int ecCmdLength = ecCommandSearchString.length();
+        if (message.startsWith(ecCommandSearchString) && (message.length() == ecCmdLength || message.charAt(ecCmdLength) == ' ')) {
+            EnableChatCommand.process(event.getPlayer(), message.split(" "));
+            event.setCancelled(true);
+            return;
+        }
+
+
     }
 
     private void checkDirectory() {
@@ -270,6 +283,11 @@ public class Plugin extends JavaPlugin implements Listener {
     public void setBuyCommand(String value) {
         buyCommand = value;
         buyCommandSearchString = new StringBuilder().append('/').append(buyCommand).toString().toLowerCase();
+    }
+
+    public void setEcCommand(String value) {
+        ecCommand = value;
+        ecCommandSearchString = new StringBuilder().append('/').append(ecCommand).toString().toLowerCase();
     }
 
     public void setServerStore(String value) {

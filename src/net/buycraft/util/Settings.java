@@ -55,6 +55,8 @@ public class Settings {
         defaultProperties.put("commandThrottleCount", "150");
         defaultProperties.put("disable-secret-command", "false");
         defaultProperties.put("isBungeecord", "false");
+        defaultProperties.put("disableChatOnBuyCommand", "true");
+        defaultProperties.put("re-enableChatCommand", "ec");
 
         for (Entry<String, String> entry : defaultProperties.entrySet()) {
             String key = entry.getKey();
