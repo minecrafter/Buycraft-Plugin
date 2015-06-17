@@ -80,7 +80,6 @@ public class ReportTask extends ApiTask {
 
             String pingGoogle = pingCheck(googleAddress);
             String pingApi = pingCheck(apiAddress);
-            String isGdCheck = pingCheck(isGdAddress);
             
             String serviceCheck = checkOkay();
 
@@ -105,7 +104,6 @@ public class ReportTask extends ApiTask {
                     "#### Connection ####", '\n',
                     "Google Ping Result: ", pingGoogle, '\n',
                     "Buycraft API Ping Result: ", pingApi, '\n',
-                    "URL Shortener Ping Result: ", isGdCheck, '\n',
                     "Buycraft API Status Result: ", serviceCheck, '\n',
                     '\n',
                     "#### Performance ####", '\n',
