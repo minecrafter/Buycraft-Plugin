@@ -36,7 +36,7 @@ public class Api {
         apiCallParams.put("action", "info");
         
         apiCallParams.put("serverPort", String.valueOf(Bukkit.getPort()));
-        apiCallParams.put("onlineMode", String.valueOf(Bukkit.getOnlineMode()));
+        apiCallParams.put("onlineMode", String.valueOf(Plugin.getSettings().isOnlineMode()));
         apiCallParams.put("playersMax", String.valueOf(Bukkit.getMaxPlayers()));
         apiCallParams.put("version", plugin.getVersion());
 

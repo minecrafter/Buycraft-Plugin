@@ -50,7 +50,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
     public synchronized void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         // If the player has pending commands we call the package checker
-        String playerKey = Bukkit.getOnlineMode() ? UuidUtil.uuidToString(p.getUniqueId()) : p.getName().toLowerCase();
+        String playerKey = Plugin.getSettings().isOnlineMode() ? UuidUtil.uuidToString(p.getUniqueId()) : p.getName().toLowerCase();
         if (pendingPlayers.remove(playerKey)) {
             CommandFetchTask.call(false, event.getPlayer());
         }
@@ -80,7 +80,7 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
             }
 
             // Fetch pending players
-            JSONObject apiResponse = plugin.getApi().fetchPendingPlayers(Bukkit.getOnlineMode());
+            JSONObject apiResponse = plugin.getApi().fetchPendingPlayers(Plugin.getSettings().isOnlineMode());
 
             if (apiResponse == null || apiResponse.getInt("code") != 0) {
                 plugin.getLogger().severe("No response/invalid key during pending players check.");
@@ -103,12 +103,12 @@ public class PendingPlayerCheckerTask extends ApiTask implements Listener {
                 // Iterate through each pending player
                 for (int i = 0; i < pendingPlayers.length(); ++i) {
                     String playerKey = pendingPlayers.getString(i);
-                    if (!Bukkit.getOnlineMode()) {
+                    if (!Plugin.getSettings().isOnlineMode()) {
                         // Player names should be in lowercase
                         playerKey = playerKey.toLowerCase();
                     }
                     Player player = null;
-                    if (Bukkit.getOnlineMode()) {
+                    if (Plugin.getSettings().isOnlineMode()) {
                         UUID uuid = UUID.fromString(UuidUtil.addDashesToUUID(playerKey));
                         player = getPlayer(onlinePlayers, uuid);
                     } else {

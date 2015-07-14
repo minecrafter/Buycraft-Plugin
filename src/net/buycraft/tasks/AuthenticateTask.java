@@ -46,19 +46,16 @@ public class AuthenticateTask extends ApiTask {
                                 boolean requiresOnlineMode = payload.getBoolean("onlineMode");
                                 plugin.setOnlineMode(requiresOnlineMode);
 
-                                if(requiresOnlineMode && !Bukkit.getOnlineMode()){
-                                    plugin.getLogger().warning("This server must be in online mode");
-                                    return;
-                                }
+                                if(!plugin.getSettings().getBoolean("isBungeecord")){
+                                    if(requiresOnlineMode && !plugin.getSettings().isOnlineMode()){
+                                        plugin.getLogger().warning("This server must be in online mode");
+                                        return;
+                                    }
 
-                                if(!requiresOnlineMode && Bukkit.getOnlineMode()){
-                                    plugin.getLogger().warning("This server must be in offline mode");
-                                    return;
-                                }
-
-                                if(plugin.getSettings().getBoolean("isBungeecord") && !requiresOnlineMode){
-                                    plugin.getLogger().warning("This server must have an online mode webstore in order to use Bungeecord");
-                                    return;
+                                    if(!requiresOnlineMode && plugin.getSettings().isOnlineMode()){
+                                        plugin.getLogger().warning("This server must be in offline mode");
+                                        return;
+                                    }
                                 }
 
                                 plugin.getLogger().info("Plugin is now ready to be used.");

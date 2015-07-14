@@ -44,7 +44,7 @@ public class CommandFetchTask extends ApiTask {
 
             // Create an array of player names or uuids
             String[] playerKeys = null;
-            boolean useUuids = Bukkit.getOnlineMode();
+            boolean useUuids = Plugin.getSettings().isOnlineMode();
             
             if (players.length > 0){
                 ArrayList<String> tmpPlayerKeys= new ArrayList<String>(players.length);
@@ -87,7 +87,7 @@ public class CommandFetchTask extends ApiTask {
                 int delay = row.getInt("delay");
                 int requiredInventorySlots = row.getInt("requireInventorySlot");
 
-                Player player = requireOnline ? (Bukkit.getOnlineMode() && uuid != null ? getPlayer(players, uuid) : getPlayer(players, username)) : null;
+                Player player = requireOnline ? (Plugin.getSettings().isOnlineMode() && uuid != null ? getPlayer(players, uuid) : getPlayer(players, username)) : null;
 
                 if (!requireOnline || player != null) {
                     String c = command;

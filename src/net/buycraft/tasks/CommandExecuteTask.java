@@ -54,7 +54,7 @@ public class CommandExecuteTask extends ApiTask {
         // Convert delay from seconds to ticks
         delay *= 20;
         try {
-            if (uuid == null || !Bukkit.getOnlineMode()) {
+            if (uuid == null || !Plugin.getSettings().isOnlineMode()) {
             	OfflinePlayer op = Bukkit.getOfflinePlayer(username);
                 username = op.getName();
                 uuid = op.getUniqueId();
@@ -111,7 +111,7 @@ public class CommandExecuteTask extends ApiTask {
                 // Ignore the command if the player does not have enough free item slots
                 if (pkgcmd.requiresFreeInventorySlots()) {
                     @SuppressWarnings("deprecation")
-                    Player player = Bukkit.getOnlineMode() && pkgcmd.uuid != null ? Bukkit.getPlayer(pkgcmd.uuid) : Bukkit.getPlayer(pkgcmd.username);
+                    Player player = Plugin.getSettings().isOnlineMode() && pkgcmd.uuid != null ? Bukkit.getPlayer(pkgcmd.uuid) : Bukkit.getPlayer(pkgcmd.username);
                     if (player == null || !player.isOnline()) {
                         // If the player is offline we can't do anything here
                         continue;

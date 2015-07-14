@@ -39,7 +39,7 @@ public class Plugin extends JavaPlugin implements Listener {
 
     private String version;
 
-    private Settings settings;
+    private static Settings settings;
     private Language language;
 
     private Updater updater = null;
@@ -209,7 +209,7 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public Boolean isAuthenticated(CommandSender commandSender) {
-        boolean invalidOnlineMode = onlineMode && !getServer().getOnlineMode();
+        boolean invalidOnlineMode = onlineMode && !Plugin.getSettings().isOnlineMode();
         if (!authenticated || invalidOnlineMode) {
             if (commandSender != null) {
                 commandSender.sendMessage(Chat.header());
@@ -345,7 +345,7 @@ public class Plugin extends JavaPlugin implements Listener {
         return version;
     }
 
-    public Settings getSettings() {
+    public static Settings getSettings() {
         return settings;
     }
 

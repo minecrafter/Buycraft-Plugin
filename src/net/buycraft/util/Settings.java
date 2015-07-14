@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import net.buycraft.tasks.ReportTask;
+import org.bukkit.Bukkit;
 
 public class Settings {
     private final String LOCATION = "plugins/Buycraft/settings.conf";
@@ -116,5 +117,9 @@ public class Settings {
         properties.setProperty(key, value);
 
         saveSettings();
+    }
+
+    public boolean isOnlineMode() {
+        return Bukkit.getOnlineMode() || getBoolean("isBungeecord");
     }
 }
