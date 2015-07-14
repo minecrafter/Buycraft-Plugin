@@ -31,9 +31,9 @@
     </dependency>
   </dependencies>
   <organization>
-  	<name>TebexTechnologiesLtd</name>
+  	<name>TebexLimited</name>
   </organization>
   <scm>
-  	<url>https://github.com/TebexTechnologiesLtd/Buycraft-Plugin</url>
+  	<url>https://github.com/BuycraftPlugin/Buycraft-Plugin</url>
   </scm>
 </project>
