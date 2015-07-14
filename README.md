@@ -56,6 +56,15 @@ Use of http://api.buycraft.net is only for this plugin and integrating Buycraft 
 
 ---- CHANGE LOG ------------------------------------------------------------
 	
+	Version 6.8
+		- Added Purchase Signs which can be right clicked to give the user a url to click instead of using the /buy command
+		- Added proper Bungeecord support
+		- Updater now only updates to new version (Allows beta testers to moved to official release once released)
+		- Added abilty to disable and change /ec command
+		- Added logging for errors during web requests
+		- Item GUI now supports data option
+		- Plugin now supports {UUID} as well as {name} for commands
+	
 	Version 6.7
 
 		- Moved to a different URL shortener for better reliability. 
