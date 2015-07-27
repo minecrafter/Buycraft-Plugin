@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 public class Plugin extends JavaPlugin implements Listener {
     private static Plugin instance;
 
+    // The version of the plugin
     private String version;
 
     private static Settings settings;
@@ -228,9 +229,9 @@ public class Plugin extends JavaPlugin implements Listener {
                     commandSender.sendMessage(Chat.seperator());
                 } else if (invalidOnlineMode) {
                     commandSender.sendMessage(Chat.seperator());
-                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft is authenticated but the server is in offline mode.");
-                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Buycraft requires this server to be set to online mode.");
-                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Alternatively change Buycraft to offline mode from the control panel.");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "This server is in offline mode. Buycraft requires this");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "server to be set to online mode. Either set this");
+                    commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "server to online mode or you can create a new webstore.");
                     commandSender.sendMessage(Chat.seperator());
                 } else {
                     commandSender.sendMessage(Chat.seperator());

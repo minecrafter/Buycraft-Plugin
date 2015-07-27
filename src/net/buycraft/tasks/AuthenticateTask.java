@@ -48,12 +48,13 @@ public class AuthenticateTask extends ApiTask {
 
                                 if(!plugin.getSettings().getBoolean("isBungeecord")){
                                     if(requiresOnlineMode && !plugin.getSettings().isOnlineMode()){
-                                        plugin.getLogger().warning("This server must be in online mode");
+                                        plugin.getLogger().warning("This server is in offline mode, you will need to create an offline webstore to work with this server. " +
+                                                "If this is a BungeeCord server, you can find a tutorial here: https://www.buycraft.net/community/article/39/using-buycraft-with-bungeecord-lilypad");
                                         return;
                                     }
 
                                     if(!requiresOnlineMode && plugin.getSettings().isOnlineMode()){
-                                        plugin.getLogger().warning("This server must be in offline mode");
+                                        plugin.getLogger().warning("This server is in online mode, you will need to create an online webstore to work with this server.");
                                         return;
                                     }
                                 }
