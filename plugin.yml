@@ -4,8 +4,6 @@ version: 6.8.1
 author: Tebex Limited
 website: http://buycraft.net
 commands:
-   ec:
-      usage: /<command>
    buycraft:
       usage: /<command> <reload/forcecheck/secret/payments <ign>>
    buysign:

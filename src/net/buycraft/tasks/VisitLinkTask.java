@@ -1,6 +1,5 @@
 package net.buycraft.tasks;
 
-import com.sun.scenario.Settings;
 import net.buycraft.Plugin;
 import net.buycraft.api.ApiTask;
 import net.buycraft.util.Chat;

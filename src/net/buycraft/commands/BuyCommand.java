@@ -5,11 +5,15 @@ import net.buycraft.tasks.VisitLinkTask;
 import net.buycraft.util.Chat;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class BuyCommand {
+public class BuyCommand extends AbstractCommand {
 
-    private BuyCommand() {}
+    public BuyCommand(String command) {
+        super(command);
+    }
 
     public static boolean process(Player player, String[] args) {
         Plugin plugin = Plugin.getInstance();
@@ -83,5 +87,10 @@ public class BuyCommand {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        return false;
     }
 }

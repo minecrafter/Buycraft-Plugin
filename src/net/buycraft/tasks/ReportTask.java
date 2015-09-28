@@ -99,7 +99,7 @@ public class ReportTask extends ApiTask {
                     "Buy Command: ", Plugin.getInstance().getBuyCommand(), '\n',
                     "Authenticated: ", isAuthenticated, '\n',
                     "Error code: ", Plugin.getInstance().getAuthenticatedCode(), '\n',
-                    "Last Package Checker Execution: ", lastPackageCheckerExecution, '\n',
+                    "Last command execution: ", lastPackageCheckerExecution, '\n',
                     '\n',
                     "#### Connection ####", '\n',
                     "Google Ping Result: ", pingGoogle, '\n',

@@ -2,6 +2,7 @@ package net.buycraft;
 
 import net.buycraft.api.Api;
 import net.buycraft.api.ApiTask;
+import net.buycraft.commands.AbstractCommand;
 import net.buycraft.commands.BuyCommand;
 import net.buycraft.commands.BuycraftCommand;
 import net.buycraft.commands.EnableChatCommand;
@@ -116,8 +117,12 @@ public class Plugin extends JavaPlugin implements Listener {
         commandDeleteTask = new CommandDeleteTask();
         pendingPlayerCheckerTask = new PendingPlayerCheckerTask();
 
-        setBuyCommand(getSettings().getString("buyCommand"));
-        setEcCommand(getSettings().getString("re-enableChatCommand"));
+        AbstractCommand buyCommand = new BuyCommand(getSettings().getString("buyCommand"));
+        buyCommand.register();
+
+        AbstractCommand ecCommand = new EnableChatCommand(getSettings().getString("re-enableChatCommand"));
+        ecCommand.register();
+
         buyUi = getSettings().getBoolean("useBuyGUI") ? new BuyInventoryUI() : new BuyChatUI();
 
         headFile = new HeadFile(this);
@@ -151,28 +156,6 @@ public class Plugin extends JavaPlugin implements Listener {
         }
 
         return false;
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void preCommandListener(PlayerCommandPreprocessEvent event) {
-
-        String message = event.getMessage().toLowerCase();
-
-        int buyCmdLength = buyCommandSearchString.length();
-        if (message.startsWith(buyCommandSearchString) && (message.length() == buyCmdLength || message.charAt(buyCmdLength) == ' ')) {
-            BuyCommand.process(event.getPlayer(), message.split(" "));
-            event.setCancelled(true);
-            return;
-        }
-
-        int ecCmdLength = ecCommandSearchString.length();
-        if (message.startsWith(ecCommandSearchString) && (message.length() == ecCmdLength || message.charAt(ecCmdLength) == ' ')) {
-            EnableChatCommand.process(event.getPlayer(), message.split(" "));
-            event.setCancelled(true);
-            return;
-        }
-
-
     }
 
     private void checkDirectory() {
