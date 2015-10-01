@@ -15,8 +15,21 @@ public class BuyCommand extends AbstractCommand {
         super(command);
     }
 
-    public static boolean process(Player player, String[] args) {
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command cmd, String label, String[] args) {
         Plugin plugin = Plugin.getInstance();
+
+        if(!(commandSender instanceof Player)){
+            commandSender.sendMessage(Chat.header());
+            commandSender.sendMessage(Chat.seperator());
+            commandSender.sendMessage(Chat.seperator() + ChatColor.RED + "Only players may run this command");
+            commandSender.sendMessage(Chat.seperator());
+            commandSender.sendMessage(Chat.footer());
+            return true;
+        }
+
+        Player player = (Player) commandSender;
+
         if (!plugin.getSettings().getBoolean("disableBuyCommand")) {
             if (plugin.isAuthenticated(player)) {
                 String pageToView = "0";
@@ -89,8 +102,4 @@ public class BuyCommand extends AbstractCommand {
         return true;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        return false;
-    }
 }
