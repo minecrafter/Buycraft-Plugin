@@ -3,6 +3,7 @@ package net.buycraft.util;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import net.buycraft.Plugin;
 import net.buycraft.packages.ItemParser;
 import net.buycraft.packages.PackageCategory;
@@ -64,17 +65,17 @@ public class BuycraftInventoryCreator {
 
     public static void createPackagePages(InventoryHolder holder, Map<String, Inventory> inventories, PackageCategory category, boolean addHome) {
         int pageId = 1;
-        List<PackageModal> packages = category.getPackages();
-        int itemsToBeMade = packages.size();
-        for (int itemI = 0; itemI < packages.size(); ++itemI) {
+        List<List<PackageModal>> split = Lists.partition(category.getPackages(), 45);
+        for (List<PackageModal> packages : split) {
             // Fetch the number of slots we need
+            int itemsToBeMade = packages.size();
             int size = getSize(itemsToBeMade + 9);
 
             // Create the inventory
             Inventory inv = createInventory(holder, size, pageId > 1 ? category.getName() + " " + pageId : category.getName());
 
             // If we are adding any other buttons we need a free line of slots
-            if (addHome || itemsToBeMade > size) {
+            if (addHome || split.size() > 1) {
                 size -= 9;
                 // Add random items to make sure we don't put packages on the first line
                 for (int i = 0; i < 9; ++i) {
@@ -83,19 +84,18 @@ public class BuycraftInventoryCreator {
             }
 
             // Fill empty slots of the inventory
-            for (; itemI < packages.size(); ++itemI) {
-                inv.addItem(ItemParser.getPackageItem(packages.get(itemI)));
+            for (PackageModal aPackage : packages) {
+                inv.addItem(ItemParser.getPackageItem(aPackage));
             }
 
             // If we are adding any buttons we need to clear the top line of junk items
-            if (addHome || itemsToBeMade > size) {
+            if (addHome || split.size() > 1) {
                 for (int i = 0; i < 9; ++i) {
                     inv.clear(i);
                 }
                 // Then add buttons
-                placePrevAndNextPage(inv, pageId > 1, itemsToBeMade > size, addHome);
+                placePrevAndNextPage(inv, pageId > 1, packages.size() == 45, addHome);
             }
-            itemsToBeMade -= size;
             inventories.put(CATEGORY_MENU.toString() + (addHome ? category.getNiceId() : 0) + "-" + pageId++, inv);
         }
     }
