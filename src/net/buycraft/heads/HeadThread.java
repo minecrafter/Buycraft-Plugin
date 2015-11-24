@@ -91,6 +91,9 @@ public class HeadThread implements Runnable {
             for(int i=0; i<locs.length && i<head.size(); i++) {
                 SavedBlockLocation l = locs[i];
                 Head h = head.get(i);
+                if (l.getBukkitWorld() == null) {
+                    continue;
+                }
                 Block b = l.getBukkitLocation().getBlock();
                 if(b.getState() instanceof Sign) {
                     Sign s = (Sign) b.getState();

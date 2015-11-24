@@ -76,6 +76,8 @@ public class ReportTask extends ApiTask {
             boolean isAuthenticated = Plugin.getInstance().isAuthenticated(null);
             double lastPackageCheckerExecutionTime = (System.currentTimeMillis() - CommandFetchTask.getLastExecution()) / 1000.0 / 60.0;
             String lastPackageCheckerExecution = CommandFetchTask.getLastExecution() != 0 ? lastPackageCheckerExecutionTime + " minutes ago": "Never";
+            int packageCacheCategoriesSize = Plugin.getInstance().getPackageManager().getCategories().size();
+            int packageCachePackageSize = Plugin.getInstance().getPackageManager().getPackagesForSale().size();
 
 
             String pingGoogle = pingCheck(googleAddress);
@@ -100,6 +102,9 @@ public class ReportTask extends ApiTask {
                     "Authenticated: ", isAuthenticated, '\n',
                     "Error code: ", Plugin.getInstance().getAuthenticatedCode(), '\n',
                     "Last command execution: ", lastPackageCheckerExecution, '\n',
+                    "Package cache: \n",
+                    "Number of categories in package cache: ", packageCacheCategoriesSize, '\n',
+                    "Total packages in package cache: ", packageCachePackageSize, '\n',
                     '\n',
                     "#### Connection ####", '\n',
                     "Google Ping Result: ", pingGoogle, '\n',
