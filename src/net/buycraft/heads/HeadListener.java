@@ -1,5 +1,6 @@
 package net.buycraft.heads;
 
+import net.buycraft.util.SavedBlockLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -43,23 +44,23 @@ public class HeadListener implements Listener, CommandExecutor {
         // iterate through heads
         for(HeadSign head : headFile.getSigns()) {
             // and faces
-            Location[] locations = head.getLocation();
+            SavedBlockLocation[] locations = head.getLocation();
             for(BlockFace face : FACES) {
                 Location l = block.getRelative(face).getLocation();
-                for(Location loc : locations) {
-                    if(loc.getWorld().getName().equals(l.getWorld().getName()) &&
-                            loc.getBlockX() == l.getBlockX() &&
-                            loc.getBlockY() == l.getBlockY() &&
-                            loc.getBlockZ() == l.getBlockZ()) {
+                for(SavedBlockLocation loc : locations) {
+                    if(loc.getWorld().equals(l.getWorld().getName()) &&
+                            loc.getX() == l.getBlockX() &&
+                            loc.getY() == l.getBlockY() &&
+                            loc.getZ() == l.getBlockZ()) {
                         protections.add(HeadSign.getLocation(block.getLocation()));
                     }
                 }
                 l = block.getRelative(face).getRelative(BlockFace.UP).getLocation();
-                for(Location loc : locations) {
-                    if(loc.getWorld().getName().equals(l.getWorld().getName()) &&
-                            loc.getBlockX() == l.getBlockX() &&
-                            loc.getBlockY() == l.getBlockY() &&
-                            loc.getBlockZ() == l.getBlockZ()) {
+                for(SavedBlockLocation loc : locations) {
+                    if(loc.getWorld().equals(l.getWorld().getName()) &&
+                            loc.getX() == l.getBlockX() &&
+                            loc.getY() == l.getBlockY() &&
+                            loc.getZ() == l.getBlockZ()) {
                         protections.add(HeadSign.getLocation(block.getLocation()));
                     }
                 }
@@ -108,8 +109,12 @@ public class HeadListener implements Listener, CommandExecutor {
                 List<Location> blocks = this.cache.remove(player.getName());
                 String filter = this.filter.remove(player.getName());
                 // put to file and update
-                Location[] l = new Location[blocks.size()];
-                l = blocks.toArray(l);
+                List<SavedBlockLocation> savedBlockLocations = new ArrayList<SavedBlockLocation>();
+                for (Location block : blocks) {
+                    savedBlockLocations.add(SavedBlockLocation.fromLocation(block, false));
+                }
+                SavedBlockLocation[] l = new SavedBlockLocation[savedBlockLocations.size()];
+                l = savedBlockLocations.toArray(l);
                 this.headFile.addSign(new HeadSign(l, filter));
                 player.sendMessage("Sign detection ended, updating signs...");
                 headFile.thread.updateHeads();

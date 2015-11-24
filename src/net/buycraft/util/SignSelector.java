@@ -1,9 +1,14 @@
 package net.buycraft.util;
 
+import com.google.common.base.Objects;
 import net.buycraft.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,52 +16,62 @@ import org.json.JSONObject;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * Created by william on 01/06/15.
  */
-public class SignSelector {
+public class SignSelector implements Listener {
 
     private Plugin plugin;
 
-    public Map<Location, Integer> signs = new HashMap<Location, Integer>();
+    public Map<SavedBlockLocation, Integer> signs = new HashMap<SavedBlockLocation, Integer>();
 
     public SignSelector(){
         this.plugin = Plugin.getInstance();
 
         loadSignsFromFile();
 
-        deleteSignsThatDontExistAnymore();
+        for (World world : Bukkit.getWorlds()) {
+            deleteSignsThatDontExistAnymore(world);
+        }
     }
 
-    public void deleteSignsThatDontExistAnymore(){
+    public void deleteSignsThatDontExistAnymore(World world){
 
         int discardedCount = 0;
 
-        Map<Location, Integer> signsReplacement = new HashMap<Location, Integer>();
+        for (Iterator<SavedBlockLocation> it = signs.keySet().iterator(); it.hasNext(); ) {
 
-        for(Map.Entry<Location, Integer> entry : signs.entrySet()) {
+            SavedBlockLocation location = it.next();
 
-            Material type = entry.getKey().getBlock().getType();
+            if (Objects.equal(world, location.getBukkitWorld())) {
 
-            if(type == Material.WALL_SIGN || type == Material.SIGN_POST || type == Material.SIGN){
-                signsReplacement.put(entry.getKey(), entry.getValue());
-            }else{
+                Material type = location.getBukkitLocation().getBlock().getType();
+
+                if (type == Material.WALL_SIGN || type == Material.SIGN_POST || type == Material.SIGN) {
+                    continue;
+                }
+
                 discardedCount++;
+                it.remove();
+
             }
 
         }
 
-        if(discardedCount > 0){
-            plugin.getLogger().info("Discarded " + discardedCount + " signs as they no longer exists in the world");
+        if(discardedCount > 0) {
+            plugin.getLogger().info("Discarded " + discardedCount + " signs as they no longer exist in the world");
+            saveDataToFile();
         }
 
-        signs = signsReplacement;
+    }
 
-        saveDataToFile();
-
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        deleteSignsThatDontExistAnymore(event.getWorld());
     }
 
     public void loadSignsFromFile(){
@@ -84,21 +99,13 @@ public class SignSelector {
 
             try {
 
-                JSONArray data = null;
-
-                data = new JSONArray(new String(Files.readAllBytes(file.toPath())));
+                JSONArray data = new JSONArray(new String(Files.readAllBytes(file.toPath())));
 
                 for (int  i = 0 ; i < data.length(); i++){
                     JSONObject row = data.getJSONObject(i);
-
-                    JSONArray jsonarray = ((JSONArray) row.get("location"));
-
-                    int[] loc = {jsonarray.getInt(0), jsonarray.getInt(1), jsonarray.getInt(2)};
-
-                    Location location = new Location(Bukkit.getWorld(UUID.fromString(row.getString("world"))), loc[0], loc[1], loc[2]);
+                    SavedBlockLocation location = SavedBlockLocation.deserialize(row);
 
                     signs.put(location, row.getInt("package_id"));
-
                 }
 
             } catch (JSONException e) {
@@ -120,7 +127,7 @@ public class SignSelector {
     }
 
     public void saveSign(Location location, int packageId){
-        signs.put(location, packageId);
+        signs.put(SavedBlockLocation.fromLocation(location, true), packageId);
 
         plugin.getLogger().info("Saved new buycraft buy sign");
 
@@ -129,7 +136,7 @@ public class SignSelector {
     }
 
     public void deleteSign(Location location){
-        signs.remove(location);
+        signs.remove(SavedBlockLocation.fromLocation(location, true));
 
         plugin.getLogger().info("Deleted buycraft buy sign");
 
@@ -140,14 +147,14 @@ public class SignSelector {
     public void saveDataToFile(){
         JSONArray data = new JSONArray();
 
-        for(Map.Entry<Location, Integer> entry : signs.entrySet()) {
+        for(Map.Entry<SavedBlockLocation, Integer> entry : signs.entrySet()) {
             JSONObject obj = new JSONObject();
 
-            Location loc = entry.getKey();
+            SavedBlockLocation loc = entry.getKey();
 
             try {
-                obj.put("world", entry.getKey().getWorld().getUID().toString());
-                obj.put("location", new int[]{loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()});
+                obj.put("world", entry.getKey().getWorld());
+                obj.put("location", new int[]{loc.getX(), loc.getY(), loc.getZ()});
                 obj.put("package_id", entry.getValue());
 
                 data.put(obj);

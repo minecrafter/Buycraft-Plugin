@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.buycraft.Plugin;
 
+import net.buycraft.util.SavedBlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,10 +13,10 @@ import org.json.JSONException;
 
 public class HeadSign {
 
-    private final Location[] loc;
+    private final SavedBlockLocation[] loc;
     private final String filter;
 
-    public HeadSign(Location[] loc, String filter) {
+    public HeadSign(SavedBlockLocation[] loc, String filter) {
         this.loc = loc;
         this.filter = filter;
     }
@@ -24,11 +25,11 @@ public class HeadSign {
         return filter;
     }
 
-    public Location getLocation(int i) {
+    public SavedBlockLocation getLocation(int i) {
         return loc[i];
     }
 
-    public Location[] getLocation() {
+    public SavedBlockLocation[] getLocation() {
         return loc;
     }
 
@@ -40,8 +41,8 @@ public class HeadSign {
         } else {
             arr.put(filter);
         }
-        for(Location loc : this.loc) {
-            arr.put(getLocation(loc));
+        for(SavedBlockLocation loc : this.loc) {
+            arr.put(loc.serializeAsCsv());
         }
         return arr.toString();
     }
@@ -52,38 +53,23 @@ public class HeadSign {
         if(filter.equalsIgnoreCase("null")) {
             filter = null;
         }
-        ArrayList<Location> loc = new ArrayList<Location>(arr.length()-1);
+        ArrayList<SavedBlockLocation> loc = new ArrayList<SavedBlockLocation>(arr.length()-1);
         for(int i=1; i<arr.length(); i++) {
-            Location l = getLocation(arr.getString(i));
-            if (l != null) {
-                loc.add(l);
+            SavedBlockLocation l;
+            try {
+                l = SavedBlockLocation.deserialize(arr.getString(i));
+            } catch (IllegalArgumentException e) {
+                Plugin.getInstance().getLogger().severe("Unable to deserialize the sign location " + arr.getString(i) + ". Ignoring it.");
+                continue;
             }
+            loc.add(l);
         }
 
-        return new HeadSign(loc.toArray(new Location[loc.size()]), filter);
+        return new HeadSign(loc.toArray(new SavedBlockLocation[loc.size()]), filter);
     }
 
     public static String getLocation(Location loc) {
         return loc.getWorld().getName()+","+loc.getBlockX()+","+loc.getBlockY()+","+loc.getBlockZ();
-    }
-
-    public static Location getLocation(String loc) {
-        String spl[] = loc.split(",");
-
-        if (spl.length != 4) {
-            Plugin.getInstance().getLogger().warning("Invalid HeadSign location found: " + loc);
-            Plugin.getInstance().getLogger().warning("Fix it or remove it from your heads.yml");
-            return null;
-        }
-
-        World world = Bukkit.getWorld(spl[0]);
-
-        if (world == null) {
-            Plugin.getInstance().getLogger().warning("Missing world for HeadSign location: " + loc);
-            return null;
-        }
-
-        return new Location(world, Integer.parseInt(spl[1]), Integer.parseInt(spl[2]), Integer.parseInt(spl[3]));
     }
 
 }

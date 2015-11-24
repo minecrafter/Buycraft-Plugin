@@ -3,6 +3,7 @@ package net.buycraft.heads;
 import net.buycraft.Plugin;
 import net.buycraft.tasks.ReportTask;
 
+import net.buycraft.util.SavedBlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -86,11 +87,11 @@ public class HeadThread implements Runnable {
                 }
             }
             // now do the Location stuff
-            Location[] locs = sign.getLocation();
+            SavedBlockLocation[] locs = sign.getLocation();
             for(int i=0; i<locs.length && i<head.size(); i++) {
-                Location l = locs[i];
+                SavedBlockLocation l = locs[i];
                 Head h = head.get(i);
-                Block b = l.getBlock();
+                Block b = l.getBukkitLocation().getBlock();
                 if(b.getState() instanceof Sign) {
                     Sign s = (Sign) b.getState();
                     h.format(s, headFile.currency);

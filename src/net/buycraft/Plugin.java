@@ -132,6 +132,7 @@ public class Plugin extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(pendingPlayerCheckerTask, this);
+        getServer().getPluginManager().registerEvents(signSelector, this);
     }
 
     public void onDisable() {

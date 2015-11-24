@@ -2,6 +2,7 @@ package net.buycraft;
 
 import net.buycraft.packages.PackageModal;
 import net.buycraft.util.Chat;
+import net.buycraft.util.SavedBlockLocation;
 import net.buycraft.util.SignSelector;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -73,12 +74,14 @@ public class PlayerListener implements Listener {
 
             if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Buycraft]")){
 
-                if(!plugin.signSelector.signs.containsKey(block.getLocation())){
-                    event.getPlayer().sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.RED + "Unkown buycraft sign. Delete this sign and add a new one." + "\n" + Chat.footer());
+                SavedBlockLocation savedBlockLocation = SavedBlockLocation.fromLocation(block.getLocation(), true);
+
+                if(!plugin.signSelector.signs.containsKey(savedBlockLocation)){
+                    event.getPlayer().sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.RED + "Unknown buycraft sign. Delete this sign and add a new one." + "\n" + Chat.footer());
                     return;
                 }
 
-                int packageId = plugin.signSelector.signs.get(block.getLocation());
+                int packageId = plugin.signSelector.signs.get(savedBlockLocation);
 
                 plugin.getBuyUi().showPackage(event.getPlayer(), packageId);
 
@@ -151,7 +154,9 @@ public class PlayerListener implements Listener {
 
         if (block != null && (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST)) {
 
-            if(plugin.signSelector.signs.get(block.getLocation()) != null){
+            SavedBlockLocation savedBlockLocation = SavedBlockLocation.fromLocation(block.getLocation(), true);
+
+            if(plugin.signSelector.signs.get(savedBlockLocation) != null){
                 plugin.signSelector.deleteSign(block.getLocation());
 
                 event.getPlayer().sendMessage(Chat.header() + "\n" + Chat.seperator() + ChatColor.RED + "Removed Buycraft sign" + "\n" + Chat.footer());
